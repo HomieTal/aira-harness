@@ -1,12 +1,12 @@
 import {
   BIGMODEL_PROVIDER_ID,
-  ZAI_PROVIDER_ID,
+  AIRA_PROVIDER_ID,
   buildBigModelApiUrl,
-  buildRuntimeZaiBusinessUrl,
-} from "@zcode/shared";
+  buildRuntimeAiraBusinessUrl,
+} from "@aira/shared";
 import type { ICredentialService } from "#src/credential/credential.js";
 import { resolveBigModelUserinfoUrl } from "#src/oauth/providers/bigmodelProviderConfig.js";
-import { resolveZaiUserinfoUrl } from "#src/oauth/providers/zaiProviderConfig.js";
+import { resolveAiraUserinfoUrl } from "#src/oauth/providers/airaProviderConfig.js";
 
 function tryResolveHttpUrl(resolve: () => string | URL): URL | null {
   try {
@@ -26,13 +26,13 @@ export async function isCurrentOAuthCredentialRequest(options: {
 }): Promise<boolean> {
   const authorization = options.headers.get("authorization")?.trim() ?? "";
   if (!authorization) return false;
-  const currentJwt = (await options.credentialService.load("zcodejwttoken"))?.trim() ?? "";
+  const currentJwt = (await options.credentialService.load("airajwttoken"))?.trim() ?? "";
   if (currentJwt && authorization === `Bearer ${currentJwt}`) return true;
 
-  // 原观察器只识别 ZCode JWT，业务 access token 的 userinfo 401
+  // 原观察器只识别 Aira JWT，业务 access token 的 userinfo 401
   // 只会变成普通请求错误。仅扩展用户/团队身份查询，避免支付和 API key 接口跟随全局退出。
   const provider = await options.credentialService.load("oauth:active_provider");
-  if (provider !== BIGMODEL_PROVIDER_ID && provider !== ZAI_PROVIDER_ID) return false;
+  if (provider !== BIGMODEL_PROVIDER_ID && provider !== AIRA_PROVIDER_ID) return false;
   const env = options.env ?? process.env;
   const requestUrl = tryResolveHttpUrl(() => options.input);
   if (!requestUrl) return false;
@@ -42,7 +42,7 @@ export async function isCurrentOAuthCredentialRequest(options: {
   const urls =
     provider === BIGMODEL_PROVIDER_ID
       ? [() => buildBigModelApiUrl(env, customerInfoPath), () => resolveBigModelUserinfoUrl(env)]
-      : [() => buildRuntimeZaiBusinessUrl(env, customerInfoPath), () => resolveZaiUserinfoUrl(env)];
+      : [() => buildRuntimeAiraBusinessUrl(env, customerInfoPath), () => resolveAiraUserinfoUrl(env)];
   if (
     !urls.some((resolve) => {
       const expected = tryResolveHttpUrl(resolve);

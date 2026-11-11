@@ -2,36 +2,36 @@ import {
   BIGMODEL_PROVIDER_ID,
   type ApiClient,
   resolveBigModelApiOrigin,
-  resolveZaiBusinessBaseUrl,
-  type ZCodeAccountAccess,
-  ZAI_PROVIDER_ID,
-} from "@zcode/shared";
+  resolveAiraBusinessBaseUrl,
+  type AiraAccountAccess,
+  AIRA_PROVIDER_ID,
+} from "@aira/shared";
 import type { ICredentialService } from "#src/credential/credential.js";
 import {
   createBigModelBizHeaders,
   copyBigModelTeamPlanProjectApiKeySecret,
   ensureBigModelTeamPlanProjectApiKey,
 } from "#src/bigmodel/teamPlanApiKey.js";
-import { createZaiLoginAuthHeaders } from "#src/coding-plan-subscription/bigmodelCodingPlanSubscriptionProvider.js";
+import { createAiraLoginAuthHeaders } from "#src/coding-plan-subscription/bigmodelCodingPlanSubscriptionProvider.js";
 import { createServiceLogger } from "#src/logger/serviceLogger.js";
 import { readApiJson } from "#src/providers/api/apiJson.js";
 import type { RemoteCustomerInfo } from "./accountProviderApiTypes.js";
 
 const log = createServiceLogger("account-provider-team-plan-request-key");
-const ZCODE_JWT_TOKEN_KEY = "zcodejwttoken";
+const AIRA_JWT_TOKEN_KEY = "airajwttoken";
 const TEAM_PLAN_RUNTIME_KEY_REQUEST_TIMEOUT_MS = 15_000;
 
 interface TeamPlanRequestKeyDependencies {
   readonly apiClient: ApiClient;
   readonly credentialService?: Pick<ICredentialService, "load">;
-  readonly access: Extract<ZCodeAccountAccess, { planKind: "team-coding-plan" }>;
+  readonly access: Extract<AiraAccountAccess, { planKind: "team-coding-plan" }>;
 }
 
 export async function resolveAccountTeamPlanRuntimeApiKey(
   params: TeamPlanRequestKeyDependencies,
 ): Promise<string | null> {
   const { family, organizationId, projectId } = params.access;
-  const oauthProviderId = family === "zai" ? ZAI_PROVIDER_ID : BIGMODEL_PROVIDER_ID;
+  const oauthProviderId = family === "zai" ? AIRA_PROVIDER_ID : BIGMODEL_PROVIDER_ID;
   const token =
     (await params.credentialService?.load(`oauth:${oauthProviderId}:access_token`))?.trim() ?? "";
   if (!token) {
@@ -41,10 +41,10 @@ export async function resolveAccountTeamPlanRuntimeApiKey(
     });
     return null;
   }
-  const zcodeJwtToken = (await params.credentialService?.load(ZCODE_JWT_TOKEN_KEY))?.trim() ?? "";
-  if (family === "bigmodel" && zcodeJwtToken && token === zcodeJwtToken) {
-    // BigModel /api/biz 只接受登录 access token，不能使用旧版本误存的 ZCode JWT。
-    log.warn(undefined, "Team Plan runtime key projection skipped: stale zcode JWT token", {
+  const airaJwtToken = (await params.credentialService?.load(AIRA_JWT_TOKEN_KEY))?.trim() ?? "";
+  if (family === "bigmodel" && airaJwtToken && token === airaJwtToken) {
+    // BigModel /api/biz 只接受登录 access token，不能使用旧版本误存的 Aira JWT。
+    log.warn(undefined, "Team Plan runtime key projection skipped: stale aira JWT token", {
       family,
       projectId,
     });
@@ -53,10 +53,10 @@ export async function resolveAccountTeamPlanRuntimeApiKey(
 
   const host =
     family === "zai"
-      ? resolveZaiBusinessBaseUrl(process.env)
+      ? resolveAiraBusinessBaseUrl(process.env)
       : resolveBigModelApiOrigin(process.env);
   const headers =
-    family === "zai" ? createZaiLoginAuthHeaders(token) : createBigModelBizHeaders(token);
+    family === "zai" ? createAiraLoginAuthHeaders(token) : createBigModelBizHeaders(token);
   const customerInfo = await readApiJson<{ data?: RemoteCustomerInfo }>(
     params.apiClient,
     `${host}/api/biz/customer/getCustomerInfo`,
@@ -97,7 +97,7 @@ export async function resolveAccountTeamPlanRuntimeApiKey(
   return resolveTeamPlanProjectApiKey({
     apiClient: params.apiClient,
     authorization: token,
-    family: family === "zai" ? "Z.ai" : "BigModel",
+    family: family === "zai" ? "Aira AI" : "BigModel",
     host,
     organizationId,
     projectId,
@@ -107,7 +107,7 @@ export async function resolveAccountTeamPlanRuntimeApiKey(
 async function resolveTeamPlanProjectApiKey(params: {
   readonly apiClient: ApiClient;
   readonly authorization: string;
-  readonly family: "BigModel" | "Z.ai";
+  readonly family: "BigModel" | "Aira AI";
   readonly host: string;
   readonly organizationId: string;
   readonly projectId: string;

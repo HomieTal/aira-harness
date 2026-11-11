@@ -1,6 +1,6 @@
 import type { TaskChatMessage as ChatMessage } from "@/lib/taskChatMessageTypes.js";
 import { shouldExposeE2EStoreBridge } from "@/lib/e2eStoreBridge.js";
-import type { IZCodeAgentService } from "@zcode/services";
+import type { IAiraAgentService } from "@aira/services";
 import type { TaskListE2EActions } from "@/lib/taskListE2EActions.js";
 import { useEffect } from "react";
 
@@ -19,7 +19,7 @@ export interface TestActions extends TaskListE2EActions {
   /** 获取当前主题 */
   getTheme: () => string;
   /** 设置主题 */
-  setTheme: (theme: "light" | "dark" | "zai-light" | "zai-dark" | "system") => void;
+  setTheme: (theme: "light" | "dark" | "aira-light" | "aira-dark" | "system") => void;
   /** 获取当前语言，仅供跨语言展示 E2E */
   getLocale: () => "zh-CN" | "en-US";
   /** 设置当前语言，仅供跨语言展示 E2E */
@@ -28,18 +28,18 @@ export interface TestActions extends TaskListE2EActions {
   setChatMessages: (messages: ChatMessage[]) => void;
   /** 获取当前 mock 消息数量 */
   getChatMessageCount: () => number;
-  /** E2E 通过真实 zcodeAgentService 拉取插件 overview */
-  getPluginsOverview: IZCodeAgentService["getPluginsOverview"];
-  /** E2E 通过真实 zcodeAgentService 添加 marketplace */
-  addPluginMarketplace: IZCodeAgentService["addPluginMarketplace"];
-  /** E2E 通过真实 zcodeAgentService 刷新 marketplace */
-  updatePluginMarketplace: IZCodeAgentService["updatePluginMarketplace"];
-  /** E2E 通过真实 zcodeAgentService 安装 marketplace plugin */
-  installPlugin: IZCodeAgentService["installPlugin"];
-  /** E2E 通过真实 zcodeAgentService 触发插件 discover */
-  listPlugins: IZCodeAgentService["listPlugins"];
-  /** E2E 通过真实 zcodeAgentService 查询 Workspace/Session Plugin catalog */
-  getPluginReferenceCatalog: IZCodeAgentService["getPluginReferenceCatalog"];
+  /** E2E 通过真实 airaAgentService 拉取插件 overview */
+  getPluginsOverview: IAiraAgentService["getPluginsOverview"];
+  /** E2E 通过真实 airaAgentService 添加 marketplace */
+  addPluginMarketplace: IAiraAgentService["addPluginMarketplace"];
+  /** E2E 通过真实 airaAgentService 刷新 marketplace */
+  updatePluginMarketplace: IAiraAgentService["updatePluginMarketplace"];
+  /** E2E 通过真实 airaAgentService 安装 marketplace plugin */
+  installPlugin: IAiraAgentService["installPlugin"];
+  /** E2E 通过真实 airaAgentService 触发插件 discover */
+  listPlugins: IAiraAgentService["listPlugins"];
+  /** E2E 通过真实 airaAgentService 查询 Workspace/Session Plugin catalog */
+  getPluginReferenceCatalog: IAiraAgentService["getPluginReferenceCatalog"];
 }
 
 declare global {

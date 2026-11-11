@@ -14,7 +14,7 @@ export async function confirmAndDeleteModelProvider({
   intl: IntlInstance;
   deleteProvider: (providerId: string) => Promise<void>;
 }) {
-  if (provider.config.group === "zai-family" || provider.config.group === "bigmodel-family") {
+  if (provider.config.group === "aira-family" || provider.config.group === "bigmodel-family") {
     return;
   }
 

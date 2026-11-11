@@ -1,11 +1,11 @@
 import type { DatabaseSync } from "node:sqlite";
-import type { ModelSelection } from "@zcode/shared";
+import type { ModelSelection } from "@aira/shared";
 
 // 冻结 0002 的发布前已裁决编码；不能调用将来可能修改的运行时 parser/身份表。
 // 保持与旧 decodeCustomModelValue / parseModelPickerValue 的转义和分隔优先级一致。
 const providerNames: Readonly<Record<string, string>> = {
   "builtin:bigmodel": "bigmodel-api",
-  "builtin:zai": "zai-api",
+  "builtin:zai": "aira-api",
   "builtin:bigmodel-start-plan": "account:bigmodel-start-plan",
   "builtin:zai-start-plan": "account:zai-start-plan",
   "builtin:bigmodel-coding-plan": "account:bigmodel-individual-coding-plan",
@@ -54,8 +54,8 @@ function decodeLegacySelection(row: LegacySelectionRow): ModelSelection | undefi
       if (!reasoningLevel) return undefined;
       model = model.slice(0, levelSeparator);
     }
-  } else if (["glm", "zcode"].includes(provider)) {
-    // 旧 provider=glm/zcode 是执行后端，不是供应商身份。
+  } else if (["glm", "aira"].includes(provider)) {
+    // 旧 provider=glm/aira 是执行后端，不是供应商身份。
     return undefined;
   }
   provider = provider.trim();

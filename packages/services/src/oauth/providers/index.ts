@@ -1,8 +1,8 @@
-import { BIGMODEL_PROVIDER_ID, ZAI_PROVIDER_ID, type ApiClient } from "@zcode/shared";
+import { BIGMODEL_PROVIDER_ID, AIRA_PROVIDER_ID, type ApiClient } from "@aira/shared";
 import type { OAuthRuntimeConfig } from "../runtimeConfig.js";
 import { BigModelProviderAdapter } from "./bigmodelProviderAdapter.js";
 import type { OAuthProviderAdapter } from "./providerAdapter.js";
-import { ZaiProviderAdapter } from "./zaiProviderAdapter.js";
+import { AiraProviderAdapter } from "./airaProviderAdapter.js";
 
 /** 根据运行时配置创建可用 provider adapter */
 export function createOAuthProviderAdapters(
@@ -22,8 +22,8 @@ export function createOAuthProviderAdapters(
       case BIGMODEL_PROVIDER_ID:
         adapters.push(new BigModelProviderAdapter(providerConfig, apiClient));
         break;
-      case ZAI_PROVIDER_ID:
-        adapters.push(new ZaiProviderAdapter(providerConfig, apiClient));
+      case AIRA_PROVIDER_ID:
+        adapters.push(new AiraProviderAdapter(providerConfig, apiClient));
         break;
       default:
         // 未知 provider 直接忽略，避免单个配置错误拖垮全部登录能力。

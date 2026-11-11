@@ -1,5 +1,5 @@
-import type { WindowHostAttachmentScope } from "@zcode/shared";
-import type { ZCodeAgentV4ClientMode } from "@zcode/services";
+import type { WindowHostAttachmentScope } from "@aira/shared";
+import type { AiraAgentV4ClientMode } from "@aira/services";
 
 interface WindowHostAttachmentPort {
   once(event: "close", listener: () => void): unknown;
@@ -18,7 +18,7 @@ interface WindowHostResolvedAttachmentScope<TServices, TCapabilities = never> {
 interface WindowHostExposeAttachmentParams<TServices, TPort, TCapabilities = never> {
   requestId: string;
   attachmentId: string;
-  clientMode: ZCodeAgentV4ClientMode;
+  clientMode: AiraAgentV4ClientMode;
   scope: WindowHostAttachmentScope;
   services: TServices;
   generation: number;
@@ -57,7 +57,7 @@ export function createWindowHostAttachmentRegistry<
   function attach(params: {
     requestId: string;
     attachmentId: string;
-    clientMode: ZCodeAgentV4ClientMode;
+    clientMode: AiraAgentV4ClientMode;
     scope: WindowHostAttachmentScope;
     port: TPort;
   }): void {

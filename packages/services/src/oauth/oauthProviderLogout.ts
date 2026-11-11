@@ -1,9 +1,9 @@
 import {
   BIGMODEL_PROVIDER_ID,
   BUILTIN_MODEL_PROVIDER_IDS,
-  ZAI_PROVIDER_ID,
+  AIRA_PROVIDER_ID,
   type OAuthProviderId,
-} from "@zcode/shared";
+} from "@aira/shared";
 import { accountProviderCredentialKey } from "../model-provider/accountProviderCredentialKey.js";
 import type { AccountProviderCredentialStore } from "../model-provider/accountProviderCredentialStore.js";
 
@@ -35,9 +35,9 @@ export function createOAuthProviderLogoutHandler(
 function resolveProviderIds(provider: OAuthProviderId): {
   readonly codingPlan: string;
 } | null {
-  if (provider === ZAI_PROVIDER_ID) {
+  if (provider === AIRA_PROVIDER_ID) {
     return {
-      codingPlan: BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan,
+      codingPlan: BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan,
     };
   }
   if (provider === BIGMODEL_PROVIDER_ID) {

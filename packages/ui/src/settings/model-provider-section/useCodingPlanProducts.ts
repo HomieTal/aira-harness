@@ -8,8 +8,8 @@ import {
   type CodingPlanStaticProduct,
   type CodingPlanStaticProductsConfig,
   type StartPlanPreviewConfig,
-  isZaiCodingPlanProviderId,
-} from "@zcode/shared";
+  isAiraCodingPlanProviderId,
+} from "@aira/shared";
 import { useOptionalServices } from "@/hooks/useServices.js";
 import { logger } from "@/logger.js";
 import {
@@ -29,11 +29,11 @@ type CodingPlanProductsSnapshot = Omit<CodingPlanBatchPreviewResponse, "productL
 };
 
 const CODING_PLAN_OAUTH_REQUIRED_ERROR = "coding_plan_oauth_required";
-const ZAI_START_FREE_PRODUCT_ID = "zai-start-free";
-const ZAI_START_FREE_PRODUCT_IDS = {
-  month: `${ZAI_START_FREE_PRODUCT_ID}-monthly`,
-  quarter: `${ZAI_START_FREE_PRODUCT_ID}-quarterly`,
-  year: `${ZAI_START_FREE_PRODUCT_ID}-yearly`,
+const AIRA_START_FREE_PRODUCT_ID = "zai-start-free";
+const AIRA_START_FREE_PRODUCT_IDS = {
+  month: `${AIRA_START_FREE_PRODUCT_ID}-monthly`,
+  quarter: `${AIRA_START_FREE_PRODUCT_ID}-quarterly`,
+  year: `${AIRA_START_FREE_PRODUCT_ID}-yearly`,
 } as const;
 const CODING_PLAN_PRODUCTS_CACHE_TTL_MS = 30_000;
 const CODING_PLAN_STATIC_PRODUCTS_CACHE_TTL_MS = 24 * 60 * 60 * 1000;
@@ -57,7 +57,7 @@ export function useCodingPlanProducts(
   const service = services?.codingPlanSubscriptionService;
   const supportedProvider =
     providerId === BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan ||
-    isZaiCodingPlanProviderId(providerId);
+    isAiraCodingPlanProviderId(providerId);
   const enabled = supportedProvider && options?.remotePreviewEnabled !== false;
   const staticSnapshot = useMemo(() => buildStaticProductsSnapshot(providerId), [providerId]);
   const [state, setState] = useState<CodingPlanProductsState>(() => ({
@@ -249,10 +249,10 @@ function buildStaticProductsSnapshot(providerId: CodingPlanProviderId): CodingPl
   return buildStaticProductsSnapshotFromList(providerId, []);
 }
 
-function buildZaiStartStaticProducts(preview: StartPlanPreviewConfig): CodingPlanStaticProduct[] {
+function buildAiraStartStaticProducts(preview: StartPlanPreviewConfig): CodingPlanStaticProduct[] {
   const isChineseLocale =
     typeof navigator !== "undefined" && navigator.language.toLowerCase().startsWith("zh");
-  const previewName = preview.name.trim() || "Z.ai Start";
+  const previewName = preview.name.trim() || "Aira AI Start";
   const equityList = preview.entitlements.map((entitlement) => ({
     productEquityTitle: entitlement.showName,
     productEquityDetails: formatStartPlanPreviewEntitlement(entitlement, isChineseLocale),
@@ -260,10 +260,10 @@ function buildZaiStartStaticProducts(preview: StartPlanPreviewConfig): CodingPla
 
   return [
     {
-      productId: ZAI_START_FREE_PRODUCT_IDS.month,
+      productId: AIRA_START_FREE_PRODUCT_IDS.month,
       productName: previewName,
       productSmallTitle: "Free Coding Plan",
-      description: "Free Coding Plan entry for connected Z.ai users.",
+      description: "Free Coding Plan entry for connected Aira AI users.",
       productEquityList: equityList,
       priceUnit: "month",
       displayOrder: 0,
@@ -273,10 +273,10 @@ function buildZaiStartStaticProducts(preview: StartPlanPreviewConfig): CodingPla
       monthlyPayAmount: 0,
     },
     {
-      productId: ZAI_START_FREE_PRODUCT_IDS.quarter,
+      productId: AIRA_START_FREE_PRODUCT_IDS.quarter,
       productName: previewName,
       productSmallTitle: "Free Coding Plan",
-      description: "Free Coding Plan entry for signed-in Z.ai users.",
+      description: "Free Coding Plan entry for signed-in Aira AI users.",
       productEquityList: equityList,
       priceUnit: "quarter",
       displayOrder: 0,
@@ -286,10 +286,10 @@ function buildZaiStartStaticProducts(preview: StartPlanPreviewConfig): CodingPla
       monthlyPayAmount: 0,
     },
     {
-      productId: ZAI_START_FREE_PRODUCT_IDS.year,
+      productId: AIRA_START_FREE_PRODUCT_IDS.year,
       productName: previewName,
       productSmallTitle: "Free Coding Plan",
-      description: "Free Coding Plan entry for signed-in Z.ai users.",
+      description: "Free Coding Plan entry for signed-in Aira AI users.",
       productEquityList: equityList,
       priceUnit: "year",
       displayOrder: 0,
@@ -313,12 +313,12 @@ function formatStartPlanPreviewEntitlement(
   return [amount, unit, period].filter(Boolean).join(" ");
 }
 
-function isZaiStartFreeProductId(productId: string | null | undefined) {
+function isAiraStartFreeProductId(productId: string | null | undefined) {
   if (!productId) {
     return false;
   }
   return (
-    productId === ZAI_START_FREE_PRODUCT_ID || productId.startsWith(`${ZAI_START_FREE_PRODUCT_ID}-`)
+    productId === AIRA_START_FREE_PRODUCT_ID || productId.startsWith(`${AIRA_START_FREE_PRODUCT_ID}-`)
   );
 }
 
@@ -371,10 +371,10 @@ async function loadCodingPlanStaticProductListForTest(
     // 套餐描述由远端 client/configs 统一维护，前端不能再按 Lite/Pro/Max 写死覆盖，
     // 否则远端更新后设置页仍展示旧文案。
     const remoteProducts = config[providerId] ?? [];
-    if (providerId === BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan) {
+    if (providerId === BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan) {
       return filterCodingPlanPurchaseProducts(providerId, remoteProducts);
     }
-    if (providerId !== BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan) {
+    if (providerId !== BUILTIN_MODEL_PROVIDER_IDS.airaStartPlan) {
       return remoteProducts;
     }
 
@@ -391,7 +391,7 @@ async function loadCodingPlanStaticProductListForTest(
     // Start 免费档现在归属于独立的 Start Plan 入口，且必须由远端 preview 开关显式打开。
     // Z.AI - Coding Plan 的购买列表只展示付费升级项，避免把 Start 当成可购买套餐重复显示。
     const seen = new Set<string>();
-    return [...buildZaiStartStaticProducts(startPlanPreview), ...remoteProducts].filter(
+    return [...buildAiraStartStaticProducts(startPlanPreview), ...remoteProducts].filter(
       (product) => {
         if (seen.has(product.productId)) {
           return false;
@@ -412,10 +412,10 @@ async function loadCodingPlanStaticProductListForTest(
 function filterCodingPlanPurchaseProducts<
   TProduct extends { productId: string | null | undefined },
 >(providerId: CodingPlanProviderId, products: TProduct[]): TProduct[] {
-  if (providerId !== BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan) {
+  if (providerId !== BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan) {
     return products;
   }
-  return products.filter((product) => !isZaiStartFreeProductId(product.productId));
+  return products.filter((product) => !isAiraStartFreeProductId(product.productId));
 }
 
 async function loadCodingPlanStaticProductsConfig(

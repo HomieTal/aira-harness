@@ -17,30 +17,30 @@ import type {
   UsageQuotaLimit,
   UsageStatsRequest,
   UsageStatsSnapshot,
-  ZCodeAccountAccess,
-} from "@zcode/shared";
+  AiraAccountAccess,
+} from "@aira/shared";
 import {
   ApiError,
   BUILTIN_MODEL_PROVIDER_IDS,
   isCodingPlanModelProviderId,
   isStartPlanModelProviderId,
-  isZaiCodingPlanProviderId,
+  isAiraCodingPlanProviderId,
   buildBigModelApiUrl,
-  buildRuntimeZaiBusinessUrl,
-  buildRuntimeZCodeApiUrl,
-} from "@zcode/shared";
-import type { ProviderFamilyDomain } from "@zcode/shared";
+  buildRuntimeAiraBusinessUrl,
+  buildRuntimeAiraApiUrl,
+} from "@aira/shared";
+import type { ProviderFamilyDomain } from "@aira/shared";
 import { createServiceLogger } from "#src/logger/serviceLogger.js";
 import type { ICredentialService } from "../../credential/credential.js";
 import type { IAccountRequestAuthService } from "../../model-provider/accountRequestAuthService.js";
 import { readApiJson } from "../../providers/api/apiJson.js";
 import { readEnv } from "../../oauth/providers/configUtils.js";
 import {
-  buildZaiStartPlanBalanceUrl,
-  fetchZaiStartPlanBalanceEnvelope,
-  type ZaiStartPlanBalanceEnvelope,
-  type ZaiStartPlanPlan,
-} from "../../model-provider/zaiStartPlanBilling.js";
+  buildAiraStartPlanBalanceUrl,
+  fetchAiraStartPlanBalanceEnvelope,
+  type AiraStartPlanBalanceEnvelope,
+  type AiraStartPlanPlan,
+} from "../../model-provider/airaStartPlanBilling.js";
 import type {
   BigModelUsageModelUsagePayload,
   BigModelUsageModelUsageEnvelope,
@@ -65,14 +65,14 @@ import { fetchBigModelSubscriptionSummary } from "./bigmodelSubscriptionProvider
 import {
   fetchMcpQuotaSnapshot,
   type OfficialMcpCredentialSource,
-} from "./zcodeMcpQuotaProvider.js";
+} from "./airaMcpQuotaProvider.js";
 import type { BigModelUsageQuotaEnvelope } from "./bigmodelUsageQuotaMapper.js";
 import { normalizeLimits, pickPrimaryLimit } from "./bigmodelUsageQuotaMapper.js";
 
 const BIGMODEL_QUOTA_PATH = "/api/monitor/usage/quota/limit";
 const CODING_PLAN_RESET_BASE_PATH = "/api/v1/coding-plan/reset";
-const ZCODE_JWT_TOKEN_KEY = "zcodejwttoken";
-const ZAI_OAUTH_ACCESS_TOKEN_KEY = "oauth:zai:access_token";
+const AIRA_JWT_TOKEN_KEY = "airajwttoken";
+const AIRA_OAUTH_ACCESS_TOKEN_KEY = "oauth:zai:access_token";
 const BIGMODEL_OAUTH_ACCESS_TOKEN_KEY = "oauth:bigmodel:access_token";
 const REQUEST_TIMEOUT_MS = 15_000;
 const log = createServiceLogger("usage-stats");
@@ -160,14 +160,14 @@ interface TeamPlanContext {
 }
 
 interface CodingPlanResetAuthorization {
-  zcodeAuthorization: string;
+  airaAuthorization: string;
   codingPlanAuthorization: string;
   teamContext: TeamPlanContext | null;
 }
 
 // 直接复用响应类型，避免本地副本遗漏新 bucket/周期字段。
-type ZaiStartPlanBalance = NonNullable<
-  NonNullable<ZaiStartPlanBalanceEnvelope["data"]>["balances"]
+type AiraStartPlanBalance = NonNullable<
+  NonNullable<AiraStartPlanBalanceEnvelope["data"]>["balances"]
 >[number];
 
 export class BigModelUsageQuotaProvider {
@@ -223,7 +223,7 @@ export class BigModelUsageQuotaProvider {
           quotaUrl:
             resolveQuotaUrlFromEnv(this.env) ??
             (teamContext.family === "zai"
-              ? buildZaiQuotaUrl(this.env)
+              ? buildAiraQuotaUrl(this.env)
               : buildBigModelQuotaUrl(this.env)),
           teamContext,
           businessToken: await this.credentialService?.load(
@@ -315,7 +315,7 @@ export class BigModelUsageQuotaProvider {
 
   private async resolveRequestAccountAccess(
     accountAccess: UsageEntitlementRequest["accountAccess"],
-  ): Promise<ZCodeAccountAccess | undefined> {
+  ): Promise<AiraAccountAccess | undefined> {
     if (!accountAccess) return undefined;
     if (!("mode" in accountAccess)) return accountAccess;
     return (await this.accountRequestAuthService.resolveAccessCurrent(accountAccess)) ?? undefined;
@@ -341,7 +341,7 @@ export class BigModelUsageQuotaProvider {
       requestScope: {
         providerFamily:
           resolved.teamContext?.family ??
-          (isZaiCodingPlanProviderId(resolved.provider.id) ? "zai" : "bigmodel"),
+          (isAiraCodingPlanProviderId(resolved.provider.id) ? "zai" : "bigmodel"),
         organizationId: resolved.teamContext?.organizationId ?? null,
         projectId: resolved.teamContext?.projectId ?? null,
       },
@@ -350,7 +350,7 @@ export class BigModelUsageQuotaProvider {
 
   private async getStartPlanSnapshot(
     providerId: string,
-    accountAccess: ZCodeAccountAccess | undefined,
+    accountAccess: AiraAccountAccess | undefined,
     invalidateBalanceCache = false,
   ): Promise<UsageEntitlementSnapshot> {
     const generatedAt = Date.now();
@@ -368,13 +368,13 @@ export class BigModelUsageQuotaProvider {
       };
     }
 
-    let balancePayload: ZaiStartPlanBalanceEnvelope;
+    let balancePayload: AiraStartPlanBalanceEnvelope;
     try {
-      const balanceUrl = buildZaiStartPlanBalanceUrl();
+      const balanceUrl = buildAiraStartPlanBalanceUrl();
       const balanceStartedAt = Date.now();
       // billing/current 已废弃，balance 会同时返回 plans 与 balances。
       // Start Plan 快照必须只发起一次 balance 请求，避免冷启动重复请求并继续依赖旧接口。
-      balancePayload = await fetchZaiStartPlanBalanceEnvelope(
+      balancePayload = await fetchAiraStartPlanBalanceEnvelope(
         this.apiClient,
         resolved.authorization,
         invalidateBalanceCache,
@@ -398,7 +398,7 @@ export class BigModelUsageQuotaProvider {
         providerId,
         responseHeaders: error instanceof ApiError ? (error.responseHeaders ?? null) : null,
         status: error instanceof ApiError ? error.status : null,
-        url: buildZaiStartPlanBalanceUrl(),
+        url: buildAiraStartPlanBalanceUrl(),
       });
       // 保留 HTTP 429 等错误信息，让调用方退避并保留已确认的权益。
       throw error;
@@ -408,7 +408,7 @@ export class BigModelUsageQuotaProvider {
       throw new Error(balancePayload.msg || `Start Plan balance failed: ${balancePayload.code}`);
     }
 
-    const currentPlan = pickCurrentZaiStartPlan(balancePayload.data?.plans);
+    const currentPlan = pickCurrentAiraStartPlan(balancePayload.data?.plans);
     if (!currentPlan) {
       return {
         generatedAt,
@@ -427,7 +427,7 @@ export class BigModelUsageQuotaProvider {
 
     warnOnUnattributedStartPlanBuckets(
       balancePayload.data?.plans,
-      readZaiStartPlanBalances(balancePayload),
+      readAiraStartPlanBalances(balancePayload),
     );
 
     return {
@@ -441,10 +441,10 @@ export class BigModelUsageQuotaProvider {
       balancePayload.data.server_time >= 0
         ? { serverTime: balancePayload.data.server_time * 1_000 }
         : {}),
-      remaining: buildZaiStartPlanRemaining(readZaiStartPlanBalances(balancePayload)),
-      subscription: buildZaiStartPlanSubscription(balancePayload.data?.plans),
-      quota: buildZaiStartPlanQuota(
-        readZaiStartPlanBalances(balancePayload),
+      remaining: buildAiraStartPlanRemaining(readAiraStartPlanBalances(balancePayload)),
+      subscription: buildAiraStartPlanSubscription(balancePayload.data?.plans),
+      quota: buildAiraStartPlanQuota(
+        readAiraStartPlanBalances(balancePayload),
         balancePayload.data?.plans,
       ),
     };
@@ -452,7 +452,7 @@ export class BigModelUsageQuotaProvider {
 
   private async resolveStartPlanAuthorization(
     providerId: string,
-    accountAccess: ZCodeAccountAccess | undefined,
+    accountAccess: AiraAccountAccess | undefined,
   ): Promise<{
     authorization: string;
     provider: ResolvedQuotaAuthorization["provider"];
@@ -525,7 +525,7 @@ export class BigModelUsageQuotaProvider {
     const authorization = await this.resolveCodingPlanResetAuthorization(request);
     const payload = await readCodingPlanResetApiJson(
       this.apiClient,
-      buildRuntimeZCodeApiUrl(this.env, `${CODING_PLAN_RESET_BASE_PATH}/status`),
+      buildRuntimeAiraApiUrl(this.env, `${CODING_PLAN_RESET_BASE_PATH}/status`),
       {
         method: "GET",
         timeoutMs: REQUEST_TIMEOUT_MS,
@@ -558,7 +558,7 @@ export class BigModelUsageQuotaProvider {
     const authorization = await this.resolveCodingPlanResetAuthorization(request);
     const payload = await readCodingPlanResetApiJson(
       this.apiClient,
-      buildRuntimeZCodeApiUrl(this.env, `${CODING_PLAN_RESET_BASE_PATH}/use`),
+      buildRuntimeAiraApiUrl(this.env, `${CODING_PLAN_RESET_BASE_PATH}/use`),
       {
         method: "POST",
         timeoutMs: REQUEST_TIMEOUT_MS,
@@ -588,7 +588,7 @@ export class BigModelUsageQuotaProvider {
     try {
       payload = await readCodingPlanResetApiJson(
         this.apiClient,
-        buildRuntimeZCodeApiUrl(this.env, `${CODING_PLAN_RESET_BASE_PATH}/opportunity`),
+        buildRuntimeAiraApiUrl(this.env, `${CODING_PLAN_RESET_BASE_PATH}/opportunity`),
         {
           method: "POST",
           timeoutMs: REQUEST_TIMEOUT_MS,
@@ -634,7 +634,7 @@ export class BigModelUsageQuotaProvider {
     const authorization = await this.resolveCodingPlanResetAuthorization(request);
     const payload = await readCodingPlanResetApiJson(
       this.apiClient,
-      buildRuntimeZCodeApiUrl(this.env, `${CODING_PLAN_RESET_BASE_PATH}/history/read`),
+      buildRuntimeAiraApiUrl(this.env, `${CODING_PLAN_RESET_BASE_PATH}/history/read`),
       {
         method: "POST",
         timeoutMs: REQUEST_TIMEOUT_MS,
@@ -656,21 +656,21 @@ export class BigModelUsageQuotaProvider {
       providerId: request.preferredProviderId,
       accountAccess,
     });
-    const zcodeJwt = (await this.credentialService?.load(ZCODE_JWT_TOKEN_KEY))?.trim() ?? "";
-    if (!zcodeJwt) {
-      throw new Error("coding_plan_reset_zcode_jwt_required");
+    const airaJwt = (await this.credentialService?.load(AIRA_JWT_TOKEN_KEY))?.trim() ?? "";
+    if (!airaJwt) {
+      throw new Error("coding_plan_reset_aira_jwt_required");
     }
-    // reset 同时支持 Z.ai 与 BigModel Coding Plan。固定读取 oauth:bigmodel:access_token
-    // 会让只登录 Z.ai 的用户在请求发出前失败；业务 JWT 必须跟随当前 provider family
+    // reset 同时支持 Aira AI 与 BigModel Coding Plan。固定读取 oauth:bigmodel:access_token
+    // 会让只登录 Aira AI 的用户在请求发出前失败；业务 JWT 必须跟随当前 provider family
     // 精确选择，禁止跨 family 回退。Header 仍按后端契约直传且不套 Bearer。
     const codingPlanJwtKey =
-      accountAccess.family === "zai" ? ZAI_OAUTH_ACCESS_TOKEN_KEY : BIGMODEL_OAUTH_ACCESS_TOKEN_KEY;
+      accountAccess.family === "zai" ? AIRA_OAUTH_ACCESS_TOKEN_KEY : BIGMODEL_OAUTH_ACCESS_TOKEN_KEY;
     const codingPlanJwt = (await this.credentialService?.load(codingPlanJwtKey))?.trim() ?? "";
     if (!codingPlanJwt) {
       throw new Error("coding_plan_reset_maas_jwt_required");
     }
     return {
-      zcodeAuthorization: /^Bearer\s/i.test(zcodeJwt) ? zcodeJwt : `Bearer ${zcodeJwt}`,
+      airaAuthorization: /^Bearer\s/i.test(airaJwt) ? airaJwt : `Bearer ${airaJwt}`,
       codingPlanAuthorization: codingPlanJwt,
       teamContext: resolveTeamPlanContext(accountAccess),
     };
@@ -753,7 +753,7 @@ export class BigModelUsageQuotaProvider {
   ): Promise<ResolvedQuotaAuthorization | null> {
     if (request.allowEnvApiKey !== false && request.requirePreferredProvider !== true) {
       const envApiKey =
-        readEnv(this.env, "ZCODE_BIGMODEL_USAGE_API_KEY") ??
+        readEnv(this.env, "AIRA_BIGMODEL_USAGE_API_KEY") ??
         readEnv(this.env, "BIGMODEL_USAGE_API_KEY");
       if (envApiKey) {
         return {
@@ -896,7 +896,7 @@ function createCodingPlanResetHeaders(
   includeTargetScope: boolean,
 ): Record<string, string> {
   const headers: Record<string, string> = {
-    Authorization: authorization.zcodeAuthorization,
+    Authorization: authorization.airaAuthorization,
     "X-Bigmodel-Authorization": authorization.codingPlanAuthorization,
   };
   if (!includeTargetScope) {
@@ -1015,7 +1015,7 @@ function readCodingPlanResetEnvelopeData<TSchema extends z.ZodType>(
   return result.data;
 }
 
-function resolveTeamPlanContext(accountAccess: ZCodeAccountAccess): TeamPlanContext | null {
+function resolveTeamPlanContext(accountAccess: AiraAccountAccess): TeamPlanContext | null {
   return accountAccess.planKind === "team-coding-plan"
     ? {
         organizationId: accountAccess.organizationId,
@@ -1177,8 +1177,8 @@ function buildSubscriptionSnapshot(summary: {
   };
 }
 
-function buildZaiStartPlanSubscription(
-  plans: ZaiStartPlanPlan[] | undefined,
+function buildAiraStartPlanSubscription(
+  plans: AiraStartPlanPlan[] | undefined,
 ): UsageEntitlementSnapshot["subscription"] {
   const activePlans = (plans ?? []).filter(
     (plan) => readNonEmptyString(plan.status)?.toLowerCase() === "active",
@@ -1191,7 +1191,7 @@ function buildZaiStartPlanSubscription(
       productName: readNonEmptyString(plan.name) ?? "编程套餐",
       purchaseTime: null,
       beginTime: formatUnixSecondsAsIso(plan.starts_at),
-      billingCycle: pickZaiStartPlanBillingCycle(plan),
+      billingCycle: pickAiraStartPlanBillingCycle(plan),
       // Start Plan 卡片不展示套餐级续期时间：额度桶刷新时间由每个 limit 的
       // nextResetTime（balance.expires_at）表达，套餐到期由 expireTime（ends_at）表达。
       renewTime: null,
@@ -1218,8 +1218,8 @@ function buildZaiStartPlanSubscription(
  * 类问题无迹可查。正常数据下此日志零输出，用 warn 保证生产环境可见。
  */
 function warnOnUnattributedStartPlanBuckets(
-  plans: ZaiStartPlanPlan[] | undefined,
-  balances: ZaiStartPlanBalance[] | undefined,
+  plans: AiraStartPlanPlan[] | undefined,
+  balances: AiraStartPlanBalance[] | undefined,
 ): void {
   const activePlanIds = new Set(
     (plans ?? [])
@@ -1241,10 +1241,10 @@ function warnOnUnattributedStartPlanBuckets(
   });
 }
 
-function buildZaiStartPlanRemaining(
-  balances: ZaiStartPlanBalance[] | undefined,
+function buildAiraStartPlanRemaining(
+  balances: AiraStartPlanBalance[] | undefined,
 ): UsageEntitlementSnapshot["remaining"] {
-  const limits = normalizeZaiStartPlanBalanceLimits(balances);
+  const limits = normalizeAiraStartPlanBalanceLimits(balances);
   if (limits.length === 0) {
     return null;
   }
@@ -1263,11 +1263,11 @@ function buildZaiStartPlanRemaining(
   };
 }
 
-function buildZaiStartPlanQuota(
-  balances: ZaiStartPlanBalance[] | undefined,
-  plans?: ZaiStartPlanPlan[],
+function buildAiraStartPlanQuota(
+  balances: AiraStartPlanBalance[] | undefined,
+  plans?: AiraStartPlanPlan[],
 ): UsageEntitlementSnapshot["quota"] {
-  const limits = normalizeZaiStartPlanBalanceLimits(balances, plans);
+  const limits = normalizeAiraStartPlanBalanceLimits(balances, plans);
   if (limits.length === 0) {
     return null;
   }
@@ -1278,9 +1278,9 @@ function buildZaiStartPlanQuota(
   };
 }
 
-function normalizeZaiStartPlanBalanceLimits(
-  balances: ZaiStartPlanBalance[] | undefined,
-  plans?: ZaiStartPlanPlan[],
+function normalizeAiraStartPlanBalanceLimits(
+  balances: AiraStartPlanBalance[] | undefined,
+  plans?: AiraStartPlanPlan[],
 ): UsageQuotaLimit[] {
   if (!Array.isArray(balances)) {
     return [];
@@ -1298,7 +1298,7 @@ function normalizeZaiStartPlanBalanceLimits(
       }
       // 额度桶的真实重置边界由 balance.expires_at 表达；服务端契约保证每个桶都带该字段。
       const nextResetSeconds = parseUnixSeconds(balance.expires_at);
-      const capabilityLabels = normalizeZaiStartPlanCapabilities(balance.capabilities);
+      const capabilityLabels = normalizeAiraStartPlanCapabilities(balance.capabilities);
       const capabilityType = readNonEmptyString(capabilityLabels.join(", "));
       const displayName = readNonEmptyString(balance.show_name);
       const planId = readNonEmptyString(balance.plan_id);
@@ -1350,7 +1350,7 @@ function normalizeZaiStartPlanBalanceLimits(
     .filter((limit): limit is NonNullable<typeof limit> => limit !== null);
 }
 
-function normalizeZaiStartPlanCapabilities(capabilities: string[] | undefined): string[] {
+function normalizeAiraStartPlanCapabilities(capabilities: string[] | undefined): string[] {
   if (!Array.isArray(capabilities)) {
     return [];
   }
@@ -1372,26 +1372,26 @@ function parseNumber(value: number | string | null | undefined): number | null {
   return Number.isFinite(numericValue) ? numericValue : null;
 }
 
-function pickCurrentZaiStartPlan(plans: ZaiStartPlanPlan[] | undefined): ZaiStartPlanPlan | null {
+function pickCurrentAiraStartPlan(plans: AiraStartPlanPlan[] | undefined): AiraStartPlanPlan | null {
   return (
     plans?.find((plan) => {
       const status = readNonEmptyString(plan.status)?.toLowerCase();
       const planId = readNonEmptyString(plan.plan_id)?.toLowerCase();
       const name = readNonEmptyString(plan.name)?.toLowerCase();
       return (
-        status === "active" && (isZaiStartPlanIdentity(planId) || isZaiStartPlanIdentity(name))
+        status === "active" && (isAiraStartPlanIdentity(planId) || isAiraStartPlanIdentity(name))
       );
     }) ?? null
   );
 }
 
-function readZaiStartPlanBalances(
-  payload: ZaiStartPlanBalanceEnvelope,
-): ZaiStartPlanBalance[] | undefined {
-  return payload.data?.balances as ZaiStartPlanBalance[] | undefined;
+function readAiraStartPlanBalances(
+  payload: AiraStartPlanBalanceEnvelope,
+): AiraStartPlanBalance[] | undefined {
+  return payload.data?.balances as AiraStartPlanBalance[] | undefined;
 }
 
-function summarizeStartPlans(plans: ZaiStartPlanPlan[] | undefined): Array<{
+function summarizeStartPlans(plans: AiraStartPlanPlan[] | undefined): Array<{
   name: string | null;
   plan_id: string | null;
   status: string | null;
@@ -1403,7 +1403,7 @@ function summarizeStartPlans(plans: ZaiStartPlanPlan[] | undefined): Array<{
   }));
 }
 
-function summarizeStartPlanBalances(balances: ZaiStartPlanBalance[] | undefined): Array<{
+function summarizeStartPlanBalances(balances: AiraStartPlanBalance[] | undefined): Array<{
   entitlement_id: string | null;
   show_name: string | null;
   total_units: number | string | null;
@@ -1423,14 +1423,14 @@ function summarizeStartPlanBalances(balances: ZaiStartPlanBalance[] | undefined)
   }));
 }
 
-function isZaiStartPlanIdentity(value: string | null | undefined): boolean {
+function isAiraStartPlanIdentity(value: string | null | undefined): boolean {
   if (!value) {
     return false;
   }
   return value.includes("start-plan") || value.includes("start plan");
 }
 
-function pickZaiStartPlanBillingCycle(plan: ZaiStartPlanPlan): string | null {
+function pickAiraStartPlanBillingCycle(plan: AiraStartPlanPlan): string | null {
   return (
     plan.entitlements
       ?.map((item) => readNonEmptyString(item.period))
@@ -1563,24 +1563,24 @@ function addDaysToDateKey(dateKey: string, days: number): string {
 }
 
 function resolveQuotaUrlFromEnv(env: NodeJS.ProcessEnv): string | undefined {
-  return readEnv(env, "ZCODE_BIGMODEL_USAGE_QUOTA_URL") ?? readEnv(env, "BIGMODEL_USAGE_QUOTA_URL");
+  return readEnv(env, "AIRA_BIGMODEL_USAGE_QUOTA_URL") ?? readEnv(env, "BIGMODEL_USAGE_QUOTA_URL");
 }
 
 function resolveCodingPlanApiKeyError(providerId: string | undefined): string {
-  if (providerId && isZaiCodingPlanProviderId(providerId)) {
+  if (providerId && isAiraCodingPlanProviderId(providerId)) {
     return "zai_coding_plan_api_key_required";
   }
   return "bigmodel_coding_plan_api_key_required";
 }
 
 function resolveAccountProviderQuotaUrl(providerId: string, env: NodeJS.ProcessEnv): string {
-  return isZaiCodingPlanProviderId(providerId) ? buildZaiQuotaUrl(env) : buildBigModelQuotaUrl(env);
+  return isAiraCodingPlanProviderId(providerId) ? buildAiraQuotaUrl(env) : buildBigModelQuotaUrl(env);
 }
 
 function resolveAccountProviderLabel(providerId: string): string {
-  return providerId === BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan ||
-    providerId === BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan
-    ? "Z.ai - Coding Plan"
+  return providerId === BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan ||
+    providerId === BUILTIN_MODEL_PROVIDER_IDS.airaStartPlan
+    ? "Aira AI - Coding Plan"
     : "BigModel - Coding Plan";
 }
 
@@ -1588,8 +1588,8 @@ function buildBigModelQuotaUrl(env: NodeJS.ProcessEnv = process.env): string {
   return buildBigModelApiUrl(env, BIGMODEL_QUOTA_PATH);
 }
 
-function buildZaiQuotaUrl(env: NodeJS.ProcessEnv = process.env): string {
+function buildAiraQuotaUrl(env: NodeJS.ProcessEnv = process.env): string {
   // ZAI usage/quota 与 business login 共用业务域名。
   // 测试环境必须请求 配置的 ZAI Business origin，不能把测试 token 发送到生产 api.z.ai。
-  return buildRuntimeZaiBusinessUrl(env, "/api/monitor/usage/quota/limit");
+  return buildRuntimeAiraBusinessUrl(env, "/api/monitor/usage/quota/limit");
 }

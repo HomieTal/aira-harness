@@ -2,7 +2,7 @@ import {
   BUILTIN_MODEL_PROVIDER_IDS,
   isStartPlanModelProviderId,
   type UsageEntitlementSnapshot,
-} from "@zcode/shared";
+} from "@aira/shared";
 import type {
   GlmQuotaBannerBusinessCode,
   StartPlanConcurrentLimitBannerReason,
@@ -70,8 +70,8 @@ const HIDDEN_SESSION_QUOTA_BANNER_STATE: SessionQuotaBannerState = {
 
 function isGlmQuotaBannerProviderId(providerId: string): boolean {
   return (
-    providerId === BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan ||
-    providerId === BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan ||
+    providerId === BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan ||
+    providerId === BUILTIN_MODEL_PROVIDER_IDS.airaStartPlan ||
     providerId === BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan ||
     providerId === BUILTIN_MODEL_PROVIDER_IDS.bigmodelStartPlan
   );

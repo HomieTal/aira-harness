@@ -1,4 +1,4 @@
-import type { BrowserPageState } from "@zcode/shared";
+import type { BrowserPageState } from "@aira/shared";
 import type { ControlledViewWebContents } from "./browserCommandTypes.js";
 
 /**

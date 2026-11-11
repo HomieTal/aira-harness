@@ -2,7 +2,7 @@ import {
   BUILTIN_MODEL_PROVIDER_IDS,
   type ProviderFamilyDomain,
   type UsageEntitlementSnapshot,
-} from "@zcode/shared";
+} from "@aira/shared";
 import type { SidebarUsageCodingPlanProviderId } from "@/lib/sidebarUsageCodingPlanProviderPreference.js";
 
 export function resolveSidebarCodingPlanUpgradeFallbackProviderId(
@@ -12,7 +12,7 @@ export function resolveSidebarCodingPlanUpgradeFallbackProviderId(
   // 无法从权益或用量来源推导 provider；按 provider 家族域名回退到对应品牌的入口。
   return providerFamilyDomain === "bigmodel"
     ? BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan
-    : BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan;
+    : BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan;
 }
 
 function normalizePlanLevel(value: string | null | undefined): string {

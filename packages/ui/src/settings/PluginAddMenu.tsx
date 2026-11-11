@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu.js";
 import { usePluginCreator } from "@/hooks/usePluginCreator.js";
-import { useZCodeIntl } from "@/i18n/IntlProvider.js";
+import { useAiraIntl } from "@/i18n/IntlProvider.js";
 
 export function PluginAddMenu({
   onCreateTask,
@@ -19,7 +19,7 @@ export function PluginAddMenu({
   onAddMarketplace: () => void;
   testId: string;
 }) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useAiraIntl();
   const creator = usePluginCreator(onCreateTask);
   return (
     <DropdownMenu>

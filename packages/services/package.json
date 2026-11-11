@@ -1,5 +1,5 @@
 {
-  "name": "@zcode/services",
+  "name": "@aira/services",
   "private": true,
   "type": "module",
   "imports": {
@@ -18,11 +18,11 @@
   },
   "dependencies": {
     "@larksuiteoapi/node-sdk": "1.64.0",
-    "@zcode/provider": "workspace:*",
-    "@zcode/provider-node": "workspace:*",
-    "@zcode/rpc": "workspace:*",
-    "@zcode/shared": "workspace:*",
-    "@zcode/zcode-cua": "workspace:*",
+    "@aira/provider": "workspace:*",
+    "@aira/provider-node": "workspace:*",
+    "@aira/rpc": "workspace:*",
+    "@aira/shared": "workspace:*",
+    "@aira/aira-cua": "workspace:*",
     "croner": "^10.0.1",
     "ignore": "^5.3.2",
     "node-forge": "^1.4.0",

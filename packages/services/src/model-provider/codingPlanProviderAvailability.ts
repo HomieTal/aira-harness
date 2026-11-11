@@ -3,13 +3,13 @@ import {
   ApiError,
   BIGMODEL_PROVIDER_ID,
   buildBigModelApiUrl,
-  buildRuntimeZaiBusinessUrl,
+  buildRuntimeAiraBusinessUrl,
   resolveBigModelApiOrigin,
-  ZAI_PROVIDER_ID,
+  AIRA_PROVIDER_ID,
   type ApiClient,
   type ProviderFamilyDomain,
   type ProviderFamilyConnectionSelectionSettings,
-} from "@zcode/shared";
+} from "@aira/shared";
 import { type BigModelTeamPlanBizContext } from "#src/bigmodel/teamPlanApiKey.js";
 import {
   fetchPersonalCodingPlanEntitlement,
@@ -18,23 +18,23 @@ import {
 import { createServiceLogger } from "#src/logger/serviceLogger.js";
 import { readApiJson } from "../providers/api/apiJson.js";
 import { normalizeApiKeyForHeader } from "../providers/api/index.js";
-import { resolveBigModelStartPlanZcodeJwt } from "./bigmodelStartPlanZcodeJwt.js";
+import { resolveBigModelStartPlanAiraJwt } from "./bigmodelStartPlanAiraJwt.js";
 import {
-  buildZaiStartPlanBalanceUrl,
-  fetchZaiStartPlanBalanceEnvelope,
-  resolveZaiStartPlanBalanceModelIds,
-  type ZaiStartPlanBalanceEnvelope,
-} from "./zaiStartPlanBilling.js";
+  buildAiraStartPlanBalanceUrl,
+  fetchAiraStartPlanBalanceEnvelope,
+  resolveAiraStartPlanBalanceModelIds,
+  type AiraStartPlanBalanceEnvelope,
+} from "./airaStartPlanBilling.js";
 import {
   createBigModelLoginAuthHeaders,
-  createZaiLoginAuthHeaders,
+  createAiraLoginAuthHeaders,
 } from "../coding-plan-subscription/bigmodelCodingPlanSubscriptionProvider.js";
 
 const REQUEST_TIMEOUT_MS = 15_000;
 const log = createServiceLogger("coding-plan-availability");
 const BIGMODEL_SUBSCRIPTION_LIST_PATH = "/api/biz/subscription/list";
 
-const ZCODE_JWT_TOKEN_KEY = "zcodejwttoken";
+const AIRA_JWT_TOKEN_KEY = "airajwttoken";
 
 export type CodingPlanUnavailableReason =
   | "coding_plan_not_authenticated"
@@ -42,10 +42,10 @@ export type CodingPlanUnavailableReason =
   | "coding_plan_auth_failed"
   | "coding_plan_not_entitled";
 
-function buildZaiSubscriptionListUrl(): string {
+function buildAiraSubscriptionListUrl(): string {
   // ZAI 测试环境业务 token 只能请求配置的 ZAI Business origin。
-  // availability 校验必须和 OAuth business login 共用同一套 ZCODE_ENV 域名分流，只允许 origin 不同。
-  return buildRuntimeZaiBusinessUrl(process.env, "/api/biz/subscription/list");
+  // availability 校验必须和 OAuth business login 共用同一套 AIRA_ENV 域名分流，只允许 origin 不同。
+  return buildRuntimeAiraBusinessUrl(process.env, "/api/biz/subscription/list");
 }
 
 interface CodingPlanAvailabilityCredentialService {
@@ -75,7 +75,7 @@ interface BigModelCustomerInfo {
   }> | null;
 }
 
-interface ZaiStartPlanPlan {
+interface AiraStartPlanPlan {
   plan_id?: string | null;
   name?: string | null;
   status?: string | null;
@@ -116,7 +116,7 @@ async function validateCodingPlanProviderAvailability(
   }
 
   if (provider.family === "zai") {
-    return validateSubscriptionListAvailability(provider, context, buildZaiSubscriptionListUrl());
+    return validateSubscriptionListAvailability(provider, context, buildAiraSubscriptionListUrl());
   }
 
   return validateSubscriptionListAvailability(
@@ -126,7 +126,7 @@ async function validateCodingPlanProviderAvailability(
   );
 }
 
-export async function validateZaiAccountProviderAvailability(
+export async function validateAiraAccountProviderAvailability(
   providers: readonly CodingPlanAvailabilityProvider[],
   context: CodingPlanAvailabilityContext,
 ): Promise<Partial<Record<string, CodingPlanAvailabilityResult>>> {
@@ -232,29 +232,29 @@ async function validateSelectedTeamPlanAvailability(
     return { kind: "unknown" };
   }
   const { projectId } = selectedTeamContext;
-  const oauthProvider = family === "zai" ? ZAI_PROVIDER_ID : BIGMODEL_PROVIDER_ID;
+  const oauthProvider = family === "zai" ? AIRA_PROVIDER_ID : BIGMODEL_PROVIDER_ID;
   const token = (
     await context.credentialService?.load(`oauth:${oauthProvider}:access_token`)
   )?.trim();
   if (!token) {
     return { kind: "unavailable", reason: "coding_plan_not_connected" };
   }
-  const zcodeJwtToken = (await context.credentialService?.load(ZCODE_JWT_TOKEN_KEY))?.trim();
-  // BigModel 旧版本可能把 zcodejwttoken 误写进 oauth access token；
-  // 但 Z.ai 的 business JWT 本身就是合法 Bearer token，不能套用这个 stale-token 防御。
-  if (family === "bigmodel" && zcodeJwtToken && token === zcodeJwtToken) {
+  const airaJwtToken = (await context.credentialService?.load(AIRA_JWT_TOKEN_KEY))?.trim();
+  // BigModel 旧版本可能把 airajwttoken 误写进 oauth access token；
+  // 但 Aira AI 的 business JWT 本身就是合法 Bearer token，不能套用这个 stale-token 防御。
+  if (family === "bigmodel" && airaJwtToken && token === airaJwtToken) {
     return { kind: "unavailable", reason: "coding_plan_not_connected" };
   }
 
   try {
-    // zai 走 buildRuntimeZaiBusinessUrl（测试环境配置的 ZAI Business origin），
+    // zai 走 buildRuntimeAiraBusinessUrl（测试环境配置的 ZAI Business origin），
     // bigmodel 走 resolveBigModelApiOrigin。路径 /api/biz/customer/getCustomerInfo 两边同构。
     const host =
       family === "zai"
-        ? buildRuntimeZaiBusinessUrl(process.env, "")
+        ? buildRuntimeAiraBusinessUrl(process.env, "")
         : resolveBigModelApiOrigin(process.env);
     const authHeaders =
-      family === "zai" ? createZaiLoginAuthHeaders(token) : createBigModelLoginAuthHeaders(token);
+      family === "zai" ? createAiraLoginAuthHeaders(token) : createBigModelLoginAuthHeaders(token);
     const payload = await readApiJson<BigModelCustomerInfoEnvelope>(
       context.apiClient!,
       `${host}/api/biz/customer/getCustomerInfo`,
@@ -410,7 +410,7 @@ async function validateStartPlanAvailability(
     const startedAt = Date.now();
     // billing/current 已废弃，balance 的 data.plans 是 Start Plan 可用性权威来源。
     // availability 只请求一次 balance，避免冷启动在入口校验阶段重复打旧 current 接口。
-    const payload = await fetchZaiStartPlanBalanceEnvelope(context.apiClient!, authorization.value);
+    const payload = await fetchAiraStartPlanBalanceEnvelope(context.apiClient!, authorization.value);
     const activeStartPlan = hasActiveStartPlan(payload.data?.plans);
     log.info(undefined, "billing/balance 请求完成", {
       durationMs: Date.now() - startedAt,
@@ -421,7 +421,7 @@ async function validateStartPlanAvailability(
       plans: summarizeStartPlans(payload.data?.plans),
       providerId: provider.providerId,
       success: isSuccessfulBusinessEnvelope(payload),
-      url: buildZaiStartPlanBalanceUrl(),
+      url: buildAiraStartPlanBalanceUrl(),
       code: payload.code ?? null,
     });
     return resolveStartPlanBalanceAvailability(payload);
@@ -431,7 +431,7 @@ async function validateStartPlanAvailability(
       providerId: provider.providerId,
       responseHeaders: error instanceof ApiError ? (error.responseHeaders ?? null) : null,
       status: error instanceof ApiError ? error.status : null,
-      url: buildZaiStartPlanBalanceUrl(),
+      url: buildAiraStartPlanBalanceUrl(),
     });
     return classifyAvailabilityError(error);
   }
@@ -442,17 +442,17 @@ async function resolveStartPlanAuthorization(
   context: CodingPlanAvailabilityContext,
 ): Promise<StartPlanAuthorization> {
   if (provider.family === "bigmodel") {
-    const zcodeJwtToken = await resolveBigModelStartPlanZcodeJwt({
+    const airaJwtToken = await resolveBigModelStartPlanAiraJwt({
       credentialService: context.credentialService,
       provider,
     });
     return {
-      value: zcodeJwtToken ? `Bearer ${zcodeJwtToken}` : "",
+      value: airaJwtToken ? `Bearer ${airaJwtToken}` : "",
       missingReason: "coding_plan_not_authenticated",
     };
   }
 
-  const credentialJwt = await loadZaiProviderConnectionZcodeJwtToken(context);
+  const credentialJwt = await loadAiraProviderConnectionAiraJwtToken(context);
   const providerJwt = normalizeApiKeyForHeader(provider.apiKey ?? "");
   return {
     value: credentialJwt || providerJwt ? `Bearer ${credentialJwt || providerJwt}` : "",
@@ -461,7 +461,7 @@ async function resolveStartPlanAuthorization(
 }
 
 function resolveStartPlanBalanceAvailability(
-  payload: ZaiStartPlanBalanceEnvelope,
+  payload: AiraStartPlanBalanceEnvelope,
 ): CodingPlanAvailabilityResult {
   if (!isSuccessfulBusinessEnvelope(payload)) {
     return { kind: "unavailable", reason: "coding_plan_auth_failed" };
@@ -469,7 +469,7 @@ function resolveStartPlanBalanceAvailability(
   if (!hasActiveStartPlan(payload.data?.plans)) {
     return { kind: "unavailable", reason: "coding_plan_not_entitled" };
   }
-  const models = resolveZaiStartPlanBalanceModelIds(payload);
+  const models = resolveAiraStartPlanBalanceModelIds(payload);
   const serverTime = payload.data?.server_time;
   const nowSeconds =
     typeof serverTime === "number" && Number.isFinite(serverTime) && serverTime >= 0
@@ -504,10 +504,10 @@ function resolveStartPlanBalanceAvailability(
     : { kind: "available" };
 }
 
-async function loadZaiProviderConnectionZcodeJwtToken(
+async function loadAiraProviderConnectionAiraJwtToken(
   context: CodingPlanAvailabilityContext,
 ): Promise<string> {
-  return (await context.credentialService?.load(ZCODE_JWT_TOKEN_KEY))?.trim() || "";
+  return (await context.credentialService?.load(AIRA_JWT_TOKEN_KEY))?.trim() || "";
 }
 
 function classifyAvailabilityError(error: unknown): CodingPlanAvailabilityResult {
@@ -524,23 +524,23 @@ function isSuccessfulBusinessEnvelope(payload: { code?: number; success?: boolea
   );
 }
 
-function hasActiveStartPlan(plans: ZaiStartPlanPlan[] | undefined): boolean {
+function hasActiveStartPlan(plans: AiraStartPlanPlan[] | undefined): boolean {
   return Boolean(
     plans?.some((plan) => {
       const status = plan.status?.trim().toLowerCase();
       const planId = plan.plan_id?.trim().toLowerCase();
       const name = plan.name?.trim().toLowerCase();
-      // billing/balance 的 plans 真实返回的是 `plan_id=zcode-v3-start-plan`
-      // 和 `name=ZCode V3 Start Plan`；只认 `name === "start plan"` 的话，
+      // billing/balance 的 plans 真实返回的是 `plan_id=aira-v3-start-plan`
+      // 和 `name=Aira V3 Start Plan`；只认 `name === "start plan"` 的话，
       // 已激活的 Start Plan 会被误写成 coding_plan_not_entitled。
       const identityMatches =
-        !planId && !name ? true : isZaiStartPlanIdentity(planId) || isZaiStartPlanIdentity(name);
+        !planId && !name ? true : isAiraStartPlanIdentity(planId) || isAiraStartPlanIdentity(name);
       return status === "active" && identityMatches;
     }),
   );
 }
 
-function isZaiStartPlanIdentity(value: string | null | undefined): boolean {
+function isAiraStartPlanIdentity(value: string | null | undefined): boolean {
   if (!value) {
     return false;
   }
@@ -548,8 +548,8 @@ function isZaiStartPlanIdentity(value: string | null | undefined): boolean {
 }
 
 function summarizeStartPlans(
-  plans: ZaiStartPlanPlan[] | undefined,
-): Array<Pick<ZaiStartPlanPlan, "name" | "plan_id" | "status">> {
+  plans: AiraStartPlanPlan[] | undefined,
+): Array<Pick<AiraStartPlanPlan, "name" | "plan_id" | "status">> {
   return (plans ?? []).map((plan) => ({
     name: plan.name ?? null,
     plan_id: plan.plan_id ?? null,

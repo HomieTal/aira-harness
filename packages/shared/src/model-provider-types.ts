@@ -1,13 +1,13 @@
 /* eslint-disable max-lines -- 模型供应商 schema、迁移和运行时投影 helper 需要共享同一套类型边界，暂时集中在单文件避免契约分散。 */
 export const BUILTIN_PROVIDER_TEMPLATE_IDS = {
-  zai: "zai-api",
+  zai: "aira-api",
   bigmodel: "bigmodel-api",
 } as const;
 
 export const BUILTIN_MODEL_PROVIDER_IDS = {
-  zaiIndividualCodingPlan: "account:zai-individual-coding-plan",
-  zaiTeamCodingPlan: "account:zai-team-coding-plan",
-  zaiStartPlan: "account:zai-start-plan",
+  airaIndividualCodingPlan: "account:zai-individual-coding-plan",
+  airaTeamCodingPlan: "account:zai-team-coding-plan",
+  airaStartPlan: "account:zai-start-plan",
   bigmodelIndividualCodingPlan: "account:bigmodel-individual-coding-plan",
   bigmodelTeamCodingPlan: "account:bigmodel-team-coding-plan",
   bigmodelStartPlan: "account:bigmodel-start-plan",
@@ -19,20 +19,20 @@ export type BuiltinModelProviderId = (typeof BUILTIN_MODEL_PROVIDER_IDS)[Builtin
 
 export function isBuiltinModelProviderId(id: string): id is BuiltinModelProviderId {
   return (
-    id === BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan ||
-    id === BUILTIN_MODEL_PROVIDER_IDS.zaiTeamCodingPlan ||
-    id === BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan ||
+    id === BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan ||
+    id === BUILTIN_MODEL_PROVIDER_IDS.airaTeamCodingPlan ||
+    id === BUILTIN_MODEL_PROVIDER_IDS.airaStartPlan ||
     id === BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan ||
     id === BUILTIN_MODEL_PROVIDER_IDS.bigmodelTeamCodingPlan ||
     id === BUILTIN_MODEL_PROVIDER_IDS.bigmodelStartPlan
   );
 }
 
-export function isZaiCodingPlanProviderId(id: string): boolean {
+export function isAiraCodingPlanProviderId(id: string): boolean {
   return (
-    id === BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan ||
-    id === BUILTIN_MODEL_PROVIDER_IDS.zaiTeamCodingPlan ||
-    id === BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan
+    id === BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan ||
+    id === BUILTIN_MODEL_PROVIDER_IDS.airaTeamCodingPlan ||
+    id === BUILTIN_MODEL_PROVIDER_IDS.airaStartPlan
   );
 }
 
@@ -42,7 +42,7 @@ export function isBigModelStartPlanProviderId(id: string): boolean {
 
 export function isStartPlanModelProviderId(id: string): boolean {
   return (
-    id === BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan ||
+    id === BUILTIN_MODEL_PROVIDER_IDS.airaStartPlan ||
     id === BUILTIN_MODEL_PROVIDER_IDS.bigmodelStartPlan
   );
 }
@@ -54,14 +54,14 @@ export function isStartPlanModelProviderId(id: string): boolean {
  */
 export function isIndividualCodingPlanModelProviderId(id: string): boolean {
   return (
-    id === BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan ||
+    id === BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan ||
     id === BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan
   );
 }
 
 export function isCodingPlanModelProviderId(id: string): boolean {
   return (
-    isZaiCodingPlanProviderId(id) ||
+    isAiraCodingPlanProviderId(id) ||
     id === BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan ||
     id === BUILTIN_MODEL_PROVIDER_IDS.bigmodelTeamCodingPlan ||
     id === BUILTIN_MODEL_PROVIDER_IDS.bigmodelStartPlan

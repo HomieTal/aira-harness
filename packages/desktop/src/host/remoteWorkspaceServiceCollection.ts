@@ -10,9 +10,9 @@ import {
   ISettingService,
   ICredentialService,
   IBroadcastService,
-  IZCodeTaskService,
-  IZCodeAgentService,
-  IZCodeSessionService,
+  IAiraTaskService,
+  IAiraAgentService,
+  IAiraSessionService,
   IConversationShareService,
   IBotsService,
   IFileWatcherService,
@@ -36,7 +36,7 @@ import {
   ISettingsSyncService,
   IPromptAttachmentTransferService,
   type IServiceAccessor,
-} from "@zcode/services";
+} from "@aira/services";
 import {
   ConversationShareHttpClient,
   ConversationShareService,
@@ -65,15 +65,15 @@ import {
   createMemoryService,
   createRemoteConversationShareArtifactSource,
   OAuthCredentialRepo,
-} from "@zcode/services/node";
+} from "@aira/services/node";
 import {
   BIGMODEL_PROVIDER_ID,
-  buildRuntimeZCodeApiUrl,
-  DEFAULT_ZCODE_MODEL_CONTEXT_BUDGET_STRATEGY,
+  buildRuntimeAiraApiUrl,
+  DEFAULT_AIRA_MODEL_CONTEXT_BUDGET_STRATEGY,
   type ProviderFamilyDomain,
-  type ZCodeSessionRuntimePreferencesResult,
-  ZAI_PROVIDER_ID,
-} from "@zcode/shared";
+  type AiraSessionRuntimePreferencesResult,
+  AIRA_PROVIDER_ID,
+} from "@aira/shared";
 import { assertLegacyRemoteWorkspaceRpcContract } from "./legacyRemoteWorkspaceRpcContract.js";
 import {
   createRemoteProviderProvisioningExecutorFromWorkspace,
@@ -81,14 +81,14 @@ import {
 } from "./remoteProviderProvisioningService.js";
 
 const runtimePreferencesLogger = createServiceLogger("remote-runtime-preferences");
-const ZCODE_JWT_TOKEN_KEY = "zcodejwttoken";
+const AIRA_JWT_TOKEN_KEY = "airajwttoken";
 
 export function createRemoteWorkspaceServiceCollection(params: {
   clientConfigService: IClientConfigService;
   connectionServices: IServiceAccessor;
   sourceServices?: ServiceCollection;
   parentPort: Parameters<typeof createBroadcastService>[0];
-  createReportingRemoteZCodeTaskService: <T extends object>(service: T) => T;
+  createReportingRemoteAiraTaskService: <T extends object>(service: T) => T;
   createRemotePromptAttachmentTaskService: <T extends object>(service: T) => T;
   createRemotePromptAttachmentSessionService: <T extends object>(service: T) => T;
   promptAttachmentTransferService: IPromptAttachmentTransferService;
@@ -127,7 +127,7 @@ export function createRemoteWorkspaceServiceCollection(params: {
   const localAccountProviderCredentialService = createAccountProviderCredentialService({
     credentialStore: localAccountProviderCredentialStore,
     async loadOAuthAccessToken(family) {
-      const providerId = family === "zai" ? ZAI_PROVIDER_ID : BIGMODEL_PROVIDER_ID;
+      const providerId = family === "zai" ? AIRA_PROVIDER_ID : BIGMODEL_PROVIDER_ID;
       return (await localOAuthCredentialRepo.loadTokenSet(providerId))?.accessToken ?? null;
     },
     // desktop-attached remote 只复用本机已解析或旧存储中的 Key；远端刷新仍由本机正式账号链负责。
@@ -141,7 +141,7 @@ export function createRemoteWorkspaceServiceCollection(params: {
     };
   };
   const loadLocalAccountIdentity = async (family: ProviderFamilyDomain) => {
-    const providerId = family === "zai" ? ZAI_PROVIDER_ID : BIGMODEL_PROVIDER_ID;
+    const providerId = family === "zai" ? AIRA_PROVIDER_ID : BIGMODEL_PROVIDER_ID;
     return (await localOAuthCredentialRepo.loadUserProfile(providerId))?.id ?? null;
   };
   const localAccountRequestAuthService = createAccountRequestAuthService(
@@ -154,7 +154,7 @@ export function createRemoteWorkspaceServiceCollection(params: {
         }),
       loadOAuthTokenSet: (providerId) => localOAuthCredentialRepo.loadTokenSet(providerId),
       async loadIndividualPlanApiKey(providerId, family) {
-        const oauthProviderId = family === "zai" ? ZAI_PROVIDER_ID : BIGMODEL_PROVIDER_ID;
+        const oauthProviderId = family === "zai" ? AIRA_PROVIDER_ID : BIGMODEL_PROVIDER_ID;
         const accountIdentity = (await localOAuthCredentialRepo.loadUserProfile(oauthProviderId))
           ?.id;
         if (!accountIdentity) return null;
@@ -182,27 +182,27 @@ export function createRemoteWorkspaceServiceCollection(params: {
   const conversationShareClient = new ConversationShareHttpClient({
     // 远端 workspace 的分享也必须使用真实 API；本地 Mock 仅用于单测，不生成无法跨进程访问的链接。
     apiClient: localApiClient,
-    baseUrl: buildRuntimeZCodeApiUrl(process.env, "/api/v1"),
+    baseUrl: buildRuntimeAiraApiUrl(process.env, "/api/v1"),
     tokenProvider: async () =>
-      (await localCredentialService.load(ZCODE_JWT_TOKEN_KEY))?.trim() || null,
+      (await localCredentialService.load(AIRA_JWT_TOKEN_KEY))?.trim() || null,
   });
   const conversationShareService = new ConversationShareService({
-    zcodeAgentService: params.connectionServices.zcodeAgentService,
+    airaAgentService: params.connectionServices.airaAgentService,
     client: conversationShareClient,
     artifactSource: createRemoteConversationShareArtifactSource(
       params.connectionServices.fileService,
     ),
   });
-  const reportingRemoteZCodeTaskService = params.createReportingRemoteZCodeTaskService(
-    params.connectionServices.zcodeTaskService,
+  const reportingRemoteAiraTaskService = params.createReportingRemoteAiraTaskService(
+    params.connectionServices.airaTaskService,
   );
   // 手机 remote 的 replayable mirror 在 reporting wrapper 中发布用户消息；
   // 附件物化必须包在 reporting 外层，确保 mirror 和真正发给远端 agent 的 prompt 使用同一份远端路径。
-  const remoteZCodeTaskService = params.createRemotePromptAttachmentTaskService(
-    reportingRemoteZCodeTaskService,
+  const remoteAiraTaskService = params.createRemotePromptAttachmentTaskService(
+    reportingRemoteAiraTaskService,
   );
-  const remoteZCodeSessionService = params.createRemotePromptAttachmentSessionService(
-    params.connectionServices.zcodeSessionService,
+  const remoteAiraSessionService = params.createRemotePromptAttachmentSessionService(
+    params.connectionServices.airaSessionService,
   );
   const remoteProviderProvisioningService =
     createRemoteProviderProvisioningExecutorFromWorkspace(params);
@@ -210,11 +210,11 @@ export function createRemoteWorkspaceServiceCollection(params: {
   // desktop-attached remote 的 Agent 运行在远端，但 app-global 设置权威仍在
   // desktop shared Host。通过窄化的 runtime-preferences 请求原路返回，避免远端读取自己的 setting。
   const { onError } = params.runtimePreferencesBridge;
-  params.connectionServices.zcodeAgentService.onDynamicSessionRuntimePreferencesRequest()(
+  params.connectionServices.airaAgentService.onDynamicSessionRuntimePreferencesRequest()(
     (request) => {
       const startedAt = Date.now();
       const requestContext = {
-        event: "zcode_protocol.runtime_preferences.host_request_received",
+        event: "aira_protocol.runtime_preferences.host_request_received",
         module: "desktop.host.remote_workspace",
         requestId: request.requestId,
         scope: request.scope,
@@ -255,12 +255,12 @@ export function createRemoteWorkspaceServiceCollection(params: {
           );
         };
         let resolution:
-          | { status: "resolved"; preferences: ZCodeSessionRuntimePreferencesResult }
+          | { status: "resolved"; preferences: AiraSessionRuntimePreferencesResult }
           | { status: "failed"; message: string };
         try {
           // 与本地 Host 同源：固定预算不依赖配置网关，远程/手机偏好响应不再串行等待网络。
           const settings = await trackStage("settings", localSettingService.get());
-          const modelContextBudgetStrategy = DEFAULT_ZCODE_MODEL_CONTEXT_BUDGET_STRATEGY;
+          const modelContextBudgetStrategy = DEFAULT_AIRA_MODEL_CONTEXT_BUDGET_STRATEGY;
           resolution = {
             status: "resolved",
             preferences: {
@@ -287,7 +287,7 @@ export function createRemoteWorkspaceServiceCollection(params: {
           });
         }
         // 只把设置读取失败编码为 -32603；发送失败交给最终 onError 记录，不能重试同一请求。
-        await params.connectionServices.zcodeAgentService.respondSessionRuntimePreferences({
+        await params.connectionServices.airaAgentService.respondSessionRuntimePreferences({
           requestId: request.requestId,
           resolution,
         });
@@ -309,7 +309,7 @@ export function createRemoteWorkspaceServiceCollection(params: {
 
   // Web 手机远控进入 SSH task 时只连到 remote workspace host，
   // 没有桌面 renderer 那层 `baseServices + remoteServices` 合并。
-  // 因此这里为 remote workspace host 补齐本地全局 channel；文件、终端、ZCode Agent 仍来自远端，
+  // 因此这里为 remote workspace host 补齐本地全局 channel；文件、终端、Aira Agent 仍来自远端，
   // 设置、凭据、OAuth、模型供应商和 settings-sync 继续读写本机配置。
   const services = new ServiceCollection()
     .register(IFileService, params.connectionServices.fileService)
@@ -320,15 +320,15 @@ export function createRemoteWorkspaceServiceCollection(params: {
     .register(ISettingService, localSettingService)
     .register(ICredentialService, localCredentialService)
     .register(IBroadcastService, localBroadcastService)
-    .register(IZCodeTaskService, remoteZCodeTaskService)
-    .register(IZCodeAgentService, params.connectionServices.zcodeAgentService)
-    .register(IZCodeSessionService, remoteZCodeSessionService)
+    .register(IAiraTaskService, remoteAiraTaskService)
+    .register(IAiraAgentService, params.connectionServices.airaAgentService)
+    .register(IAiraSessionService, remoteAiraSessionService)
     .register(IConversationShareService, conversationShareService)
     .register(
       IBotsService,
       createBotsService({
         credentialService: localCredentialService,
-        zcodeTaskService: remoteZCodeTaskService,
+        airaTaskService: remoteAiraTaskService,
         broadcastService: localBroadcastService,
         settingService: localSettingService,
         modelSelectionService: params.connectionServices.modelSelectionService,
@@ -355,7 +355,7 @@ export function createRemoteWorkspaceServiceCollection(params: {
         apiClient: localApiClient,
         accountRequestAuthService: localAccountRequestAuthService,
         credentialService: localCredentialService,
-        zcodeAgentService: params.connectionServices.zcodeAgentService,
+        airaAgentService: params.connectionServices.airaAgentService,
       }),
     )
     .register(ICodingPlanSubscriptionService, localCodingPlanSubscriptionService)

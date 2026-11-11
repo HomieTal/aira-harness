@@ -6,15 +6,15 @@ import type {
   ProviderFamilyConnectionSelection,
   ProviderFamilyConnectionSelectionSettings,
   ProviderFamilyDomain,
-} from "@zcode/shared";
+} from "@aira/shared";
 import {
   BUILTIN_MODEL_PROVIDER_IDS,
   isStartPlanModelProviderId,
   resolveModelProviderFamilySpecByProviderId,
   resolveProviderFamilyDomainFromOAuthProvider,
   type OAuthProviderId,
-} from "@zcode/shared";
-import { useZCodeIntl } from "@/i18n/IntlProvider.js";
+} from "@aira/shared";
+import { useAiraIntl } from "@/i18n/IntlProvider.js";
 import {
   CODING_PLAN_PROVIDER_SPECS,
   type CodingPlanEntitlementState,
@@ -60,7 +60,7 @@ interface UseModelProviderNavigationOptions {
   showPurchasedTeamPlanFallback?: boolean;
   selectedNodeKey: string | null;
   setSelectedNodeKey: (key: string | null) => void;
-  intl: ReturnType<typeof useZCodeIntl>["intl"];
+  intl: ReturnType<typeof useAiraIntl>["intl"];
 }
 
 export function useModelProviderNavigation({
@@ -558,7 +558,7 @@ function isFamilyPresetNodeKey(nodeKey: string | null): boolean {
   return (
     nodeKey?.startsWith("coding-plan:") === true ||
     nodeKey?.startsWith("team:") === true ||
-    nodeKey === `preset:${BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan}` ||
+    nodeKey === `preset:${BUILTIN_MODEL_PROVIDER_IDS.airaStartPlan}` ||
     nodeKey === `preset:${BUILTIN_MODEL_PROVIDER_IDS.bigmodelStartPlan}`
   );
 }

@@ -6,8 +6,8 @@ import type {
   PluginMarketplaceSummary,
   PluginScope,
   PluginsCapability,
-} from "@zcode/shared";
-import type { IPluginsService } from "@zcode/services";
+} from "@aira/shared";
+import type { IPluginsService } from "@aira/services";
 import { logger } from "@/logger.js";
 
 function buildPluginOperationId(

@@ -3,9 +3,9 @@ import {
   type AppSettings,
   type Locale,
   type ProviderFamilyDomain,
-} from "@zcode/shared";
-import type { ModelSelectionView } from "@zcode/services";
-import { encodeCustomModelValue } from "@/lib/zcodeCustomModelValue.js";
+} from "@aira/shared";
+import type { ModelSelectionView } from "@aira/services";
+import { encodeCustomModelValue } from "@/lib/airaCustomModelValue.js";
 
 export type ApiKeyProviderChoice = "zai" | "bigmodel";
 
@@ -15,7 +15,7 @@ export function resolveLoginApiKeyDefaultProvider(locale: Locale): ApiKeyProvide
 
 export function resolveLoginApiKeyTemplateId(
   choice: ApiKeyProviderChoice,
-): "zai-api" | "bigmodel-api" {
+): "aira-api" | "bigmodel-api" {
   return choice === "zai"
     ? BUILTIN_PROVIDER_TEMPLATE_IDS.zai
     : BUILTIN_PROVIDER_TEMPLATE_IDS.bigmodel;
@@ -23,7 +23,7 @@ export function resolveLoginApiKeyTemplateId(
 
 export function resolveLoginApiKeyProviderLabel(choice: ApiKeyProviderChoice): string {
   // Welcome Screen API Key 错误提示需要使用 BigModel 品牌固定写法。
-  return choice === "zai" ? "Z.ai" : "BigModel";
+  return choice === "zai" ? "Aira AI" : "BigModel";
 }
 
 function resolveLoginApiKeyProviderFamilyDomain(

@@ -1,8 +1,8 @@
 {
-  "name": "@zcode/desktop",
+  "name": "@aira/desktop",
   "private": true,
-  "description": "ZCode Desktop App",
-  "author": "ZCode",
+  "description": "Aira Desktop App",
+  "author": "Aira",
   "type": "module",
   "main": "out/main/index.js",
   "scripts": {
@@ -39,15 +39,15 @@
     "@opentelemetry/resources": "2.6.1",
     "@opentelemetry/sdk-metrics": "2.6.1",
     "@opentelemetry/sdk-trace-base": "2.6.1",
-    "@zcode/client": "workspace:*",
-    "@zcode/provider": "workspace:*",
-    "@zcode/provider-node": "workspace:*",
-    "@zcode/rpc": "workspace:*",
-    "@zcode/server": "workspace:*",
-    "@zcode/services": "workspace:*",
-    "@zcode/shared": "workspace:*",
-    "@zcode/ui": "workspace:*",
-    "@zcode/zcode-cua": "workspace:*",
+    "@aira/client": "workspace:*",
+    "@aira/provider": "workspace:*",
+    "@aira/provider-node": "workspace:*",
+    "@aira/rpc": "workspace:*",
+    "@aira/server": "workspace:*",
+    "@aira/services": "workspace:*",
+    "@aira/shared": "workspace:*",
+    "@aira/ui": "workspace:*",
+    "@aira/aira-cua": "workspace:*",
     "electron-updater": "^6.8.3",
     "module-details-from-path": "^1.0.4",
     "node-forge": "^1.4.0",
@@ -83,5 +83,5 @@
     "typescript": "^6.0.2",
     "vite": "^8.0.2"
   },
-  "productName": "ZCode"
+  "productName": "Aira AI"
 }

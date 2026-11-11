@@ -5,14 +5,14 @@ import type {
   ProviderFamilyConnectionSelectionSettings,
   UsageEntitlementSubscriptionDetail,
   UsageQuotaLimit,
-} from "@zcode/shared";
+} from "@aira/shared";
 import {
   getModelProviderFamilySpec,
   isIndividualCodingPlanModelProviderId,
   isStartPlanModelProviderId,
   MODEL_PROVIDER_FAMILY_SPECS,
   resolveModelProviderFamilySpecByProviderId,
-} from "@zcode/shared";
+} from "@aira/shared";
 import { resolveMcpQuotaLimit } from "@/lib/codingPlanQuotaPresentation.js";
 import { resolveUsageEntitlementOutcome } from "@/lib/codingPlanProvider.js";
 import { formatTeamPlanDisplayName } from "@/lib/teamPlanDisplayName.js";
@@ -65,8 +65,8 @@ export function resolveCodingPlanEntitlementState({
   providerId: string;
   /** 当前账号是否明确拥有该 Provider 对应的产品权益。 */
   accountEntitled: boolean;
-  accountAvailability?: import("@zcode/provider").AccountProviderState["availability"];
-  accountUnavailableReason?: import("@zcode/provider").AccountProviderState["unavailableReason"];
+  accountAvailability?: import("@aira/provider").AccountProviderState["availability"];
+  accountUnavailableReason?: import("@aira/provider").AccountProviderState["unavailableReason"];
   entitlement?: CodingPlanEntitlementState;
   modelProvidersLoading: boolean;
 }): ResolvedCodingPlanEntitlementState {
@@ -498,7 +498,7 @@ function appendSubscribedTeamPlanItems({
           subscriptionBillingCycle: null,
           subscriptionRenewTime: null,
           subscriptionExpireTime: null,
-          // Team Plan 项目没有可用 zcode-team-api-key 时，不能继续当作已启用连接方式。
+          // Team Plan 项目没有可用 aira-team-api-key 时，不能继续当作已启用连接方式。
           // 服务端会按组织/项目返回 apiKeyStatus；UI 需要在连接项和状态卡中明确标成不可用。
           statusActive: !teamPlanUnavailable,
         },
@@ -538,7 +538,7 @@ function appendSubscribedTeamPlanItems({
   }
 
   // 原写法硬编码 items.findIndex(bigmodelCodingPlanItem.key) 作为插入点，
-  // zai-only 视图下 bigmodelCodingPlanItem 不存在会 throw（.key 访问 undefined）。
+  // aira-only 视图下 bigmodelCodingPlanItem 不存在会 throw（.key 访问 undefined）。
   // 改为按首个 team item 所属 family 找对应 codingPlanItem 作为插入锚点；
   // 找不到就追加到末尾（与原 fallback 语义一致）。
   const firstTeamFamily = resolveModelProviderFamilySpecByProviderId(

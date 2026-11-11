@@ -1,4 +1,4 @@
-# ZCode Design System
+# Aira Design System
 
 Portable design system for AI-assisted UI work in this repository.
 
@@ -19,7 +19,7 @@ Treat violations of this section as design-system defects, not stylistic prefere
 
 ## Product Character
 
-ZCode is a desktop-first and web-compatible AI workspace. The interface should feel calm, dense, and operational rather than decorative.
+Aira is a desktop-first and web-compatible AI workspace. The interface should feel calm, dense, and operational rather than decorative.
 
 Design for:
 
@@ -30,7 +30,7 @@ Design for:
 - desktop and web parity
 - macOS, Windows, and Linux compatibility
 - internationalization and variable text length
-- light and dark themes, plus Zai variants already supported by the codebase
+- light and dark themes, plus Aira variants already supported by the codebase
 
 Avoid:
 
@@ -44,10 +44,10 @@ Avoid:
 User-facing theme choices are:
 
 - System
-- Light Theme, backed by Zai Light
-- Dark Theme, backed by Zai Dark
+- Light Theme, backed by Aira Light
+- Dark Theme, backed by Aira Dark
 
-Default light and dark CSS variables still exist as fallback foundations, but new UI should be validated against Zai Light and Zai Dark as the active light/dark experiences.
+Default light and dark CSS variables still exist as fallback foundations, but new UI should be validated against Aira Light and Aira Dark as the active light/dark experiences.
 
 ## Color Palette
 
@@ -460,7 +460,7 @@ Overlay rules:
 
 ## Elevation and Depth
 
-ZCode should use restrained depth. Layer primarily through background contrast, borders, and radius before relying on heavy shadows.
+Aira should use restrained depth. Layer primarily through background contrast, borders, and radius before relying on heavy shadows.
 
 Recommended elevation levels:
 
@@ -502,7 +502,7 @@ Rules:
 
 - Support keyboard navigation as a first-class interaction path.
 - Preserve visible focus behavior through the repo's established focus styling patterns.
-- Ensure contrast remains safe in light, dark, and Zai modes.
+- Ensure contrast remains safe in light, dark, and Aira modes.
 - Write layouts that tolerate longer translations.
 - Avoid icon-only meaning when a text label is practical.
 - Use semantic status colors together with readable text, never by color alone.

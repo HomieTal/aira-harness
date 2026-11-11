@@ -1,6 +1,6 @@
-import type { ZCodeConfigOption, ZCodeProvider, ZCodeTaskMode } from "@zcode/shared";
+import type { AiraConfigOption, AiraProvider, AiraTaskMode } from "@aira/shared";
 
-const CANONICAL_SESSION_MODES = new Set<ZCodeTaskMode>([
+const CANONICAL_SESSION_MODES = new Set<AiraTaskMode>([
   "yolo",
   "plan",
   "edit",
@@ -18,21 +18,21 @@ function readTrimmedString(value: unknown): string | undefined {
   return normalized.length > 0 ? normalized : undefined;
 }
 
-function getModeConfigOption(options: readonly ZCodeConfigOption[]): ZCodeConfigOption | undefined {
+function getModeConfigOption(options: readonly AiraConfigOption[]): AiraConfigOption | undefined {
   return options.find((option) => option.category === "mode" && option.type === "select");
 }
 
 function normalizePersistedSessionMode(
   modeId: string | null | undefined,
-  _provider?: ZCodeProvider,
-): ZCodeTaskMode | undefined {
+  _provider?: AiraProvider,
+): AiraTaskMode | undefined {
   const trimmedModeId = readTrimmedString(modeId);
   if (!trimmedModeId) {
     return undefined;
   }
 
-  if (CANONICAL_SESSION_MODES.has(trimmedModeId as ZCodeTaskMode)) {
-    return trimmedModeId as ZCodeTaskMode;
+  if (CANONICAL_SESSION_MODES.has(trimmedModeId as AiraTaskMode)) {
+    return trimmedModeId as AiraTaskMode;
   }
 
   switch (trimmedModeId) {
@@ -50,9 +50,9 @@ function normalizePersistedSessionMode(
 }
 
 export function resolveProviderModeIdFromConfigOptions(params: {
-  configOptions: readonly ZCodeConfigOption[];
+  configOptions: readonly AiraConfigOption[];
   modeId: string | null | undefined;
-  provider?: ZCodeProvider;
+  provider?: AiraProvider;
 }): string | undefined {
   const requestedMode = readTrimmedString(params.modeId);
   if (!requestedMode) {

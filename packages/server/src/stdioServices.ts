@@ -1,15 +1,15 @@
-import { createLocalServices, type ZCodeAgentCommandResolver } from "@zcode/services/node";
+import { createLocalServices, type AiraAgentCommandResolver } from "@aira/services/node";
 import {
   parseServiceAuthorityMode,
-  ZCODE_REMOTE_HTTP_PROXY_ENV_KEY,
-  ZCODE_REMOTE_NO_PROXY_ENV_KEY,
-  ZCODE_REMOTE_RUNTIME_NETWORK_AUTHORITY_ENV_KEY,
-} from "@zcode/shared";
+  AIRA_REMOTE_HTTP_PROXY_ENV_KEY,
+  AIRA_REMOTE_NO_PROXY_ENV_KEY,
+  AIRA_REMOTE_RUNTIME_NETWORK_AUTHORITY_ENV_KEY,
+} from "@aira/shared";
 
 interface CreateStdioServicesOptions {
   env?: Record<string, string | undefined>;
-  zcodeBuiltinProviderConfigFilePath: string;
-  zcodeAgentCommandResolver?: ZCodeAgentCommandResolver;
+  airaBuiltinProviderConfigFilePath: string;
+  airaAgentCommandResolver?: AiraAgentCommandResolver;
 }
 
 interface RemoteAgentNetworkOptions {
@@ -20,12 +20,12 @@ interface RemoteAgentNetworkOptions {
 function resolveRemoteAgentNetworkFromEnv(
   env: Record<string, string | undefined>,
 ): RemoteAgentNetworkOptions | undefined {
-  if (env[ZCODE_REMOTE_RUNTIME_NETWORK_AUTHORITY_ENV_KEY]?.trim() !== "1") {
+  if (env[AIRA_REMOTE_RUNTIME_NETWORK_AUTHORITY_ENV_KEY]?.trim() !== "1") {
     return undefined;
   }
   return {
-    httpProxy: env[ZCODE_REMOTE_HTTP_PROXY_ENV_KEY]?.trim() || undefined,
-    noProxy: env[ZCODE_REMOTE_NO_PROXY_ENV_KEY]?.trim() || undefined,
+    httpProxy: env[AIRA_REMOTE_HTTP_PROXY_ENV_KEY]?.trim() || undefined,
+    noProxy: env[AIRA_REMOTE_NO_PROXY_ENV_KEY]?.trim() || undefined,
   };
 }
 
@@ -36,9 +36,9 @@ export function createStdioServices(options: CreateStdioServicesOptions) {
   // 远程 Desktop 的呈现能力必须从 stdio 入口收到的 authority mode 进入 Services 推导链。
   // 测试注入 resolver 只用于在 spawn 前观察最终命令，不改变生产默认 resolver。
   const services = createLocalServices({
-    zcodeBuiltinProviderConfigFilePath: options.zcodeBuiltinProviderConfigFilePath,
+    airaBuiltinProviderConfigFilePath: options.airaBuiltinProviderConfigFilePath,
     serviceAuthorityMode: authorityModeParseResult.mode,
-    zcodeAgentCommandResolver: options.zcodeAgentCommandResolver,
+    airaAgentCommandResolver: options.airaAgentCommandResolver,
     remoteAgentNetwork,
   });
 

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { sparseShape } from "@zcode/shared/config-schema";
+import { sparseShape } from "@aira/shared/config-schema";
 
 export const providerApiTypeDataSchema = z.enum([
   "anthropic-messages",
@@ -8,7 +8,7 @@ export const providerApiTypeDataSchema = z.enum([
 ]);
 export const providerGroupDataSchema = z.enum([
   "standard-personal",
-  "zai-family",
+  "aira-family",
   "bigmodel-family",
 ]);
 export const zhipuAccountModeDataSchema = z.enum([

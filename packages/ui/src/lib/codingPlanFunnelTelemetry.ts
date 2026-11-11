@@ -1,12 +1,12 @@
 import {
   BIGMODEL_PROVIDER_ID,
   BUILTIN_MODEL_PROVIDER_IDS,
-  isZaiCodingPlanProviderId,
-  ZAI_PROVIDER_ID,
+  isAiraCodingPlanProviderId,
+  AIRA_PROVIDER_ID,
   type IPlatformService,
   type UsageEntitlementSnapshot,
-} from "@zcode/shared";
-import type { ProviderSettingsView } from "@zcode/services";
+} from "@aira/shared";
+import type { ProviderSettingsView } from "@aira/services";
 import { logger } from "@/logger.js";
 import { reportAppTelemetryEvent } from "@/lib/appTelemetry.js";
 
@@ -140,10 +140,10 @@ export function resolveCodingPlanEntryPlanStateFromProviderSettings(
   );
   const codingPlanProvider = accountProviders.find(
     (provider) =>
-      provider.providerId === BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan ||
+      provider.providerId === BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan ||
       provider.providerId === BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan ||
       // Team 同样持有 Coding Plan；不能用包含 Start 的宽泛 helper 判断套餐。
-      provider.providerId === BUILTIN_MODEL_PROVIDER_IDS.zaiTeamCodingPlan ||
+      provider.providerId === BUILTIN_MODEL_PROVIDER_IDS.airaTeamCodingPlan ||
       provider.providerId === BUILTIN_MODEL_PROVIDER_IDS.bigmodelTeamCodingPlan,
   );
   if (codingPlanProvider) {
@@ -207,7 +207,7 @@ function resolveCodingPlanProviderFamily(providerId: string): CodingPlanProvider
   ) {
     return "bigmodel";
   }
-  if (providerId === ZAI_PROVIDER_ID || isZaiCodingPlanProviderId(providerId)) {
+  if (providerId === AIRA_PROVIDER_ID || isAiraCodingPlanProviderId(providerId)) {
     return "zai";
   }
   return "unknown";
@@ -228,7 +228,7 @@ function stringifyDetail(detail: Record<string, unknown>): Record<string, string
 
 function isStartPlanProviderId(providerId: string): boolean {
   return (
-    providerId === BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan ||
+    providerId === BUILTIN_MODEL_PROVIDER_IDS.airaStartPlan ||
     providerId === BUILTIN_MODEL_PROVIDER_IDS.bigmodelStartPlan
   );
 }

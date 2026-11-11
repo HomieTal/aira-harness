@@ -18,16 +18,16 @@ import {
   resolveModelProviderFamilyIdByProviderId,
   resolveModelProviderFamilySpecByProviderId,
   resolveProviderFamilyDomainFromOAuthProvider,
-  ZAI_PROVIDER_ID,
-} from "@zcode/shared";
-import { useZCodeIntl } from "@/i18n/IntlProvider.js";
+  AIRA_PROVIDER_ID,
+} from "@aira/shared";
+import { useAiraIntl } from "@/i18n/IntlProvider.js";
 import { Button } from "@/components/ui/button.js";
 import { useConfirmDialog } from "@/hooks/useConfirmDialog.js";
 import { useModelProviders } from "@/hooks/useModelProviders.js";
 import { resolveEntitledAccountProviderAccess } from "@/lib/accountProviderAccess.js";
 import { usePlatform } from "@/hooks/usePlatform.js";
 import { useServices } from "@/hooks/useServices.js";
-import { useZCodeStore } from "@/store/StoreProvider.js";
+import { useAiraStore } from "@/store/StoreProvider.js";
 import { logger } from "@/logger.js";
 import {
   PRESET_PROVIDER_SPECS,
@@ -111,9 +111,9 @@ function resolveCodingPlanIntentProviderId(
   target: SettingsModelProviderTarget | undefined,
 ): BuiltinModelProviderId | null {
   switch (target?.providerId) {
-    case BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan:
-    case BUILTIN_MODEL_PROVIDER_IDS.zaiTeamCodingPlan:
-    case BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan:
+    case BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan:
+    case BUILTIN_MODEL_PROVIDER_IDS.airaTeamCodingPlan:
+    case BUILTIN_MODEL_PROVIDER_IDS.airaStartPlan:
     case BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan:
     case BUILTIN_MODEL_PROVIDER_IDS.bigmodelTeamCodingPlan:
     case BUILTIN_MODEL_PROVIDER_IDS.bigmodelStartPlan:
@@ -128,9 +128,9 @@ function shouldRefreshCodingPlanEntitlementsAfterSave(
   nextProvider: ProviderSettingsFormProvider,
 ): boolean {
   const isCodingPlanProvider =
-    nextProvider.providerId === BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan ||
-    nextProvider.providerId === BUILTIN_MODEL_PROVIDER_IDS.zaiTeamCodingPlan ||
-    nextProvider.providerId === BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan ||
+    nextProvider.providerId === BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan ||
+    nextProvider.providerId === BUILTIN_MODEL_PROVIDER_IDS.airaTeamCodingPlan ||
+    nextProvider.providerId === BUILTIN_MODEL_PROVIDER_IDS.airaStartPlan ||
     nextProvider.providerId === BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan ||
     nextProvider.providerId === BUILTIN_MODEL_PROVIDER_IDS.bigmodelTeamCodingPlan ||
     nextProvider.providerId === BUILTIN_MODEL_PROVIDER_IDS.bigmodelStartPlan;
@@ -150,11 +150,11 @@ function resolveBuiltinPresetOAuthProvider(
   presetId: BuiltinModelProviderId,
 ): OAuthProviderId | null {
   if (
-    presetId === BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan ||
-    presetId === BUILTIN_MODEL_PROVIDER_IDS.zaiTeamCodingPlan ||
-    presetId === BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan
+    presetId === BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan ||
+    presetId === BUILTIN_MODEL_PROVIDER_IDS.airaTeamCodingPlan ||
+    presetId === BUILTIN_MODEL_PROVIDER_IDS.airaStartPlan
   ) {
-    return ZAI_PROVIDER_ID;
+    return AIRA_PROVIDER_ID;
   }
   if (
     presetId === BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan ||
@@ -244,7 +244,7 @@ export function ModelProviderSection({
   pendingModelProviderTarget?: SettingsModelProviderTarget;
   onConsumePendingModelProviderTarget?: () => void;
 } = {}) {
-  const { intl, locale } = useZCodeIntl();
+  const { intl, locale } = useAiraIntl();
   const confirmDialog = useConfirmDialog();
   const platform = usePlatform();
   const { modelSelectionService, oauthService, credentialService } = useServices();
@@ -383,10 +383,10 @@ export function ModelProviderSection({
   const codingPlanStatusSyncAttemptsRef = useRef(
     new Map<string, "inFlight" | "succeeded" | "failed">(),
   );
-  const requestLoginEntry = useZCodeStore((state) => state.requestLoginEntry);
-  const setUser = useZCodeStore((state) => state.setUser);
-  const oauthError = useZCodeStore((state) => state.oauthError);
-  const setOAuthError = useZCodeStore((state) => state.setOAuthError);
+  const requestLoginEntry = useAiraStore((state) => state.requestLoginEntry);
+  const setUser = useAiraStore((state) => state.setUser);
+  const oauthError = useAiraStore((state) => state.oauthError);
+  const setOAuthError = useAiraStore((state) => state.setOAuthError);
   const {
     settings: sharedSettings,
     loading: sharedSettingsLoading,
@@ -404,10 +404,10 @@ export function ModelProviderSection({
   // zai 与 bigmodel Team Plan 对称化。原仅 bigmodel 调 hook，
   // zai 团队订阅永远拉不到、也无法展示对应团队。
   // zai 独立调 hook（zai family 走 zai provider），下游合并两 family 的订阅产品。
-  const authenticatedZaiEnterpriseProducts = useEnterpriseCodingPlanProducts({
+  const authenticatedAiraEnterpriseProducts = useEnterpriseCodingPlanProducts({
     enabled:
       codingPlanPurchaseTokenAuthenticatedByProviderId[
-        BUILTIN_MODEL_PROVIDER_IDS.zaiTeamCodingPlan
+        BUILTIN_MODEL_PROVIDER_IDS.airaTeamCodingPlan
       ] === true,
     authenticated: true,
     family: "zai",
@@ -415,21 +415,21 @@ export function ModelProviderSection({
   const refreshAuthenticatedEnterpriseProducts = useCallback(async () => {
     await Promise.all([
       authenticatedEnterpriseProducts.refresh(),
-      authenticatedZaiEnterpriseProducts.refresh(),
+      authenticatedAiraEnterpriseProducts.refresh(),
     ]);
-  }, [authenticatedEnterpriseProducts, authenticatedZaiEnterpriseProducts]);
+  }, [authenticatedEnterpriseProducts, authenticatedAiraEnterpriseProducts]);
   const subscribedTeamProducts = useMemo(
     () => [
       ...(authenticatedEnterpriseProducts.snapshot?.productList.filter(
         (product) => product.subscribed === true,
       ) ?? []),
-      ...(authenticatedZaiEnterpriseProducts.snapshot?.productList.filter(
+      ...(authenticatedAiraEnterpriseProducts.snapshot?.productList.filter(
         (product) => product.subscribed === true,
       ) ?? []),
     ],
     [
       authenticatedEnterpriseProducts.snapshot?.productList,
-      authenticatedZaiEnterpriseProducts.snapshot?.productList,
+      authenticatedAiraEnterpriseProducts.snapshot?.productList,
     ],
   );
   const connectionSelections = sharedSettings?.providerFamilyConnectionSelections ?? {};
@@ -484,26 +484,26 @@ export function ModelProviderSection({
         shouldApply?: () => boolean;
       } = {},
     ) => {
-      const [activeProvider, zaiToken, bigmodelToken] = await Promise.all([
+      const [activeProvider, airaToken, bigmodelToken] = await Promise.all([
         credentialService.load("oauth:active_provider"),
-        credentialService.load(`oauth:${ZAI_PROVIDER_ID}:access_token`),
+        credentialService.load(`oauth:${AIRA_PROVIDER_ID}:access_token`),
         credentialService.load(`oauth:${BIGMODEL_PROVIDER_ID}:access_token`),
       ]);
       if (options.shouldApply && !options.shouldApply()) {
         return null;
       }
       const normalizedActiveProvider =
-        activeProvider === ZAI_PROVIDER_ID || activeProvider === BIGMODEL_PROVIDER_ID
+        activeProvider === AIRA_PROVIDER_ID || activeProvider === BIGMODEL_PROVIDER_ID
           ? activeProvider
           : null;
       setActiveOAuthProvider(normalizedActiveProvider);
       setCodingPlanPurchaseTokenAuthenticatedByProviderId({
-        [BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan]:
-          normalizedActiveProvider === ZAI_PROVIDER_ID && (zaiToken?.trim().length ?? 0) > 0,
-        [BUILTIN_MODEL_PROVIDER_IDS.zaiTeamCodingPlan]:
-          normalizedActiveProvider === ZAI_PROVIDER_ID && (zaiToken?.trim().length ?? 0) > 0,
-        [BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan]:
-          normalizedActiveProvider === ZAI_PROVIDER_ID && (zaiToken?.trim().length ?? 0) > 0,
+        [BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan]:
+          normalizedActiveProvider === AIRA_PROVIDER_ID && (airaToken?.trim().length ?? 0) > 0,
+        [BUILTIN_MODEL_PROVIDER_IDS.airaTeamCodingPlan]:
+          normalizedActiveProvider === AIRA_PROVIDER_ID && (airaToken?.trim().length ?? 0) > 0,
+        [BUILTIN_MODEL_PROVIDER_IDS.airaStartPlan]:
+          normalizedActiveProvider === AIRA_PROVIDER_ID && (airaToken?.trim().length ?? 0) > 0,
         [BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan]:
           normalizedActiveProvider === BIGMODEL_PROVIDER_ID &&
           (bigmodelToken?.trim().length ?? 0) > 0,
@@ -816,7 +816,7 @@ export function ModelProviderSection({
 
   const handleCodingPlanDisconnect = useCallback(
     async (presetId: BuiltinModelProviderId, providerId: OAuthProviderId, providerName: string) => {
-      if (providerId !== BIGMODEL_PROVIDER_ID && providerId !== ZAI_PROVIDER_ID) {
+      if (providerId !== BIGMODEL_PROVIDER_ID && providerId !== AIRA_PROVIDER_ID) {
         return;
       }
 
@@ -1060,8 +1060,8 @@ export function ModelProviderSection({
       onRefresh={() => {
         void refreshModelProviderSection({
           refresh,
-          // 手动刷新设置页时也要同时刷新 Z.ai / BigModel Team Plan 快照；
-          // 原来只刷新 BigModel，Z.ai Team Plan 购买或订阅变化后会继续显示旧项目。
+          // 手动刷新设置页时也要同时刷新 Aira AI / BigModel Team Plan 快照；
+          // 原来只刷新 BigModel，Aira AI Team Plan 购买或订阅变化后会继续显示旧项目。
           refreshTeamPlanProducts: refreshAuthenticatedEnterpriseProducts,
         });
         refreshCodingPlanEntitlements();

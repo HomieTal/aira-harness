@@ -1,7 +1,7 @@
-import { BIGMODEL_PROVIDER_ID, type OAuthProviderId, ZAI_PROVIDER_ID } from "./oauth.js";
+import { BIGMODEL_PROVIDER_ID, type OAuthProviderId, AIRA_PROVIDER_ID } from "./oauth.js";
 import { BUILTIN_MODEL_PROVIDER_IDS, type BuiltinModelProviderId } from "./model-provider-types.js";
-import { ZCODE_ENV } from "./env.js";
-import { buildBigModelCodingPlanTeamManageUrl } from "./zcodeEndpoint.js";
+import { AIRA_ENV } from "./env.js";
+import { buildBigModelCodingPlanTeamManageUrl } from "./airaEndpoint.js";
 
 export type ModelProviderFamilyId = "zai" | "bigmodel";
 export type ProviderFamilyDomain = ModelProviderFamilyId;
@@ -10,15 +10,15 @@ export interface ModelProviderFamilySpec {
   id: ModelProviderFamilyId;
   label: string;
   rootDomain: string;
-  oauthProviderId: typeof ZAI_PROVIDER_ID | typeof BIGMODEL_PROVIDER_ID;
+  oauthProviderId: typeof AIRA_PROVIDER_ID | typeof BIGMODEL_PROVIDER_ID;
   startPlanProviderId:
-    | typeof BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan
+    | typeof BUILTIN_MODEL_PROVIDER_IDS.airaStartPlan
     | typeof BUILTIN_MODEL_PROVIDER_IDS.bigmodelStartPlan;
   individualCodingPlanProviderId:
-    | typeof BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan
+    | typeof BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan
     | typeof BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan;
   teamCodingPlanProviderId:
-    | typeof BUILTIN_MODEL_PROVIDER_IDS.zaiTeamCodingPlan
+    | typeof BUILTIN_MODEL_PROVIDER_IDS.airaTeamCodingPlan
     | typeof BUILTIN_MODEL_PROVIDER_IDS.bigmodelTeamCodingPlan;
   teamCodingPlanManageUrl: string;
 }
@@ -26,12 +26,12 @@ export interface ModelProviderFamilySpec {
 export const MODEL_PROVIDER_FAMILY_SPECS = [
   {
     id: "zai",
-    label: "Z.ai",
+    label: "Aira AI",
     rootDomain: "z.ai",
-    oauthProviderId: ZAI_PROVIDER_ID,
-    startPlanProviderId: BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan,
-    individualCodingPlanProviderId: BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan,
-    teamCodingPlanProviderId: BUILTIN_MODEL_PROVIDER_IDS.zaiTeamCodingPlan,
+    oauthProviderId: AIRA_PROVIDER_ID,
+    startPlanProviderId: BUILTIN_MODEL_PROVIDER_IDS.airaStartPlan,
+    individualCodingPlanProviderId: BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan,
+    teamCodingPlanProviderId: BUILTIN_MODEL_PROVIDER_IDS.airaTeamCodingPlan,
     teamCodingPlanManageUrl: "https://z.ai/manage-apikey/subscription",
   },
   {
@@ -42,7 +42,7 @@ export const MODEL_PROVIDER_FAMILY_SPECS = [
     startPlanProviderId: BUILTIN_MODEL_PROVIDER_IDS.bigmodelStartPlan,
     individualCodingPlanProviderId: BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan,
     teamCodingPlanProviderId: BUILTIN_MODEL_PROVIDER_IDS.bigmodelTeamCodingPlan,
-    teamCodingPlanManageUrl: buildBigModelCodingPlanTeamManageUrl({ ZCODE_ENV }),
+    teamCodingPlanManageUrl: buildBigModelCodingPlanTeamManageUrl({ AIRA_ENV }),
   },
 ] as const satisfies readonly ModelProviderFamilySpec[];
 
@@ -116,7 +116,7 @@ export function normalizeProviderFamilyDomain(
 export function resolveProviderFamilyDomainFromOAuthProvider(
   provider: OAuthProviderId | string | null | undefined,
 ): ProviderFamilyDomain | null {
-  if (provider === ZAI_PROVIDER_ID) {
+  if (provider === AIRA_PROVIDER_ID) {
     return "zai";
   }
   if (provider === BIGMODEL_PROVIDER_ID) {

@@ -28,11 +28,11 @@ export function migrateLegacyModelProviderId(providerId: string): string | undef
     case "builtin:bigmodel-start-plan":
       return BUILTIN_MODEL_PROVIDER_IDS.bigmodelStartPlan;
     case "builtin:zai-start-plan":
-      return BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan;
+      return BUILTIN_MODEL_PROVIDER_IDS.airaStartPlan;
     case "builtin:bigmodel-coding-plan":
       return BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan;
     case "builtin:zai-coding-plan":
-      return BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan;
+      return BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan;
     default:
       return providerId.startsWith("builtin:") ? undefined : providerId;
   }

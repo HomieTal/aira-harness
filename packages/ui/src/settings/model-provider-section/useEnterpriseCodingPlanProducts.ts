@@ -4,7 +4,7 @@ import {
   type CodingPlanStaticTeamProduct,
   type EnterpriseCodingPlanPricingResponse,
   type ProviderFamilyDomain,
-} from "@zcode/shared";
+} from "@aira/shared";
 import { useOptionalServices } from "@/hooks/useServices.js";
 import { isRemoteWorkspaceDisconnectedError } from "@/lib/remoteWorkspaceServiceError.js";
 import { logger } from "@/logger.js";
@@ -80,7 +80,7 @@ function tagEnterpriseProductsFamily(
  * 原 hook 只服务 bigmodel family，getStaticTeamProducts 硬编码
  * 读 bigmodelCodingPlan bucket、getEnterprisePricing 不传 family。
  * zai family 对称化后，hook 接受 family 参数：
- *   - 按 family 读 static bucket（zaiCodingPlan / bigmodelCodingPlan）
+ *   - 按 family 读 static bucket（airaCodingPlan / bigmodelCodingPlan）
  *   - 传 family 给 service.getEnterprisePricing，service 据此路由到对应 provider
  * 缺省 family 时保持 bigmodel，向后兼容既有调用点。
  */

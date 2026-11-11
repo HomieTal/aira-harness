@@ -1,25 +1,25 @@
 import { Eye, EyeOff, RotateCcw, Save, Trash2 } from "lucide-react";
 import { useState } from "react";
-import type { ZCodePluginInfo, ZCodePluginScope, ZCodePluginUserConfigOption } from "@zcode/shared";
+import type { AiraPluginInfo, AiraPluginScope, AiraPluginUserConfigOption } from "@aira/shared";
 import { Button } from "@/components/ui/button.js";
 import { Input } from "@/components/ui/input.js";
 import { Switch } from "@/components/ui/switch.js";
-import { useZCodeIntl } from "@/i18n/IntlProvider.js";
+import { useAiraIntl } from "@/i18n/IntlProvider.js";
 import { SettingsScopeBadge } from "@/settings/SettingsScopeBadge.js";
 
 interface PluginConfigControlsProps {
   getValue: (
-    plugin: ZCodePluginInfo,
+    plugin: AiraPluginInfo,
     key: string,
-    option: ZCodePluginUserConfigOption,
+    option: AiraPluginUserConfigOption,
   ) => string | number | boolean;
   isOptionClearPending?: (pluginId: string, key: string) => boolean;
   onClearOption?: (pluginId: string, key: string, clear: boolean) => void;
-  onSave: (plugin: ZCodePluginInfo) => void;
+  onSave: (plugin: AiraPluginInfo) => void;
   onSetDraft: (pluginId: string, key: string, value: string | number | boolean) => void;
   operationId: string | null;
-  plugin: ZCodePluginInfo;
-  scope: ZCodePluginScope;
+  plugin: AiraPluginInfo;
+  scope: AiraPluginScope;
 }
 
 export function PluginConfigControls({
@@ -32,7 +32,7 @@ export function PluginConfigControls({
   plugin,
   scope,
 }: PluginConfigControlsProps) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useAiraIntl();
   const [revealedSecrets, setRevealedSecrets] = useState<Record<string, boolean>>({});
   const entries = Object.entries(plugin.userConfig ?? {});
   if (entries.length === 0) return null;

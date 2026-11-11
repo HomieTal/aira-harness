@@ -1,18 +1,18 @@
-import { BUILTIN_MODEL_PROVIDER_IDS } from "@zcode/shared";
+import { BUILTIN_MODEL_PROVIDER_IDS } from "@aira/shared";
 import { logger } from "@/logger.js";
 
 export type SidebarUsageCodingPlanProviderId =
-  | typeof BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan
-  | typeof BUILTIN_MODEL_PROVIDER_IDS.zaiTeamCodingPlan
+  | typeof BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan
+  | typeof BUILTIN_MODEL_PROVIDER_IDS.airaTeamCodingPlan
   | typeof BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan
   | typeof BUILTIN_MODEL_PROVIDER_IDS.bigmodelTeamCodingPlan;
 export type SidebarUsageCodingPlanSourceId = SidebarUsageCodingPlanProviderId | `team:${string}`;
 
-const SIDEBAR_USAGE_CODING_PLAN_PROVIDER_STORAGE_KEY = "zcode:sidebar-usage-coding-plan-provider";
+const SIDEBAR_USAGE_CODING_PLAN_PROVIDER_STORAGE_KEY = "aira:sidebar-usage-coding-plan-provider";
 
 const SIDEBAR_USAGE_CODING_PLAN_PROVIDER_IDS: SidebarUsageCodingPlanProviderId[] = [
-  BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan,
-  BUILTIN_MODEL_PROVIDER_IDS.zaiTeamCodingPlan,
+  BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan,
+  BUILTIN_MODEL_PROVIDER_IDS.airaTeamCodingPlan,
   BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan,
   BUILTIN_MODEL_PROVIDER_IDS.bigmodelTeamCodingPlan,
 ];

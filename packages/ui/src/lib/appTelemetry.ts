@@ -1,17 +1,17 @@
 import {
   BIGMODEL_PROVIDER_ID,
   BUILTIN_MODEL_PROVIDER_IDS,
-  ZAI_PROVIDER_ID,
+  AIRA_PROVIDER_ID,
   collectTelemetryRendererContext,
-  isZaiCodingPlanProviderId,
+  isAiraCodingPlanProviderId,
   sanitizeTelemetryEventDetail,
   type BuiltinModelProviderId,
   type IPlatformService,
-} from "@zcode/shared";
+} from "@aira/shared";
 import { logger } from "@/logger.js";
 
 export function resolveProviderTelemetryLabel(providerId: string): string {
-  if (providerId === ZAI_PROVIDER_ID || isZaiCodingPlanProviderId(providerId)) {
+  if (providerId === AIRA_PROVIDER_ID || isAiraCodingPlanProviderId(providerId)) {
     return "z.ai";
   }
 

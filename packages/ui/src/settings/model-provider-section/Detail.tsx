@@ -3,7 +3,7 @@ import { useCodingPlanEntryGate } from "@/settings/CodingPlanEntryButton.js";
 import {
   BIGMODEL_PROVIDER_ID,
   BUILTIN_MODEL_PROVIDER_IDS,
-  ZAI_PROVIDER_ID,
+  AIRA_PROVIDER_ID,
   type BuiltinModelProviderId,
   type ProviderFamilyConnectionSelectionSettings,
   type StartPlanPreviewConfig,
@@ -12,14 +12,14 @@ import {
   resolveModelProviderFamilySpecByProviderId,
   type ModelConnectivityResult,
   type OAuthProviderId,
-} from "@zcode/shared";
+} from "@aira/shared";
 import {
   getProviderFormApiKeyManagementUrl,
   type ProviderSettingsFormProvider,
 } from "@/lib/providerSettingsFormTypes.js";
 import { ArrowRightIcon, AstroidIcon, UsersIcon } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
-import { useZCodeIntl } from "@/i18n/IntlProvider.js";
+import { useAiraIntl } from "@/i18n/IntlProvider.js";
 import {
   type CodingPlanStatus,
   type CodingPlanProviderId,
@@ -60,8 +60,8 @@ import {
 } from "@/lib/codingPlanFunnelTelemetry.js";
 import { useCodingPlanUpgradeDialog } from "@/settings/CodingPlanUpgradeDialogProvider.js";
 import { useProviderSettingsView } from "@/hooks/useProviderSettingsView.js";
-import type { ProviderSettingsView } from "@zcode/services";
-import type { SavePersonalModelDraftInput } from "@zcode/provider";
+import type { ProviderSettingsView } from "@aira/services";
+import type { SavePersonalModelDraftInput } from "@aira/provider";
 import { resolveAccountProviderInspectionAccess } from "@/lib/accountProviderAccess.js";
 import { projectProviderSettingsViewToFormProviders } from "@/lib/providerSettingsFormProjection.js";
 
@@ -302,7 +302,7 @@ export function ModelProviderSectionDetail({
   onSelectNavItem?: (item: ModelProviderNavItem) => void;
   providerSettingsView?: ProviderSettingsView | null;
 }) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useAiraIntl();
   const { openCodingPlanUpgrade } = useCodingPlanUpgradeDialog();
   const loadingLabel = intl.formatMessage({ id: "common.loading" });
   const [upgradePlansVisibleProviderId, setUpgradePlansVisibleProviderId] =
@@ -520,12 +520,12 @@ export function ModelProviderSectionDetail({
     };
     const purchaseChoiceBannersVisible =
       statusPanelViewState.displayStatus === "notPurchased" &&
-      (selectedNavItem.oauthProviderId === ZAI_PROVIDER_ID ||
+      (selectedNavItem.oauthProviderId === AIRA_PROVIDER_ID ||
         (selectedNavItem.oauthProviderId === BIGMODEL_PROVIDER_ID &&
           codingPlanPurchaseTokenAuthenticated));
     const anonymousPurchaseChoiceBannersVisible =
       (selectedNavItem.oauthProviderId === BIGMODEL_PROVIDER_ID ||
-        selectedNavItem.oauthProviderId === ZAI_PROVIDER_ID) &&
+        selectedNavItem.oauthProviderId === AIRA_PROVIDER_ID) &&
       statusPanelViewState.displayStatus === "disconnected";
     const handlePurchaseChoiceSelect = (
       audience: PurchaseAudience,
@@ -594,7 +594,7 @@ export function ModelProviderSectionDetail({
           soldOutVisible={codingPlanPurchaseTokenAuthenticated}
           accountDisconnected={statusPanelViewState.displayStatus === "disconnected"}
           onSelect={handlePurchaseChoiceSelect}
-          teamVisible={selectedNavItem.oauthProviderId !== ZAI_PROVIDER_ID}
+          teamVisible={selectedNavItem.oauthProviderId !== AIRA_PROVIDER_ID}
         />
       ) : accessBanner ? (
         <CodingPlanAccessBanner title={accessBanner.title} description={accessBanner.description} />
@@ -638,7 +638,7 @@ export function ModelProviderSectionDetail({
           onOpenPurchase={onOpenApiKeyUrl}
           onDisconnect={
             (selectedNavItem.oauthProviderId === BIGMODEL_PROVIDER_ID ||
-              selectedNavItem.oauthProviderId === ZAI_PROVIDER_ID) &&
+              selectedNavItem.oauthProviderId === AIRA_PROVIDER_ID) &&
             dedicatedProvider.providerId === selectedNavItem.presetId
               ? () => {
                   onCodingPlanDisconnect(
@@ -786,7 +786,7 @@ export function ModelProviderSectionDetail({
             onOpenPurchase={onOpenApiKeyUrl}
             onDisconnect={
               (selectedNavItem.oauthProviderId === BIGMODEL_PROVIDER_ID ||
-                selectedNavItem.oauthProviderId === ZAI_PROVIDER_ID) &&
+                selectedNavItem.oauthProviderId === AIRA_PROVIDER_ID) &&
               selectedNavItem.provider?.providerId === selectedNavItem.presetId &&
               selectedNavItem.status !== "disconnected"
                 ? () => {
@@ -894,7 +894,7 @@ function CodingPlanPurchaseChoiceBanners({
   onSelectStartPlan?: () => void;
 }) {
   const entryGate = useCodingPlanEntryGate();
-  const { intl, locale } = useZCodeIntl();
+  const { intl, locale } = useAiraIntl();
   const startPlanSummary = startPlanPreview
     ? resolveStartPlanEntitlementSummary(startPlanPreview, intl, locale)
     : null;
@@ -1095,7 +1095,7 @@ function resolvePurchaseChoiceBannerPrice({
         kind: "price",
         price: product.price,
         // 商品价格属于 provider 维度，缺失币种时只能按当前 provider 的结算域兜底。
-        // 不能让 formatter 默认落到 CNY，否则 Z.ai Global 入口会错误显示 RMB。
+        // 不能让 formatter 默认落到 CNY，否则 Aira AI Global 入口会错误显示 RMB。
         currency:
           product.product.priceCurrency ??
           (providerId === BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan ? "CNY" : "USD"),
@@ -1171,7 +1171,7 @@ function PurchaseChoiceBannerPrice({
   currency: string | null;
   locale: string;
 }) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useAiraIntl();
   const formattedAmount = formatCodingPlanAmount(price, currency, locale);
   const isChineseLocale = locale.toLowerCase().startsWith("zh");
   if (!isChineseLocale) {
@@ -1215,7 +1215,7 @@ function CodingPlanAccessBanner({ title, description }: { title: string; descrip
 
 function resolveCodingPlanAccessBanner(
   status: CodingPlanStatus,
-  intl: ReturnType<typeof useZCodeIntl>["intl"],
+  intl: ReturnType<typeof useAiraIntl>["intl"],
   reloginOnFailure = false,
 ): { title: string; description: string } | null {
   if (

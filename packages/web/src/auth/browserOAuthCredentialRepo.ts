@@ -1,28 +1,28 @@
 import {
   BIGMODEL_PROVIDER_ID,
-  ZAI_PROVIDER_ID,
+  AIRA_PROVIDER_ID,
   type OAuthProviderId,
   type OAuthTokenSet,
   type OAuthCachedSessionRestoreResult,
   type UserInfo,
   resolveJwtExpiration,
-} from "@zcode/shared";
-import { toUserInfo } from "./zaiWebOAuthProvider.js";
+} from "@aira/shared";
+import { toUserInfo } from "./airaWebOAuthProvider.js";
 
 const ACTIVE_PROVIDER_KEY = "oauth:active_provider";
-const ZCODE_JWT_TOKEN_KEY = "zcodejwttoken";
-const ZAI_ACCESS_TOKEN_KEY = "oauth:zai:access_token";
-const ZAI_USER_INFO_KEY = "oauth:zai:user_info";
+const AIRA_JWT_TOKEN_KEY = "airajwttoken";
+const AIRA_ACCESS_TOKEN_KEY = "oauth:zai:access_token";
+const AIRA_USER_INFO_KEY = "oauth:zai:user_info";
 const BIGMODEL_ACCESS_TOKEN_KEY = "oauth:bigmodel:access_token";
 const BIGMODEL_USER_INFO_KEY = "oauth:bigmodel:user_info";
 const OAUTH_PENDING_NONCE_KEY = "oauth_pending_nonce";
 const OAUTH_PENDING_PROVIDER_KEY = "oauth_pending_provider";
 
 /** 本仓支持的登录 provider。private 分享的 owner 身份是 provider 特定的，两边都要能登。 */
-export type WebOAuthProviderId = typeof ZAI_PROVIDER_ID | typeof BIGMODEL_PROVIDER_ID;
+export type WebOAuthProviderId = typeof AIRA_PROVIDER_ID | typeof BIGMODEL_PROVIDER_ID;
 
 function isWebOAuthProviderId(value: unknown): value is WebOAuthProviderId {
-  return value === ZAI_PROVIDER_ID || value === BIGMODEL_PROVIDER_ID;
+  return value === AIRA_PROVIDER_ID || value === BIGMODEL_PROVIDER_ID;
 }
 
 /**
@@ -34,7 +34,7 @@ function isWebOAuthProviderId(value: unknown): value is WebOAuthProviderId {
 function providerKeys(provider: WebOAuthProviderId): { accessToken: string; userInfo: string } {
   return provider === BIGMODEL_PROVIDER_ID
     ? { accessToken: BIGMODEL_ACCESS_TOKEN_KEY, userInfo: BIGMODEL_USER_INFO_KEY }
-    : { accessToken: ZAI_ACCESS_TOKEN_KEY, userInfo: ZAI_USER_INFO_KEY };
+    : { accessToken: AIRA_ACCESS_TOKEN_KEY, userInfo: AIRA_USER_INFO_KEY };
 }
 
 interface BrowserOAuthCredentialRepoStorage {
@@ -46,9 +46,9 @@ interface BrowserOAuthCredentialRepoOptions {
   now?: () => number;
 }
 
-interface WebZaiTokenSet {
-  zcodeJwtToken: string;
-  zaiAccessToken: string;
+interface WebAiraTokenSet {
+  airaJwtToken: string;
+  airaAccessToken: string;
   expiresAt?: number;
 }
 
@@ -78,16 +78,16 @@ export class BrowserOAuthCredentialRepo {
     this.now = options.now ?? Date.now;
   }
 
-  saveTokenSet(tokenSet: WebZaiTokenSet | OAuthTokenSet, provider: WebOAuthProviderId): void {
+  saveTokenSet(tokenSet: WebAiraTokenSet | OAuthTokenSet, provider: WebOAuthProviderId): void {
     const accessToken =
-      "zaiAccessToken" in tokenSet ? tokenSet.zaiAccessToken : tokenSet.accessToken;
-    const zcodeJwtToken = tokenSet.zcodeJwtToken;
+      "airaAccessToken" in tokenSet ? tokenSet.airaAccessToken : tokenSet.accessToken;
+    const airaJwtToken = tokenSet.airaJwtToken;
 
     this.localStorage.setItem(providerKeys(provider).accessToken, accessToken);
-    if (zcodeJwtToken) {
-      this.localStorage.setItem(ZCODE_JWT_TOKEN_KEY, zcodeJwtToken);
+    if (airaJwtToken) {
+      this.localStorage.setItem(AIRA_JWT_TOKEN_KEY, airaJwtToken);
     } else {
-      this.localStorage.removeItem(ZCODE_JWT_TOKEN_KEY);
+      this.localStorage.removeItem(AIRA_JWT_TOKEN_KEY);
     }
   }
 
@@ -116,20 +116,20 @@ export class BrowserOAuthCredentialRepo {
 
   loadCachedSessionState(): OAuthCachedSessionRestoreResult {
     const activeProvider = this.localStorage.getItem(ACTIVE_PROVIDER_KEY);
-    const zcodeJwtToken = this.localStorage.getItem(ZCODE_JWT_TOKEN_KEY);
+    const airaJwtToken = this.localStorage.getItem(AIRA_JWT_TOKEN_KEY);
     // 一次只有一个 activeProvider（切换 provider = 重新登录并覆盖），所以按它选 key 段读。
     const keys = isWebOAuthProviderId(activeProvider) ? providerKeys(activeProvider) : null;
     const accessToken = keys ? this.localStorage.getItem(keys.accessToken) : null;
     const rawUserInfo = keys ? this.localStorage.getItem(keys.userInfo) : null;
 
-    if (!keys || !hasText(zcodeJwtToken) || !hasText(accessToken) || !hasText(rawUserInfo)) {
+    if (!keys || !hasText(airaJwtToken) || !hasText(accessToken) || !hasText(rawUserInfo)) {
       if (this.hasAnyStoredCredential()) {
         this.clearAll();
       }
       return { status: "signed-out" };
     }
 
-    if (resolveJwtExpiration(zcodeJwtToken, this.now()).kind === "expired") {
+    if (resolveJwtExpiration(airaJwtToken, this.now()).kind === "expired") {
       // Web localStorage 之前只检查 JWT 是否存在，过期后仍会恢复伪登录态。
       this.clearAll();
       return { status: "reauthentication-required", reason: "jwt-expired" };
@@ -149,18 +149,18 @@ export class BrowserOAuthCredentialRepo {
     return { status: "signed-out" };
   }
 
-  loadZCodeJwtToken(): string | null {
+  loadAiraJwtToken(): string | null {
     const session = this.loadCachedSessionState();
     if (session.status !== "authenticated") return null;
-    return this.localStorage.getItem(ZCODE_JWT_TOKEN_KEY)?.trim() || null;
+    return this.localStorage.getItem(AIRA_JWT_TOKEN_KEY)?.trim() || null;
   }
 
   private hasAnyStoredCredential(): boolean {
     return Boolean(
       this.localStorage.getItem(ACTIVE_PROVIDER_KEY) ||
-      this.localStorage.getItem(ZCODE_JWT_TOKEN_KEY) ||
-      this.localStorage.getItem(ZAI_ACCESS_TOKEN_KEY) ||
-      this.localStorage.getItem(ZAI_USER_INFO_KEY) ||
+      this.localStorage.getItem(AIRA_JWT_TOKEN_KEY) ||
+      this.localStorage.getItem(AIRA_ACCESS_TOKEN_KEY) ||
+      this.localStorage.getItem(AIRA_USER_INFO_KEY) ||
       this.localStorage.getItem(BIGMODEL_ACCESS_TOKEN_KEY) ||
       this.localStorage.getItem(BIGMODEL_USER_INFO_KEY),
     );
@@ -168,11 +168,11 @@ export class BrowserOAuthCredentialRepo {
 
   clearAll(): void {
     this.localStorage.removeItem(ACTIVE_PROVIDER_KEY);
-    this.localStorage.removeItem(ZCODE_JWT_TOKEN_KEY);
+    this.localStorage.removeItem(AIRA_JWT_TOKEN_KEY);
     // 两个 provider 的 key 段一起清：切换 provider 时不能留下上一个身份的残片，
     // 否则 loadCachedSessionState 可能读到半套凭据。
-    this.localStorage.removeItem(ZAI_ACCESS_TOKEN_KEY);
-    this.localStorage.removeItem(ZAI_USER_INFO_KEY);
+    this.localStorage.removeItem(AIRA_ACCESS_TOKEN_KEY);
+    this.localStorage.removeItem(AIRA_USER_INFO_KEY);
     this.localStorage.removeItem(BIGMODEL_ACCESS_TOKEN_KEY);
     this.localStorage.removeItem(BIGMODEL_USER_INFO_KEY);
   }

@@ -1,4 +1,4 @@
-import { ZAI_PROVIDER_ID, type UserInfo } from "@zcode/shared";
+import { AIRA_PROVIDER_ID, type UserInfo } from "@aira/shared";
 import {
   BrowserOAuthCredentialRepo,
   type WebOAuthProviderId,
@@ -11,8 +11,8 @@ import {
   parseOptionalUrl,
   resolveSafeAppReturnTo,
 } from "./oauthStateCodec.js";
-import { WEB_ZAI_OAUTH_CONFIG, type WebZaiOAuthConfig } from "./webZaiOAuthConfig.js";
-import { ZaiWebOAuthProvider } from "./zaiWebOAuthProvider.js";
+import { WEB_AIRA_OAUTH_CONFIG, type WebAiraOAuthConfig } from "./webAiraOAuthConfig.js";
+import { AiraWebOAuthProvider } from "./airaWebOAuthProvider.js";
 
 interface WebAuthServiceRuntime {
   assign(url: string): void;
@@ -23,8 +23,8 @@ interface WebAuthServiceRuntime {
 }
 
 interface WebAuthServiceDependencies {
-  config?: WebZaiOAuthConfig;
-  provider?: ZaiWebOAuthProvider;
+  config?: WebAiraOAuthConfig;
+  provider?: AiraWebOAuthProvider;
   repo?: BrowserOAuthCredentialRepo;
   runtime?: WebAuthServiceRuntime;
 }
@@ -71,21 +71,21 @@ function createDefaultRuntime(): WebAuthServiceRuntime {
 }
 
 export class WebAuthService {
-  private readonly config: WebZaiOAuthConfig;
-  private readonly provider: ZaiWebOAuthProvider;
+  private readonly config: WebAiraOAuthConfig;
+  private readonly provider: AiraWebOAuthProvider;
   private readonly repo: BrowserOAuthCredentialRepo;
   private readonly runtime: WebAuthServiceRuntime;
 
   constructor(dependencies: WebAuthServiceDependencies = {}) {
-    this.config = dependencies.config ?? WEB_ZAI_OAUTH_CONFIG;
-    this.provider = dependencies.provider ?? new ZaiWebOAuthProvider(this.config);
+    this.config = dependencies.config ?? WEB_AIRA_OAUTH_CONFIG;
+    this.provider = dependencies.provider ?? new AiraWebOAuthProvider(this.config);
     this.repo = dependencies.repo ?? new BrowserOAuthCredentialRepo();
     this.runtime = dependencies.runtime ?? createDefaultRuntime();
   }
 
   startLogin(options: WebAuthLoginOptions = {}): void {
     const nonce = this.runtime.createNonce();
-    const provider = options.provider ?? ZAI_PROVIDER_ID;
+    const provider = options.provider ?? AIRA_PROVIDER_ID;
     this.repo.savePendingNonce(nonce);
     this.repo.savePendingProvider(provider);
 
@@ -140,7 +140,7 @@ export class WebAuthService {
     }
     // provider 必须取跳转前记下的那个：authorize 参数名和 token 响应里 access_token 的位置
     // 都是 provider 特定的。缺失时按 zai 兜底，保持旧回调链接可用。
-    const provider = this.repo.loadPendingProvider() ?? ZAI_PROVIDER_ID;
+    const provider = this.repo.loadPendingProvider() ?? AIRA_PROVIDER_ID;
     this.repo.clearPendingNonce();
     this.repo.clearPendingProvider();
 
@@ -176,8 +176,8 @@ export class WebAuthService {
     return this.repo.loadCachedSessionState();
   }
 
-  getZCodeJwtToken(): string | null {
-    return this.repo.loadZCodeJwtToken();
+  getAiraJwtToken(): string | null {
+    return this.repo.loadAiraJwtToken();
   }
 
   async logout(): Promise<void> {

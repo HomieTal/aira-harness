@@ -22,21 +22,21 @@ import {
   resolveModelProviderFamilySpecByProviderId,
   TID_V4_MODEL_CONFIG,
   TID_V4_COMPOSER_INPUT,
-  ZCODE_AGENT_PROVIDER,
+  AIRA_AGENT_PROVIDER,
   type ProviderFamilyConnectionSelection,
   type ProviderFamilyConnectionSelectionSettings,
   type ProviderFamilyDomain,
   type UsageEntitlementSnapshot,
-  type ZCodeAccountAccess,
-  type ZCodeProviderAccountAccess,
-  type ZCodeConfigOption,
-  type ZCodeProvider,
-} from "@zcode/shared";
+  type AiraAccountAccess,
+  type AiraProviderAccountAccess,
+  type AiraConfigOption,
+  type AiraProvider,
+} from "@aira/shared";
 import type {
   SessionConfigState,
   SessionPhase,
   SessionUsageState,
-} from "@zcode/shared/zcode-protocol-v4";
+} from "@aira/shared/aira-protocol-v4";
 import { ModelConfigSelect, type ModelSelectGroup } from "@/ModelConfigSelect.js";
 import { Button } from "@/components/ui/button.js";
 import { ChatContextUsage } from "@/chat-input-toolbar/display.js";
@@ -62,7 +62,7 @@ import {
   setPendingSettingsUsageCodingPlanIntent,
 } from "@/lib/settingsNavigation.js";
 import { useTabStore } from "@/store/TabStoreProvider.js";
-import type { ModelSelectionView } from "@zcode/services";
+import type { ModelSelectionView } from "@aira/services";
 import type { ModelSelectionState } from "@/hooks/useModelSelectionView.js";
 import { useProviderSettingsView } from "@/hooks/useProviderSettingsView.js";
 import { useSettings } from "@/hooks/useSettingService.js";
@@ -70,8 +70,8 @@ import {
   useUsageEntitlement,
   type UsageEntitlementRefreshOptions,
 } from "@/hooks/useUsageEntitlement.js";
-import { useToolbarConfigOptions } from "@/hooks/useZCodeConfig.js";
-import { useZCodeIntl } from "@/i18n/IntlProvider.js";
+import { useToolbarConfigOptions } from "@/hooks/useAiraConfig.js";
+import { useAiraIntl } from "@/i18n/IntlProvider.js";
 import {
   createCodingPlanFunnelContext,
   resolveCodingPlanEntryPlanState,
@@ -80,7 +80,7 @@ import { useShortcutCommandLabel } from "@/shortcuts/useShortcutBindings.js";
 import { logger } from "@/logger.js";
 import { useCodingPlanUpgradeDialog } from "@/settings/CodingPlanUpgradeDialogProvider.js";
 import { useCodingPlanEntitlements } from "@/settings/model-provider-section/useCodingPlanEntitlements.js";
-import { decodeCustomModelValue, encodeCustomModelValue } from "@/lib/zcodeCustomModelValue.js";
+import { decodeCustomModelValue, encodeCustomModelValue } from "@/lib/airaCustomModelValue.js";
 import { buildRegistryModelSelectGroups } from "@/lib/modelSelectionGroups.js";
 import {
   buildCodingPlanUsageSources,
@@ -120,14 +120,14 @@ type V4ContextPlanConnection =
       family: ProviderFamilyDomain;
       kind: "personalCoding";
       providerId:
-        | typeof BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan
+        | typeof BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan
         | typeof BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan;
     }
   | {
       family: ProviderFamilyDomain;
       kind: "teamCoding";
       providerId:
-        | typeof BUILTIN_MODEL_PROVIDER_IDS.zaiTeamCodingPlan
+        | typeof BUILTIN_MODEL_PROVIDER_IDS.airaTeamCodingPlan
         | typeof BUILTIN_MODEL_PROVIDER_IDS.bigmodelTeamCodingPlan;
       selection: Extract<ProviderFamilyConnectionSelection, { kind: "team-coding-plan" }>;
     }
@@ -135,7 +135,7 @@ type V4ContextPlanConnection =
       family: ProviderFamilyDomain;
       kind: "start";
       providerId:
-        | typeof BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan
+        | typeof BUILTIN_MODEL_PROVIDER_IDS.airaStartPlan
         | typeof BUILTIN_MODEL_PROVIDER_IDS.bigmodelStartPlan;
     };
 
@@ -144,11 +144,11 @@ function resolveFamilyForPlanProviderId(providerId: string | null | undefined): 
   kind: "personalCoding" | "teamCoding" | "start";
 } | null {
   switch (providerId?.trim()) {
-    case BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan:
+    case BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan:
       return { family: "zai", kind: "personalCoding" };
-    case BUILTIN_MODEL_PROVIDER_IDS.zaiTeamCodingPlan:
+    case BUILTIN_MODEL_PROVIDER_IDS.airaTeamCodingPlan:
       return { family: "zai", kind: "teamCoding" };
-    case BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan:
+    case BUILTIN_MODEL_PROVIDER_IDS.airaStartPlan:
       return { family: "zai", kind: "start" };
     case BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan:
       return { family: "bigmodel", kind: "personalCoding" };
@@ -174,7 +174,7 @@ function resolveV4ContextPlanConnection(params: {
   if (providerFamily.kind === "start") {
     const providerId = params.providerId?.trim();
     if (
-      providerId !== BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan &&
+      providerId !== BUILTIN_MODEL_PROVIDER_IDS.airaStartPlan &&
       providerId !== BUILTIN_MODEL_PROVIDER_IDS.bigmodelStartPlan
     ) {
       return { kind: "none" };
@@ -195,7 +195,7 @@ function resolveV4ContextPlanConnection(params: {
       family: providerFamily.family,
       kind: "teamCoding",
       providerId: providerId as
-        | typeof BUILTIN_MODEL_PROVIDER_IDS.zaiTeamCodingPlan
+        | typeof BUILTIN_MODEL_PROVIDER_IDS.airaTeamCodingPlan
         | typeof BUILTIN_MODEL_PROVIDER_IDS.bigmodelTeamCodingPlan,
       selection,
     };
@@ -208,7 +208,7 @@ function resolveV4ContextPlanConnection(params: {
     family: providerFamily.family,
     kind: "personalCoding",
     providerId: providerId as
-      | typeof BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan
+      | typeof BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan
       | typeof BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan,
   };
 }
@@ -217,7 +217,7 @@ function resolveContextTeamUsageSourceFromEntitlementSnapshot({
   accountAccess,
   snapshot,
 }: {
-  accountAccess?: ZCodeProviderAccountAccess | ZCodeAccountAccess | null;
+  accountAccess?: AiraProviderAccountAccess | AiraAccountAccess | null;
   snapshot?: UsageEntitlementSnapshot | null;
 }): CodingPlanUsageSource | null {
   if (snapshot?.context?.scope !== "team") {
@@ -274,14 +274,14 @@ function resolveContextTeamUsageSourceFromEntitlementSnapshot({
 }
 
 function resolveContextCodingPlanUsageSource(params: {
-  accountAccess?: ZCodeProviderAccountAccess | ZCodeAccountAccess | null;
+  accountAccess?: AiraProviderAccountAccess | AiraAccountAccess | null;
   cachedTeamSources?: readonly CodingPlanUsageSource[];
   entitlementSnapshot?: UsageEntitlementSnapshot | null;
   // 原类型/守卫硬绑 bigmodelCodingPlan，zai team 上下文永远返回 null。
   // 放开为 zai/bigmodel 两种 codingPlan providerId。
   providerId?:
     | typeof BUILTIN_MODEL_PROVIDER_IDS.bigmodelTeamCodingPlan
-    | typeof BUILTIN_MODEL_PROVIDER_IDS.zaiTeamCodingPlan;
+    | typeof BUILTIN_MODEL_PROVIDER_IDS.airaTeamCodingPlan;
   teamSelection?: Extract<ProviderFamilyConnectionSelection, { kind: "team-coding-plan" }>;
   subscribedTeamProducts: Parameters<
     typeof buildCodingPlanUsageSources
@@ -328,7 +328,7 @@ export interface V4ComposerToolbarProps {
   modelSelectionReload?: () => void;
   sessionId: string | null;
   phase: SessionPhase | null;
-  provider?: ZCodeProvider;
+  provider?: AiraProvider;
   /** 当前工具条是否运行在 Web 远控壳中。 */
   /** 当前视口是否为手机输入布局。 */
   isMobileViewport?: boolean;
@@ -381,9 +381,9 @@ function V4ComposerModelControlsImpl({
   onSendCompressionCommand,
   onRecoverCustomModelSelection,
 }: V4ComposerToolbarProps) {
-  const { intl, locale } = useZCodeIntl();
+  const { intl, locale } = useAiraIntl();
   const { openCodingPlanUpgrade } = useCodingPlanUpgradeDialog();
-  const displayProvider = provider ?? ZCODE_AGENT_PROVIDER;
+  const displayProvider = provider ?? AIRA_AGENT_PROVIDER;
   // 配置面读取：workspace 缺省目录（taskId=null），不读旧会话态。
   const { error: configOptionsError } = useToolbarConfigOptions(
     workspacePath,
@@ -436,7 +436,7 @@ function V4ComposerModelControlsImpl({
         type: "select",
         currentValue: "",
         options: [],
-      } satisfies ZCodeConfigOption)
+      } satisfies AiraConfigOption)
     : undefined;
 
   // 空模型/档位曾被 Session 旧值补回，界面显示与实际不可提交状态矛盾。
@@ -595,11 +595,11 @@ function V4ComposerModelControlsImpl({
     enabled: !providerSourcesLoading && Boolean(contextCodingPlanUsageTeamSource),
     includeSubscription: true,
     // 原硬编码 bigmodelCodingPlan，zai family team plan 选中时
-    // contextCodingPlanUsageTeamSource.providerId 是 zaiCodingPlan，但这里仍传 bigmodelCodingPlan
+    // contextCodingPlanUsageTeamSource.providerId 是 airaCodingPlan，但这里仍传 bigmodelCodingPlan
     // → 服务端 pickQuotaProvider 按 providerId 精确匹配选不到 zai provider →
     // resolveAuthorization 返回 null → zai team plan 的输入框上下文用量区域不显示额度。
     // 改为跟随 team source 的 providerId（已在 resolveContextTeamUsageSourceFromEntitlementSnapshot
-    // / resolveV4ContextPlanConnection 按 family 正确产出 zaiCodingPlan/bigmodelCodingPlan）。
+    // / resolveV4ContextPlanConnection 按 family 正确产出 airaCodingPlan/bigmodelCodingPlan）。
     preferredProviderId:
       contextCodingPlanUsageTeamSource?.providerId ??
       BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan,
@@ -630,8 +630,8 @@ function V4ComposerModelControlsImpl({
         accountAccess: access.access,
         label:
           access.label ||
-          (contextCodingPlanUsageProviderId === BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan
-            ? "Z.ai - Coding Plan"
+          (contextCodingPlanUsageProviderId === BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan
+            ? "Aira AI - Coding Plan"
             : "BigModel - Coding Plan"),
       },
     ];
@@ -900,7 +900,7 @@ function V4ComposerModelControlsImpl({
   );
 
   // 候选档位只来自目标 Host 的 ModelSelectionView，已选档位只来自 Composer。
-  const thoughtOption = useMemo<ZCodeConfigOption | null>(() => {
+  const thoughtOption = useMemo<AiraConfigOption | null>(() => {
     if (!effectiveConfig) return null;
     if (!draftModelThoughtOption) return null;
     return {
@@ -1093,4 +1093,4 @@ function V4ComposerModelControlsImpl({
 }
 
 export const V4ComposerModelControls = memo(V4ComposerModelControlsImpl);
-import { isApiKeyAccess } from "@zcode/provider";
+import { isApiKeyAccess } from "@aira/provider";

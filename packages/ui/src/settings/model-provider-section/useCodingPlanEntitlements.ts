@@ -1,14 +1,14 @@
 import { buildStartPlanEntitlementOptions } from "@/lib/startPlanEntitlementOptions.js";
 import { useCallback, useEffect, useMemo, useRef } from "react";
-import type { ProviderSettingsView } from "@zcode/services";
+import type { ProviderSettingsView } from "@aira/services";
 import {
   getModelProviderFamilySpec,
   type ModelProviderFamilySpec,
   type ProviderFamilyConnectionSelection,
   type ProviderFamilyConnectionSelectionSettings,
-  type ZCodeAccountAccess,
-  type ZCodeProviderAccountAccess,
-} from "@zcode/shared";
+  type AiraAccountAccess,
+  type AiraProviderAccountAccess,
+} from "@aira/shared";
 import {
   useUsageEntitlement,
   type UsageEntitlementRefreshOptions,
@@ -131,9 +131,9 @@ function useProviderFamilyEntitlements(params: {
 }
 
 function resolveEntitlementAccountAccess(
-  access: ZCodeProviderAccountAccess | undefined,
+  access: AiraProviderAccountAccess | undefined,
   selection: ProviderFamilyConnectionSelection | undefined,
-): ZCodeProviderAccountAccess | ZCodeAccountAccess | undefined {
+): AiraProviderAccountAccess | AiraAccountAccess | undefined {
   if (access?.mode !== "team-coding-plan" || selection?.kind !== "team-coding-plan") {
     // 展示查询针对这个套餐自身，不让执行期的 current 解析器改成当前另一套餐。
     return access && (access.mode === "start-plan" || access.mode === "individual-coding-plan")
@@ -184,7 +184,7 @@ export function useCodingPlanEntitlements({
   const skippedProviderFingerprintAutoRefreshRef = useRef("");
   const loading = providerSettingsView === null;
   // React Hook 必须保持固定调用顺序，因此显式调用两个 Family，而不是动态遍历 Spec。
-  const zaiFamily = useProviderFamilyEntitlements({
+  const airaFamily = useProviderFamilyEntitlements({
     familySpec: getModelProviderFamilySpec("zai"),
     selection: connectionSelections.zai,
     providerSettingsView,
@@ -199,11 +199,11 @@ export function useCodingPlanEntitlements({
     (options: UsageEntitlementRefreshOptions = {}) => {
       // Start/Coding 使用独立 provider id 与 cache key；两边都可用时并行刷新。
       const refreshJobs: Array<Promise<void>> = [];
-      if (zaiFamily.codingEnabled) {
-        refreshJobs.push(zaiFamily.coding.refresh(options));
+      if (airaFamily.codingEnabled) {
+        refreshJobs.push(airaFamily.coding.refresh(options));
       }
-      if (zaiFamily.startEnabled) {
-        refreshJobs.push(zaiFamily.start.refresh(options));
+      if (airaFamily.startEnabled) {
+        refreshJobs.push(airaFamily.start.refresh(options));
       }
       if (bigmodelFamily.codingEnabled) {
         refreshJobs.push(bigmodelFamily.coding.refresh(options));
@@ -218,18 +218,18 @@ export function useCodingPlanEntitlements({
       bigmodelFamily.codingEnabled,
       bigmodelFamily.start.refresh,
       bigmodelFamily.startEnabled,
-      zaiFamily.coding.refresh,
-      zaiFamily.codingEnabled,
-      zaiFamily.start.refresh,
-      zaiFamily.startEnabled,
+      airaFamily.coding.refresh,
+      airaFamily.codingEnabled,
+      airaFamily.start.refresh,
+      airaFamily.startEnabled,
     ],
   );
 
   const providerFingerprint = useMemo(
     () =>
       [
-        zaiFamily.codingFingerprint,
-        zaiFamily.startEnabled ? zaiFamily.startProviderFingerprint : "",
+        airaFamily.codingFingerprint,
+        airaFamily.startEnabled ? airaFamily.startProviderFingerprint : "",
         bigmodelFamily.codingFingerprint,
         bigmodelFamily.startEnabled ? bigmodelFamily.startProviderFingerprint : "",
       ]
@@ -239,9 +239,9 @@ export function useCodingPlanEntitlements({
       bigmodelFamily.codingFingerprint,
       bigmodelFamily.startEnabled,
       bigmodelFamily.startProviderFingerprint,
-      zaiFamily.codingFingerprint,
-      zaiFamily.startEnabled,
-      zaiFamily.startProviderFingerprint,
+      airaFamily.codingFingerprint,
+      airaFamily.startEnabled,
+      airaFamily.startProviderFingerprint,
     ],
   );
 
@@ -265,15 +265,15 @@ export function useCodingPlanEntitlements({
   return useMemo(
     () => ({
       entitlements: {
-        [zaiFamily.codingPlanProviderId]: {
-          snapshot: zaiFamily.coding.snapshot,
-          loading: zaiFamily.coding.loading,
-          error: zaiFamily.coding.error,
+        [airaFamily.codingPlanProviderId]: {
+          snapshot: airaFamily.coding.snapshot,
+          loading: airaFamily.coding.loading,
+          error: airaFamily.coding.error,
         },
-        [zaiFamily.startPlanProviderId]: {
-          snapshot: zaiFamily.startEnabled ? zaiFamily.start.snapshot : null,
-          loading: zaiFamily.startEnabled ? zaiFamily.start.loading : false,
-          error: zaiFamily.startEnabled ? zaiFamily.start.error : null,
+        [airaFamily.startPlanProviderId]: {
+          snapshot: airaFamily.startEnabled ? airaFamily.start.snapshot : null,
+          loading: airaFamily.startEnabled ? airaFamily.start.loading : false,
+          error: airaFamily.startEnabled ? airaFamily.start.error : null,
         },
         [bigmodelFamily.codingPlanProviderId]: {
           snapshot: bigmodelFamily.coding.snapshot,
@@ -287,11 +287,11 @@ export function useCodingPlanEntitlements({
         },
       },
       enabledStartPlanProviderIds: [
-        ...(zaiFamily.startEnabled ? [zaiFamily.startPlanProviderId] : []),
+        ...(airaFamily.startEnabled ? [airaFamily.startPlanProviderId] : []),
         ...(bigmodelFamily.startEnabled ? [bigmodelFamily.startPlanProviderId] : []),
       ],
       refresh,
     }),
-    [bigmodelFamily, refresh, zaiFamily],
+    [bigmodelFamily, refresh, airaFamily],
   );
 }

@@ -15,8 +15,8 @@ import type {
   Locale,
   UsageEntitlementSnapshot,
   UserInfo,
-  ZCodeInteractionBehavior,
-} from "@zcode/shared";
+  AiraInteractionBehavior,
+} from "@aira/shared";
 import {
   BUILTIN_MODEL_PROVIDER_IDS,
   TID_SETTINGS_BACK_BUTTON,
@@ -24,11 +24,11 @@ import {
   TID_SETTINGS_SECTION_NAV,
   TID_SETTINGS_USAGE_TAB,
   testId,
-} from "@zcode/shared";
+} from "@aira/shared";
 import { Button } from "@/components/ui/button.js";
 import { toast } from "@/components/ui/toast.js";
 import { DesktopWindowFrame } from "@/DesktopWindowFrame.js";
-import { useZCodeIntl } from "@/i18n/IntlProvider.js";
+import { useAiraIntl } from "@/i18n/IntlProvider.js";
 import { usePlatform } from "@/hooks/usePlatform.js";
 import { getPathLeaf } from "@/lib/path.js";
 import { useProviderSettingsView } from "@/hooks/useProviderSettingsView.js";
@@ -80,7 +80,7 @@ import {
   SettingsHeaderBreadcrumb,
   type SettingsBreadcrumbItem,
 } from "@/settings/SettingsHeaderBreadcrumb.js";
-import { useZCodeStore } from "@/store/StoreProvider.js";
+import { useAiraStore } from "@/store/StoreProvider.js";
 import { useTabStore } from "@/store/TabStoreProvider.js";
 import { isWorkspaceTab } from "@/store/tabStore.js";
 import type { Theme } from "@/useTheme.js";
@@ -143,7 +143,7 @@ function SettingsUsageProviderTabs({
   codingPlanSources: CodingPlanUsageSource[];
   onTabChange: (tab: UsageStatsSectionTab) => void;
 }) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useAiraIntl();
   const tabItems = [
     {
       id: "app" as const,
@@ -294,7 +294,7 @@ export function SettingsPage({
   onLogout?: () => void;
   user?: UserInfo | null;
 }) {
-  const { intl, localePreference, setLocalePreference } = useZCodeIntl();
+  const { intl, localePreference, setLocalePreference } = useAiraIntl();
   const { settingsSectionGroups, settingsSections } = useMemo(
     () =>
       createSettingsPageConfig({
@@ -335,68 +335,68 @@ export function SettingsPage({
   const [settingsBreadcrumbItems, setSettingsBreadcrumbItems] = useState<
     readonly SettingsBreadcrumbItem[]
   >([]);
-  const interfaceMode = useZCodeStore((state) => state.interfaceMode);
-  const setInterfaceMode = useZCodeStore((state) => state.setInterfaceMode);
-  const theme = useZCodeStore((state) => state.theme);
-  const setTheme = useZCodeStore((state) => state.setTheme);
-  const codePreviewSettings = useZCodeStore((state) => state.codePreviewSettings);
-  const setCodePreviewSettings = useZCodeStore((state) => state.setCodePreviewSettings);
-  const uiFontSizePx = useZCodeStore((state) => state.uiFontSizePx);
-  const setUiFontSizePx = useZCodeStore((state) => state.setUiFontSizePx);
-  const notificationEnabled = useZCodeStore((state) => state.notificationEnabled);
-  const setNotificationEnabled = useZCodeStore((state) => state.setNotificationEnabled);
-  const notificationSoundEnabled = useZCodeStore((state) => state.notificationSoundEnabled);
-  const setNotificationSoundEnabled = useZCodeStore((state) => state.setNotificationSoundEnabled);
+  const interfaceMode = useAiraStore((state) => state.interfaceMode);
+  const setInterfaceMode = useAiraStore((state) => state.setInterfaceMode);
+  const theme = useAiraStore((state) => state.theme);
+  const setTheme = useAiraStore((state) => state.setTheme);
+  const codePreviewSettings = useAiraStore((state) => state.codePreviewSettings);
+  const setCodePreviewSettings = useAiraStore((state) => state.setCodePreviewSettings);
+  const uiFontSizePx = useAiraStore((state) => state.uiFontSizePx);
+  const setUiFontSizePx = useAiraStore((state) => state.setUiFontSizePx);
+  const notificationEnabled = useAiraStore((state) => state.notificationEnabled);
+  const setNotificationEnabled = useAiraStore((state) => state.setNotificationEnabled);
+  const notificationSoundEnabled = useAiraStore((state) => state.notificationSoundEnabled);
+  const setNotificationSoundEnabled = useAiraStore((state) => state.setNotificationSoundEnabled);
   const usageProviderSettingsRead = useProviderSettingsView();
   const usageProviderSettingsView =
     usageProviderSettingsRead.state.status === "ready"
       ? usageProviderSettingsRead.state.view
       : null;
   const usageProviderSettingsLoading = usageProviderSettingsRead.state.status !== "ready";
-  const usageZaiProvider = usageProviderSettingsView?.providers.find(
-    (provider) => provider.providerId === BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan,
+  const usageAiraProvider = usageProviderSettingsView?.providers.find(
+    (provider) => provider.providerId === BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan,
   );
   const usageBigmodelProvider = usageProviderSettingsView?.providers.find(
     (provider) => provider.providerId === BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan,
   );
-  const usageZaiProviderAccess = resolveEntitledAccountProviderAccess(
+  const usageAiraProviderAccess = resolveEntitledAccountProviderAccess(
     usageProviderSettingsView,
-    BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan,
+    BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan,
   );
   const usageBigmodelProviderAccess = resolveEntitledAccountProviderAccess(
     usageProviderSettingsView,
     BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan,
   );
-  const usageZaiProviderFingerprint = resolveEntitledAccountProviderAccessFingerprint(
+  const usageAiraProviderFingerprint = resolveEntitledAccountProviderAccessFingerprint(
     usageProviderSettingsView,
-    BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan,
+    BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan,
   );
   const usageBigmodelProviderFingerprint = resolveEntitledAccountProviderAccessFingerprint(
     usageProviderSettingsView,
     BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan,
   );
-  const usageZaiTeamProviderFingerprint = resolveEntitledAccountProviderAccessFingerprint(
+  const usageAiraTeamProviderFingerprint = resolveEntitledAccountProviderAccessFingerprint(
     usageProviderSettingsView,
-    BUILTIN_MODEL_PROVIDER_IDS.zaiTeamCodingPlan,
+    BUILTIN_MODEL_PROVIDER_IDS.airaTeamCodingPlan,
   );
   const usageBigmodelTeamProviderFingerprint = resolveEntitledAccountProviderAccessFingerprint(
     usageProviderSettingsView,
     BUILTIN_MODEL_PROVIDER_IDS.bigmodelTeamCodingPlan,
   );
-  const usageZaiEntitlement = useUsageEntitlement({
+  const usageAiraEntitlement = useUsageEntitlement({
     enabled:
       activeSection === "usage" &&
       !usageProviderSettingsLoading &&
-      Boolean(usageZaiProviderFingerprint),
+      Boolean(usageAiraProviderFingerprint),
     includeSubscription: true,
-    preferredProviderId: BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan,
-    accountAccess: usageZaiProviderAccess?.access,
+    preferredProviderId: BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan,
+    accountAccess: usageAiraProviderAccess?.access,
     allowDisabledPreferredProvider: true,
     requirePreferredProvider: true,
     allowEnvApiKey: false,
     cacheKey: buildUsageEntitlementCacheKey({
-      providerId: BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan,
-      providerFingerprint: usageZaiProviderFingerprint,
+      providerId: BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan,
+      providerFingerprint: usageAiraProviderFingerprint,
     }),
     // 个人 Usage source 依赖 entitlement snapshot；冷启动无缓存时若不先探测，
     // source 不会渲染，子面板也无法触发 access 刷新。共享 freshness window 继续负责限频。
@@ -428,8 +428,8 @@ export function SettingsPage({
     authenticated: true,
     family: "bigmodel",
   });
-  const usageZaiEnterpriseProducts = useEnterpriseCodingPlanProducts({
-    enabled: !usageProviderSettingsLoading && Boolean(usageZaiTeamProviderFingerprint),
+  const usageAiraEnterpriseProducts = useEnterpriseCodingPlanProducts({
+    enabled: !usageProviderSettingsLoading && Boolean(usageAiraTeamProviderFingerprint),
     authenticated: true,
     family: "zai",
   });
@@ -438,13 +438,13 @@ export function SettingsPage({
       ...(usageBigmodelEnterpriseProducts.snapshot?.productList.filter(
         (product) => product.subscribed === true,
       ) ?? []),
-      ...(usageZaiEnterpriseProducts.snapshot?.productList.filter(
+      ...(usageAiraEnterpriseProducts.snapshot?.productList.filter(
         (product) => product.subscribed === true,
       ) ?? []),
     ],
     [
       usageBigmodelEnterpriseProducts.snapshot?.productList,
-      usageZaiEnterpriseProducts.snapshot?.productList,
+      usageAiraEnterpriseProducts.snapshot?.productList,
     ],
   );
   const [usageActiveTab, setUsageActiveTab] = useState<UsageStatsSectionTab>(() => {
@@ -454,17 +454,17 @@ export function SettingsPage({
   const usagePersonalCodingPlanSources = useMemo(() => {
     const sources: CodingPlanUsageSource[] = [];
     if (
-      usageZaiProviderAccess &&
+      usageAiraProviderAccess &&
       hasActiveCodingPlanSnapshot(
-        usageZaiEntitlement.snapshot,
-        BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan,
+        usageAiraEntitlement.snapshot,
+        BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan,
       )
     ) {
       sources.push(
         buildPersonalCodingPlanUsageSource({
-          providerId: BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan,
-          accountAccess: usageZaiProviderAccess.access,
-          label: usageZaiProvider?.providerName,
+          providerId: BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan,
+          accountAccess: usageAiraProviderAccess.access,
+          label: usageAiraProvider?.providerName,
         }),
       );
     }
@@ -488,9 +488,9 @@ export function SettingsPage({
     usageBigmodelEntitlement.snapshot,
     usageBigmodelProvider,
     usageBigmodelProviderAccess,
-    usageZaiEntitlement.snapshot,
-    usageZaiProvider,
-    usageZaiProviderAccess,
+    usageAiraEntitlement.snapshot,
+    usageAiraProvider,
+    usageAiraProviderAccess,
   ]);
   const usageTeamCodingPlanSources = useMemo(
     () =>
@@ -498,12 +498,12 @@ export function SettingsPage({
         accountAccesses: {
           ...(resolveEntitledAccountProviderAccess(
             usageProviderSettingsView,
-            BUILTIN_MODEL_PROVIDER_IDS.zaiTeamCodingPlan,
+            BUILTIN_MODEL_PROVIDER_IDS.airaTeamCodingPlan,
           )?.access
             ? {
                 zai: resolveEntitledAccountProviderAccess(
                   usageProviderSettingsView,
-                  BUILTIN_MODEL_PROVIDER_IDS.zaiTeamCodingPlan,
+                  BUILTIN_MODEL_PROVIDER_IDS.airaTeamCodingPlan,
                 )!.access,
               }
             : {}),
@@ -534,9 +534,9 @@ export function SettingsPage({
   const selectedUsageCodingPlanSource =
     usageCodingPlanSources.find((source) => source.id === selectedUsageCodingPlanSourceId) ?? null;
   const showUsageCodingPlanTab = usageCodingPlanSources.length > 0;
-  const checkingUsageZaiCodingPlanTab = Boolean(
-    usageZaiProviderFingerprint &&
-    (usageZaiEntitlement.loading || (!usageZaiEntitlement.snapshot && !usageZaiEntitlement.error)),
+  const checkingUsageAiraCodingPlanTab = Boolean(
+    usageAiraProviderFingerprint &&
+    (usageAiraEntitlement.loading || (!usageAiraEntitlement.snapshot && !usageAiraEntitlement.error)),
   );
   const checkingUsageBigmodelCodingPlanTab = Boolean(
     usageBigmodelProviderFingerprint &&
@@ -545,10 +545,10 @@ export function SettingsPage({
   );
   const checkingUsageCodingPlanTab =
     usageProviderSettingsLoading ||
-    checkingUsageZaiCodingPlanTab ||
+    checkingUsageAiraCodingPlanTab ||
     checkingUsageBigmodelCodingPlanTab ||
     usageBigmodelEnterpriseProducts.loading ||
-    usageZaiEnterpriseProducts.loading;
+    usageAiraEnterpriseProducts.loading;
   const [initialModelProviderTarget] = useState(() => consumePendingSettingsModelProviderTarget());
   const { openCodingPlanUpgrade } = useCodingPlanUpgradeDialog();
   const [pendingModelProviderTarget, setPendingModelProviderTarget] = useState<
@@ -589,7 +589,7 @@ export function SettingsPage({
         : "app",
     );
   }, [selectedUsageCodingPlanSource, usageActiveTab, usageCodingPlanSources]);
-  const setNewUserOnboardingOpen = useZCodeStore((state) => state.setNewUserOnboardingOpen);
+  const setNewUserOnboardingOpen = useAiraStore((state) => state.setNewUserOnboardingOpen);
   const requestOnboardingDialog = () => setNewUserOnboardingOpen(true);
   const setActiveSettingsSection = useCallback(
     (section: SettingsSectionId, fallbackSection: SettingsSectionId = activeSection) => {
@@ -710,8 +710,8 @@ export function SettingsPage({
   const [toolGroupingExploreEnabled, setToolGroupingExploreEnabled] = useState(true);
   const [toolGroupingTerminalEnabled, setToolGroupingTerminalEnabled] = useState(true);
   const [toolGroupingChangesEnabled, setToolGroupingChangesEnabled] = useState(false);
-  const [zcodeInteractionBehavior, setZCodeInteractionBehavior] =
-    useState<ZCodeInteractionBehavior>("queue");
+  const [airaInteractionBehavior, setAiraInteractionBehavior] =
+    useState<AiraInteractionBehavior>("queue");
   const [defaultHomeDir, setDefaultHomeDir] = useState("");
   const [hostPlatform, setHostPlatform] = useState("");
 
@@ -794,7 +794,7 @@ export function SettingsPage({
         setToolGroupingExploreEnabled(settings.toolGroupingExploreEnabled ?? true);
         setToolGroupingTerminalEnabled(settings.toolGroupingTerminalEnabled ?? true);
         setToolGroupingChangesEnabled(settings.toolGroupingChangesEnabled ?? false);
-        setZCodeInteractionBehavior(settings.zcodeInteractionBehavior ?? "queue");
+        setAiraInteractionBehavior(settings.airaInteractionBehavior ?? "queue");
       })
       .catch(() => {});
     // 这里配置的是本地全局设置。远端 workspace 激活时 useServices()
@@ -827,7 +827,7 @@ export function SettingsPage({
     setToolGroupingExploreEnabled(sharedSettings.toolGroupingExploreEnabled ?? true);
     setToolGroupingTerminalEnabled(sharedSettings.toolGroupingTerminalEnabled ?? true);
     setToolGroupingChangesEnabled(sharedSettings.toolGroupingChangesEnabled ?? false);
-    setZCodeInteractionBehavior(sharedSettings.zcodeInteractionBehavior ?? "queue");
+    setAiraInteractionBehavior(sharedSettings.airaInteractionBehavior ?? "queue");
     setReceivePreviewUpdates(sharedSettings.receivePreviewUpdates ?? false);
     setAutoDownloadAndInstallUpdates(sharedSettings.autoDownloadAndInstallUpdates ?? false);
   }, [sharedSettings]);
@@ -1251,16 +1251,16 @@ export function SettingsPage({
     },
     [updateSharedSettings],
   );
-  const handleZCodeInteractionBehaviorChange = useCallback(
-    async (behavior: ZCodeInteractionBehavior) => {
+  const handleAiraInteractionBehaviorChange = useCallback(
+    async (behavior: AiraInteractionBehavior) => {
       await runSettingsActionAsync({
         featureId: "settings.conversation",
         action: "change_interaction_behavior",
         trigger: "select",
-        operation: () => updateSharedSettings({ zcodeInteractionBehavior: behavior }),
+        operation: () => updateSharedSettings({ airaInteractionBehavior: behavior }),
         completed: { resultSource: "shared_settings", valueAfter: behavior },
       });
-      setZCodeInteractionBehavior(behavior);
+      setAiraInteractionBehavior(behavior);
     },
     [updateSharedSettings],
   );
@@ -1291,8 +1291,8 @@ export function SettingsPage({
       if (
         value === "light" ||
         value === "dark" ||
-        value === "zai-light" ||
-        value === "zai-dark" ||
+        value === "aira-light" ||
+        value === "aira-dark" ||
         value === "system"
       ) {
         runUserAction({
@@ -1717,7 +1717,7 @@ export function SettingsPage({
                             toolGroupingExploreEnabled={toolGroupingExploreEnabled}
                             toolGroupingTerminalEnabled={toolGroupingTerminalEnabled}
                             toolGroupingChangesEnabled={toolGroupingChangesEnabled}
-                            zcodeInteractionBehavior={zcodeInteractionBehavior}
+                            airaInteractionBehavior={airaInteractionBehavior}
                             askUserQuestionAutoResolutionEnabled={
                               askUserQuestionAutoResolutionEnabled
                             }
@@ -1764,7 +1764,7 @@ export function SettingsPage({
                             onToolGroupingChangesEnabledChange={
                               handleToolGroupingChangesEnabledChange
                             }
-                            onZCodeInteractionBehaviorChange={handleZCodeInteractionBehaviorChange}
+                            onAiraInteractionBehaviorChange={handleAiraInteractionBehaviorChange}
                             onAskUserQuestionAutoResolutionEnabledChange={
                               handleAskUserQuestionAutoResolutionEnabledChange
                             }

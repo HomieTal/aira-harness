@@ -7,7 +7,7 @@ import {
   normalizeProviderFamilyDomain,
   resolveModelProviderFamilyIdByProviderId,
   TID_SIDEBAR_CODING_PLAN_USAGE_BUTTON,
-} from "@zcode/shared";
+} from "@aira/shared";
 import { BarChart3Icon, RocketIcon } from "lucide-react";
 import { DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu.js";
 import {
@@ -16,7 +16,7 @@ import {
 } from "@/CodingPlanUsageRemainingPanel.js";
 import { useProviderSettingsView } from "@/hooks/useProviderSettingsView.js";
 import { useUsageEntitlement } from "@/hooks/useUsageEntitlement.js";
-import { useZCodeIntl } from "@/i18n/IntlProvider.js";
+import { useAiraIntl } from "@/i18n/IntlProvider.js";
 import { useSettings } from "@/hooks/useSettingService.js";
 import {
   resolveEntitledAccountProviderAccess,
@@ -38,7 +38,7 @@ import {
   buildCodingPlanUsageSources,
   resolveSidebarCurrentCodingPlanUsageSource,
 } from "@/lib/codingPlanUsageSources.js";
-import { selectWorkspaceZCodeState, useZCodeSessionStore } from "@/store/zcodeSessionStore.js";
+import { selectWorkspaceAiraState, useAiraSessionStore } from "@/store/airaSessionStore.js";
 import { parseCustomProviderIdFromSupplierKey } from "@/lib/modelConfigSync.js";
 import { setPendingSettingsUsageIntent } from "@/lib/settingsNavigation.js";
 import {
@@ -99,15 +99,15 @@ export function useWorkspaceSidebarFooterUsageSummaryState({
     providerSettingsRead.state.status === "ready" ? providerSettingsRead.state.view : null;
   // 首次读取失败也不能被解释成“已经加载且没有套餐”；只有 Ready 才能消费 Provider 事实。
   const providerSourcesLoading = providerSettingsRead.state.status !== "ready";
-  const selectedSupplierKey = useZCodeSessionStore((state) =>
+  const selectedSupplierKey = useAiraSessionStore((state) =>
     workspacePath
-      ? selectWorkspaceZCodeState(state, workspacePath, workspaceIdentity).selectedSupplierKey
+      ? selectWorkspaceAiraState(state, workspacePath, workspaceIdentity).selectedSupplierKey
       : "",
   );
   const availableCodingPlanProviders = useMemo(
     () =>
       [
-        BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan,
+        BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan,
         BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan,
       ].flatMap((providerId): CodingPlanUsageAvailableProvider[] => {
         const access = resolveEntitledAccountProviderAccess(providerSettingsView, providerId);
@@ -118,31 +118,31 @@ export function useWorkspaceSidebarFooterUsageSummaryState({
             accountAccess: access.access,
             label:
               access.label ||
-              (providerId === BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan
-                ? "Z.ai - Coding Plan"
+              (providerId === BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan
+                ? "Aira AI - Coding Plan"
                 : "BigModel - Coding Plan"),
           },
         ];
       }),
     [providerSettingsView],
   );
-  const zaiProvider = availableCodingPlanProviders.find(
-    (provider) => provider.providerId === BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan,
+  const airaProvider = availableCodingPlanProviders.find(
+    (provider) => provider.providerId === BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan,
   );
   const bigmodelProvider = availableCodingPlanProviders.find(
     (provider) => provider.providerId === BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan,
   );
-  const zaiProviderFingerprint = resolveEntitledAccountProviderAccessFingerprint(
+  const airaProviderFingerprint = resolveEntitledAccountProviderAccessFingerprint(
     providerSettingsView,
-    BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan,
+    BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan,
   );
   const bigmodelProviderFingerprint = resolveEntitledAccountProviderAccessFingerprint(
     providerSettingsView,
     BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan,
   );
-  const zaiTeamProvider = resolveEntitledAccountProviderAccess(
+  const airaTeamProvider = resolveEntitledAccountProviderAccess(
     providerSettingsView,
-    BUILTIN_MODEL_PROVIDER_IDS.zaiTeamCodingPlan,
+    BUILTIN_MODEL_PROVIDER_IDS.airaTeamCodingPlan,
   );
   const bigmodelTeamProvider = resolveEntitledAccountProviderAccess(
     providerSettingsView,
@@ -154,7 +154,7 @@ export function useWorkspaceSidebarFooterUsageSummaryState({
     ? resolveModelProviderFamilyIdByProviderId(selectedProviderIdFromSupplierKey)
     : null;
   // providerFamilyDomain 是当前登录/运行 family 边界；BigModel Team selectedKey
-  // 会在切换到 Z.ai 后保留，footer 若不按当前 domain 过滤会把头像旁徽标误显示成 Team。
+  // 会在切换到 Aira AI 后保留，footer 若不按当前 domain 过滤会把头像旁徽标误显示成 Team。
   const scopedSelectedProviderId =
     selectedProviderFamilyId &&
     providerFamilyDomain &&
@@ -164,7 +164,7 @@ export function useWorkspaceSidebarFooterUsageSummaryState({
   const bigmodelFamilyAllowed = providerFamilyDomain !== "zai";
   // 原只有 bigmodelFamilyAllowed 单变量，zai family 下 enterprise products 完全不拉。
   // zai team plan 对称化需要 zai family 也独立拉一份 enterprise pricing。
-  const zaiFamilyAllowed = providerFamilyDomain !== "bigmodel";
+  const airaFamilyAllowed = providerFamilyDomain !== "bigmodel";
   const bigmodelEnterpriseProducts = useEnterpriseCodingPlanProducts({
     // footer badge 和升级入口都需要识别 Team Plan。
     // Team 项目上下文只在企业 pricing/customerInfo 返回，账号级头像徽标也不能被当前连接方式卡住。
@@ -173,8 +173,8 @@ export function useWorkspaceSidebarFooterUsageSummaryState({
     authenticated: true,
     family: "bigmodel",
   });
-  const zaiEnterpriseProducts = useEnterpriseCodingPlanProducts({
-    enabled: enabled && !providerSourcesLoading && zaiFamilyAllowed && Boolean(zaiTeamProvider),
+  const airaEnterpriseProducts = useEnterpriseCodingPlanProducts({
+    enabled: enabled && !providerSourcesLoading && airaFamilyAllowed && Boolean(airaTeamProvider),
     authenticated: true,
     family: "zai",
   });
@@ -183,19 +183,19 @@ export function useWorkspaceSidebarFooterUsageSummaryState({
       ...(bigmodelEnterpriseProducts.snapshot?.productList.filter(
         (product) => product.subscribed === true,
       ) ?? []),
-      ...(zaiEnterpriseProducts.snapshot?.productList.filter(
+      ...(airaEnterpriseProducts.snapshot?.productList.filter(
         (product) => product.subscribed === true,
       ) ?? []),
     ],
-    [bigmodelEnterpriseProducts.snapshot?.productList, zaiEnterpriseProducts.snapshot?.productList],
+    [bigmodelEnterpriseProducts.snapshot?.productList, airaEnterpriseProducts.snapshot?.productList],
   );
   const teamSources = useMemo(
     () =>
       buildCodingPlanUsageSources({
         accountAccesses: {
-          ...(zaiTeamProvider?.access
+          ...(airaTeamProvider?.access
             ? {
-                zai: zaiTeamProvider.access,
+                zai: airaTeamProvider.access,
               }
             : {}),
           ...(bigmodelTeamProvider?.access
@@ -206,7 +206,7 @@ export function useWorkspaceSidebarFooterUsageSummaryState({
         },
         subscribedTeamProducts,
       }),
-    [bigmodelTeamProvider?.access, subscribedTeamProducts, zaiTeamProvider?.access],
+    [bigmodelTeamProvider?.access, subscribedTeamProducts, airaTeamProvider?.access],
   );
   const currentUsageSource = useMemo(
     () =>
@@ -216,12 +216,12 @@ export function useWorkspaceSidebarFooterUsageSummaryState({
         accountAccesses: {
           ...(resolveEntitledAccountProviderAccess(
             providerSettingsView,
-            BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan,
+            BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan,
           )?.access
             ? {
                 zai: resolveEntitledAccountProviderAccess(
                   providerSettingsView,
-                  BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan,
+                  BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan,
                 )!.access,
               }
             : {}),
@@ -244,29 +244,29 @@ export function useWorkspaceSidebarFooterUsageSummaryState({
       bigmodelProvider?.accountAccess,
       sharedSettings?.providerFamilyConnectionSelections,
       teamSources,
-      zaiProvider?.accountAccess,
+      airaProvider?.accountAccess,
     ],
   );
   const selectedProviderId = currentUsageSource?.sourceId;
 
-  const zaiEntitlement = useUsageEntitlement({
+  const airaEntitlement = useUsageEntitlement({
     enabled:
       enabled &&
       !providerSourcesLoading &&
       providerFamilyDomain !== "bigmodel" &&
-      Boolean(zaiProvider),
+      Boolean(airaProvider),
     includeSubscription: true,
-    preferredProviderId: BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan,
+    preferredProviderId: BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan,
     accountAccess: resolveEntitledAccountProviderAccess(
       providerSettingsView,
-      BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan,
+      BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan,
     )?.access,
     allowDisabledPreferredProvider: true,
     requirePreferredProvider: true,
     allowEnvApiKey: false,
     cacheKey: buildUsageEntitlementCacheKey({
-      providerId: BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan,
-      providerFingerprint: zaiProviderFingerprint,
+      providerId: BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan,
+      providerFingerprint: airaProviderFingerprint,
     }),
     refreshOnMount: false,
   });
@@ -290,7 +290,7 @@ export function useWorkspaceSidebarFooterUsageSummaryState({
   });
   const teamEntitlement = useUsageEntitlement({
     // 原硬绑 bigmodelCodingPlan providerId 判断，zai team source 的 providerId
-    // 是 zaiCodingPlan，永远进不到 team 分支，导致 zai team 额度不查询、badge 不显示。
+    // 是 airaCodingPlan，永远进不到 team 分支，导致 zai team 额度不查询、badge 不显示。
     // 改为按 currentUsageSource.audience === "team" 路由，providerId 动态取。
     enabled: enabled && !providerSourcesLoading && currentUsageSource?.audience === "team",
     includeSubscription: true,
@@ -308,21 +308,21 @@ export function useWorkspaceSidebarFooterUsageSummaryState({
   // 1 分钟 freshness window、失败退避和 in-flight 合并；hook disabled 时 refresh 是 no-op。
   useEffect(() => {
     for (const refresh of [
-      zaiEntitlement.refresh,
+      airaEntitlement.refresh,
       bigmodelEntitlement.refresh,
       teamEntitlement.refresh,
     ]) {
       void refresh({ silent: true, reason: "access" });
     }
-  }, [zaiEntitlement.refresh, bigmodelEntitlement.refresh, teamEntitlement.refresh]);
+  }, [airaEntitlement.refresh, bigmodelEntitlement.refresh, teamEntitlement.refresh]);
   const profilePlanBadge = resolveSidebarFooterProfilePlanBadge({
     individualEntitlements: [
       ...(providerFamilyDomain !== "bigmodel"
         ? [
             {
-              providerId: BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan,
-              snapshot: zaiEntitlement.snapshot,
-              loading: zaiEntitlement.loading,
+              providerId: BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan,
+              snapshot: airaEntitlement.snapshot,
+              loading: airaEntitlement.loading,
             },
           ]
         : []),
@@ -339,20 +339,20 @@ export function useWorkspaceSidebarFooterUsageSummaryState({
     // 头像徽标使用账号的 Team entitlement；pricing 结果只负责额度来源和套餐详情。
     hasTeamPlanEntitlement:
       providerFamilyDomain === "zai"
-        ? Boolean(zaiTeamProvider)
+        ? Boolean(airaTeamProvider)
         : providerFamilyDomain === "bigmodel"
           ? Boolean(bigmodelTeamProvider)
-          : Boolean(zaiTeamProvider || bigmodelTeamProvider),
+          : Boolean(airaTeamProvider || bigmodelTeamProvider),
   });
   const providerEntitlements = [
-    ...(currentUsageSource?.providerId === BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan &&
+    ...(currentUsageSource?.providerId === BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan &&
     currentUsageSource.audience === "individual"
       ? [
           {
-            sourceId: BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan,
-            providerId: BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan,
+            sourceId: BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan,
+            providerId: BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan,
             accountAccess: currentUsageSource.accountAccess,
-            ...zaiEntitlement,
+            ...airaEntitlement,
           },
         ]
       : []),
@@ -390,7 +390,7 @@ export function useWorkspaceSidebarFooterUsageSummaryState({
   });
   const visibleUsageState = usageState?.hasAnyActiveCodingPlan ? usageState : null;
   const selectedUpgradeProviderId: SidebarUsageCodingPlanProviderId | undefined =
-    selectedProviderId === BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan ||
+    selectedProviderId === BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan ||
     selectedProviderId === BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan
       ? selectedProviderId
       : undefined;
@@ -427,7 +427,7 @@ export function WorkspaceSidebarFooterUsageSummaryContent({
     funnelContext: CodingPlanFunnelContext,
   ) => void;
 }) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useAiraIntl();
   const entryGate = useCodingPlanEntryGate();
   const { providerEntitlements, upgradeTargetProviderId } = state;
   const upgradeProviderSnapshot =
@@ -486,7 +486,7 @@ export function WorkspaceSidebarFooterPlanBadge({
 }: {
   state: WorkspaceSidebarFooterUsageSummaryState;
 }) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useAiraIntl();
   const label =
     state.profilePlanBadge?.audience === "team"
       ? intl.formatMessage({ id: "sidebar.usage.plan.audienceTeam" })

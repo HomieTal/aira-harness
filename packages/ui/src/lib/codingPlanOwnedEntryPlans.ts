@@ -1,12 +1,12 @@
-import { BUILTIN_MODEL_PROVIDER_IDS, type UsageEntitlementSnapshot } from "@zcode/shared";
+import { BUILTIN_MODEL_PROVIDER_IDS, type UsageEntitlementSnapshot } from "@aira/shared";
 
 const startIds: readonly string[] = [
   BUILTIN_MODEL_PROVIDER_IDS.bigmodelStartPlan,
-  BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan,
+  BUILTIN_MODEL_PROVIDER_IDS.airaStartPlan,
 ];
 const personalIds: readonly string[] = [
   BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan,
-  BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan,
+  BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan,
 ];
 const normalize = (value: string) =>
   value

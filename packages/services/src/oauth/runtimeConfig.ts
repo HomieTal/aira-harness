@@ -1,6 +1,6 @@
-import type { OAuthProviderId } from "@zcode/shared";
+import type { OAuthProviderId } from "@aira/shared";
 import { createBigModelProviderRuntimeConfig } from "./providers/bigmodelProviderConfig.js";
-import { createZaiProviderRuntimeConfig } from "./providers/zaiProviderConfig.js";
+import { createAiraProviderRuntimeConfig } from "./providers/airaProviderConfig.js";
 
 /** Provider 运行时配置（仅 host process 可见） */
 export interface OAuthProviderRuntimeConfig {
@@ -29,6 +29,6 @@ export interface OAuthRuntimeConfig {
  */
 export function createOAuthRuntimeConfig(env: NodeJS.ProcessEnv = process.env): OAuthRuntimeConfig {
   return {
-    providers: [createBigModelProviderRuntimeConfig(env), createZaiProviderRuntimeConfig(env)],
+    providers: [createBigModelProviderRuntimeConfig(env), createAiraProviderRuntimeConfig(env)],
   };
 }

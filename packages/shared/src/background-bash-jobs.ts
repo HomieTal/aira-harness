@@ -1,42 +1,42 @@
 import {
-  collectVisibleZCodeBackgroundTaskControlItems,
-  getZCodeBackgroundTaskControlItemElapsedMs,
-  isActiveZCodeBackgroundTaskControlItem,
-  parseZCodeBackgroundTaskControlItems,
-  type ZCodeBackgroundTaskControlItem,
-  type ZCodeBackgroundTaskControlStatus,
+  collectVisibleAiraBackgroundTaskControlItems,
+  getAiraBackgroundTaskControlItemElapsedMs,
+  isActiveAiraBackgroundTaskControlItem,
+  parseAiraBackgroundTaskControlItems,
+  type AiraBackgroundTaskControlItem,
+  type AiraBackgroundTaskControlStatus,
 } from "./background-task-controls.js";
 
-export type ZCodeBackgroundBashJobStatus = ZCodeBackgroundTaskControlStatus;
-export type ZCodeBackgroundBashJob = ZCodeBackgroundTaskControlItem & {
+export type AiraBackgroundBashJobStatus = AiraBackgroundTaskControlStatus;
+export type AiraBackgroundBashJob = AiraBackgroundTaskControlItem & {
   taskKind: "bash";
 };
 
-export function parseZCodeBackgroundBashJobs(value: unknown): ZCodeBackgroundBashJob[] {
-  return parseZCodeBackgroundTaskControlItems(value).filter(isBackgroundBashJob);
+export function parseAiraBackgroundBashJobs(value: unknown): AiraBackgroundBashJob[] {
+  return parseAiraBackgroundTaskControlItems(value).filter(isBackgroundBashJob);
 }
 
-export function isActiveZCodeBackgroundBashJob(job: ZCodeBackgroundBashJob): boolean {
-  return isActiveZCodeBackgroundTaskControlItem(job);
+export function isActiveAiraBackgroundBashJob(job: AiraBackgroundBashJob): boolean {
+  return isActiveAiraBackgroundTaskControlItem(job);
 }
 
-export function getZCodeBackgroundBashJobElapsedMs(
-  job: ZCodeBackgroundBashJob,
+export function getAiraBackgroundBashJobElapsedMs(
+  job: AiraBackgroundBashJob,
   now = Date.now(),
 ): number {
-  return getZCodeBackgroundTaskControlItemElapsedMs(job, now);
+  return getAiraBackgroundTaskControlItemElapsedMs(job, now);
 }
 
-export function collectVisibleZCodeBackgroundBashJobs(
-  jobs: readonly ZCodeBackgroundBashJob[],
+export function collectVisibleAiraBackgroundBashJobs(
+  jobs: readonly AiraBackgroundBashJob[],
   now = Date.now(),
   thresholdMs = 30_000,
-): Array<ZCodeBackgroundBashJob & { elapsedMs: number }> {
-  return collectVisibleZCodeBackgroundTaskControlItems(jobs, now, thresholdMs) as Array<
-    ZCodeBackgroundBashJob & { elapsedMs: number }
+): Array<AiraBackgroundBashJob & { elapsedMs: number }> {
+  return collectVisibleAiraBackgroundTaskControlItems(jobs, now, thresholdMs) as Array<
+    AiraBackgroundBashJob & { elapsedMs: number }
   >;
 }
 
-function isBackgroundBashJob(job: ZCodeBackgroundTaskControlItem): job is ZCodeBackgroundBashJob {
+function isBackgroundBashJob(job: AiraBackgroundTaskControlItem): job is AiraBackgroundBashJob {
   return job.taskKind === "bash";
 }

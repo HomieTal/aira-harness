@@ -1,9 +1,9 @@
-import type { ApiClient } from "@zcode/shared";
+import type { ApiClient } from "@aira/shared";
 import type { ICredentialService } from "../credential/credential.js";
 import type { ICodingPlanSubscriptionService } from "./codingPlanSubscription.js";
 import { BigModelCodingPlanSubscriptionProvider } from "./bigmodelCodingPlanSubscriptionProvider.js";
-import type { ModelSelectionView } from "@zcode/provider";
-import { ZaiCodingPlanSubscriptionProvider } from "./zaiCodingPlanSubscriptionProvider.js";
+import type { ModelSelectionView } from "@aira/provider";
+import { AiraCodingPlanSubscriptionProvider } from "./airaCodingPlanSubscriptionProvider.js";
 
 interface CodingPlanSubscriptionServiceDependencies {
   apiClient: ApiClient;
@@ -29,12 +29,12 @@ export function createCodingPlanSubscriptionService(
   dependencies: CodingPlanSubscriptionServiceDependencies,
 ): ICodingPlanSubscriptionService {
   const bigmodelProvider = new BigModelCodingPlanSubscriptionProvider(dependencies);
-  const zaiProvider = new ZaiCodingPlanSubscriptionProvider(dependencies);
+  const airaProvider = new AiraCodingPlanSubscriptionProvider(dependencies);
 
   // 按 family 选择 enterprise 读路径 provider；缺省（含未指定 family 的历史调用）走 bigmodel。
   const resolveEnterprisePricingProvider = (
     family?: "bigmodel" | "zai",
-  ): BigModelCodingPlanSubscriptionProvider => (family === "zai" ? zaiProvider : bigmodelProvider);
+  ): BigModelCodingPlanSubscriptionProvider => (family === "zai" ? airaProvider : bigmodelProvider);
 
   return {
     batchPreview: (request) => bigmodelProvider.batchPreview(request),

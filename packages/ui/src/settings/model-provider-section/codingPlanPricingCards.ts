@@ -1,4 +1,4 @@
-import { BUILTIN_MODEL_PROVIDER_IDS } from "@zcode/shared";
+import { BUILTIN_MODEL_PROVIDER_IDS } from "@aira/shared";
 import type { CodingPlanProviderId } from "@/settings/model-provider-section/constants.js";
 
 // 死代码清理：原生购买组件 CodingPlanPricingCards 及其配套 resolver 已随
@@ -14,8 +14,8 @@ export function resolveCodingPlanUpgradeProductsProviderId(
 ): CodingPlanProviderId {
   // Start Plan 是免费入口，编程套餐列表应直接展示原 Z.AI Coding Plan 付费套餐。
   // 继续用 Start Plan providerId 会把免费 Start SKU 当成可购买套餐重复展示。
-  if (providerId === BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan) {
-    return BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan;
+  if (providerId === BUILTIN_MODEL_PROVIDER_IDS.airaStartPlan) {
+    return BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan;
   }
 
   // BigModel Start Plan 同样是免费入口，展开升级时必须使用

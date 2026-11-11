@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { useProviderSettingsView } from "@/hooks/useProviderSettingsView.js";
 import { useServices } from "@/hooks/useServices.js";
-import { useZCodeStore } from "@/store/StoreProvider.js";
+import { useAiraStore } from "@/store/StoreProvider.js";
 import { useCodingPlanEntitlements } from "@/settings/model-provider-section/useCodingPlanEntitlements.js";
-import { BUILTIN_MODEL_PROVIDER_IDS, type EnterpriseCodingPlanPricingProduct } from "@zcode/shared";
+import { BUILTIN_MODEL_PROVIDER_IDS, type EnterpriseCodingPlanPricingProduct } from "@aira/shared";
 import { buildOwnedEntryPlanList } from "@/lib/codingPlanOwnedEntryPlans.js";
 import { resolveAccountProviderInspectionAccess } from "@/lib/accountProviderAccess.js";
 import { logger } from "@/logger.js";
@@ -19,7 +19,7 @@ export function useCodingPlanEntryPlanList(): CodingPlanEntryInventory {
   const providerSettingsView = state.status === "ready" ? state.view : null;
   const loading = state.status === "loading";
   const { credentialService, codingPlanSubscriptionService } = useServices();
-  const user = useZCodeStore((state) => state.user);
+  const user = useAiraStore((state) => state.user);
   // 不传当前选中的团队上下文，四种 Start/个人连接分别使用已有权益缓存。
   const { entitlements, refresh } = useCodingPlanEntitlements({
     providerSettingsView,
@@ -94,9 +94,9 @@ export function useCodingPlanEntryPlanList(): CodingPlanEntryInventory {
   const usableTeams = sameIdentity && teams.sources.every((source) => source.products !== null);
   const planIds: readonly string[] = [
     BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan,
-    BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan,
+    BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan,
     BUILTIN_MODEL_PROVIDER_IDS.bigmodelStartPlan,
-    BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan,
+    BUILTIN_MODEL_PROVIDER_IDS.airaStartPlan,
   ];
   // 账号模型没有 Personal API Key；沿用权益 hook 的只读 Access 判定，不能过滤未选中/禁用套餐。
   const required = planIds

@@ -1,9 +1,9 @@
-import { BIGMODEL_PROVIDER_ID, resolveBigModelApiOrigin, ZAI_PROVIDER_ID } from "@zcode/shared";
-import { ZAI_API_HOST } from "../providers/api/apiEndpoints.js";
+import { BIGMODEL_PROVIDER_ID, resolveBigModelApiOrigin, AIRA_PROVIDER_ID } from "@aira/shared";
+import { AIRA_API_HOST } from "../providers/api/apiEndpoints.js";
 import {
   DEFAULT_ORG_NAME,
   DEFAULT_PROJECT_NAME,
-  ZCODE_API_KEY_NAME,
+  AIRA_API_KEY_NAME,
   type AccountApiProviderId,
   type RemoteApiKeySecret,
   type RemoteApiKeySummary,
@@ -71,9 +71,9 @@ export class AccountProviderApiKeyResolver {
         return await this.resolveBizApiKey(resolveBigModelApiOrigin(process.env), accessToken);
       }
 
-      if (provider === ZAI_PROVIDER_ID) {
+      if (provider === AIRA_PROVIDER_ID) {
         // 必须 await，才能由当前 catch 将复制明文 Key 失败收敛为无可用凭据。
-        return await this.resolveZaiApiKey(accessToken);
+        return await this.resolveAiraApiKey(accessToken);
       }
     } catch {
       return null;
@@ -82,9 +82,9 @@ export class AccountProviderApiKeyResolver {
     return null;
   }
 
-  private async resolveZaiApiKey(oauthAccessToken: string): Promise<string | null> {
+  private async resolveAiraApiKey(oauthAccessToken: string): Promise<string | null> {
     // Provider Connection 已把 Z.AI access token 持久化为业务 token。
-    return this.resolveBizApiKey(ZAI_API_HOST, `Bearer ${oauthAccessToken}`, {
+    return this.resolveBizApiKey(AIRA_API_HOST, `Bearer ${oauthAccessToken}`, {
       requireSecretKey: true,
     });
   }
@@ -120,13 +120,13 @@ export class AccountProviderApiKeyResolver {
         headers: createBizAuthHeaders(authorization),
       })) ?? [];
 
-    let apiKeyEntry = apiKeys.find((item) => item.name === ZCODE_API_KEY_NAME) ?? null;
+    let apiKeyEntry = apiKeys.find((item) => item.name === AIRA_API_KEY_NAME) ?? null;
 
     if (!apiKeyEntry) {
       apiKeyEntry = await this.fetchRemoteData<RemoteApiKeySummary>(listUrl, {
         method: "POST",
         headers: createBizAuthHeaders(authorization),
-        body: JSON.stringify({ name: ZCODE_API_KEY_NAME }),
+        body: JSON.stringify({ name: AIRA_API_KEY_NAME }),
       });
     }
 

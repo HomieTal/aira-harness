@@ -5,9 +5,9 @@ import type { BUILTIN_MODEL_PROVIDER_IDS } from "./model-provider-types.js";
 export type CodingPlanPayType = "ALI" | "WECHAT";
 export type CodingPlanOverseasPaymentChannel = "STRIPE_PAY" | "PAYPAL_PAY";
 export type CodingPlanSubscriptionProviderId =
-  | typeof BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan
-  | typeof BUILTIN_MODEL_PROVIDER_IDS.zaiTeamCodingPlan
-  | typeof BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan
+  | typeof BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan
+  | typeof BUILTIN_MODEL_PROVIDER_IDS.airaTeamCodingPlan
+  | typeof BUILTIN_MODEL_PROVIDER_IDS.airaStartPlan
   | typeof BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan
   | typeof BUILTIN_MODEL_PROVIDER_IDS.bigmodelTeamCodingPlan
   | typeof BUILTIN_MODEL_PROVIDER_IDS.bigmodelStartPlan;

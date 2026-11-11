@@ -2,13 +2,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ExternalLinkIcon, RefreshCwIcon } from "lucide-react";
 import { usePlatform } from "@/hooks/usePlatform.js";
-import { RENDERER_ZCODE_ENDPOINT_URLS } from "@/lib/rendererZCodeEndpoint.js";
+import { RENDERER_AIRA_ENDPOINT_URLS } from "@/lib/rendererAiraEndpoint.js";
 import { logger } from "@/logger.js";
 import { cn } from "@/components/lib/utils.js";
 import { Button } from "@/components/ui/button.js";
 import { EmbeddedWebsiteHeader } from "@/components/EmbeddedWebsiteHeader.js";
-import { useZCodeIntl } from "@/i18n/IntlProvider.js";
-import { useZCodeStoreWithDefault } from "@/store/StoreProvider.js";
+import { useAiraIntl } from "@/i18n/IntlProvider.js";
+import { useAiraStoreWithDefault } from "@/store/StoreProvider.js";
 import { normalizeThemePreference, resolveTheme } from "@/useTheme.js";
 import type { CodingPlanProviderId } from "@/settings/model-provider-section/constants.js";
 import type { CodingPlanFunnelContext } from "@/lib/codingPlanFunnelTelemetry.js";
@@ -31,8 +31,8 @@ import {
 import {
   CodingPlanWebviewChannels,
   type CodingPlanPurchaseCompletePayload,
-  ZCODE_VERSION,
-} from "@zcode/shared";
+  AIRA_VERSION,
+} from "@aira/shared";
 
 interface CodingPlanEmbeddedWebviewDialogProps {
   credentialService: {
@@ -48,8 +48,8 @@ interface CodingPlanEmbeddedWebviewDialogProps {
   /**
    * 官网页购买成功后的回调。
    *
-   * 官网页通过 preload 注入的 window.zcodeBridge.notifyPurchaseComplete({ provider })
-   * 发送 zcode:coding-plan-purchase-complete 频道消息，本组件在 webview 的
+   * 官网页通过 preload 注入的 window.airaBridge.notifyPurchaseComplete({ provider })
+   * 发送 aira:coding-plan-purchase-complete 频道消息，本组件在 webview 的
    * ipc-message 事件里识别该频道并触发此回调（经 onPurchaseCompleteRef 防 stale closure）。
    * 上层（CodingPlanUpgradeDialog）在此回调里刷新 entitlements/providers 并关闭 webview。
    */
@@ -58,7 +58,7 @@ interface CodingPlanEmbeddedWebviewDialogProps {
 
 interface CodingPlanWebviewImportMetaEnv {
   VITE_CODING_PLAN_WEBVIEW_ORIGIN?: string;
-  VITE_ZCODE_E2E_STORE_BRIDGE?: string;
+  VITE_AIRA_E2E_STORE_BRIDGE?: string;
 }
 
 interface CodingPlanWebviewNavigationState {
@@ -83,10 +83,10 @@ export function CodingPlanEmbeddedWebviewDialog({
   onPurchaseComplete,
   onOpenResult,
 }: CodingPlanEmbeddedWebviewDialogProps) {
-  const { intl, locale } = useZCodeIntl();
+  const { intl, locale } = useAiraIntl();
   const platform = usePlatform();
-  const theme = useZCodeStoreWithDefault((state) => state.theme, "zai-dark");
-  const userId = useZCodeStoreWithDefault((state) => state.user?.id ?? null, null);
+  const theme = useAiraStoreWithDefault((state) => state.theme, "aira-dark");
+  const userId = useAiraStoreWithDefault((state) => state.user?.id ?? null, null);
   const webviewRef = useRef<ElectronWebviewTag | null>(null);
   const onOpenResultRef = useRef(onOpenResult);
   onOpenResultRef.current = onOpenResult;
@@ -117,14 +117,14 @@ export function CodingPlanEmbeddedWebviewDialog({
   });
   const provider = resolveCodingPlanWebsiteProvider(providerId);
   const embeddedTheme: CodingPlanEmbeddedTheme =
-    normalizeThemePreference(theme) === "zai-dark" || resolveTheme(theme) === "dark"
-      ? "zai-dark"
-      : "zai-light";
+    normalizeThemePreference(theme) === "aira-dark" || resolveTheme(theme) === "dark"
+      ? "aira-dark"
+      : "aira-light";
   const computedWebviewUrl = useMemo(() => {
     const env = readCodingPlanWebviewImportMetaEnv();
     const origin = resolveCodingPlanEmbeddedOrigin({
-      endpointOrigin: RENDERER_ZCODE_ENDPOINT_URLS.origin,
-      e2eStoreBridgeEnabled: env.VITE_ZCODE_E2E_STORE_BRIDGE === "1",
+      endpointOrigin: RENDERER_AIRA_ENDPOINT_URLS.origin,
+      e2eStoreBridgeEnabled: env.VITE_AIRA_E2E_STORE_BRIDGE === "1",
       overrideOrigin: env.VITE_CODING_PLAN_WEBVIEW_ORIGIN,
     });
     // URL 带 ?lang= hint 让官网首屏就有正确语言，避免注入前的英文闪烁。
@@ -158,7 +158,7 @@ export function CodingPlanEmbeddedWebviewDialog({
         const currentUrl = typeof webview.getURL === "function" ? webview.getURL() : "";
         if (
           !isTrustedCodingPlanEmbeddedWebviewUrl(currentUrl, {
-            e2eStoreBridgeEnabled: env.VITE_ZCODE_E2E_STORE_BRIDGE === "1",
+            e2eStoreBridgeEnabled: env.VITE_AIRA_E2E_STORE_BRIDGE === "1",
           })
         ) {
           // dom-ready 会在后续主 frame 导航时再次触发，初始 src 可信不代表
@@ -176,20 +176,20 @@ export function CodingPlanEmbeddedWebviewDialog({
         const credentials: CodingPlanEmbeddedCredentials =
           provider === "zai"
             ? {
-                zaiAccessToken: values[0],
-                zcodeJwtToken: values[1],
+                airaAccessToken: values[0],
+                airaJwtToken: values[1],
               }
             : {
                 bigmodelAccessToken: values[0],
-                // BigModel OAuth callback 同样会落盘 zcode JWT；官网用它在
-                // zcode-plan 域查 billing/balance 判定 Start Plan 状态。
-                zcodeJwtToken: values[1],
+                // BigModel OAuth callback 同样会落盘 aira JWT；官网用它在
+                // aira-plan 域查 billing/balance 判定 Start Plan 状态。
+                airaJwtToken: values[1],
               };
         const reportContext = buildCodingPlanEmbeddedReportContext({
           funnelContext,
           deviceMid,
           userId,
-          appVersion: ZCODE_VERSION,
+          appVersion: AIRA_VERSION,
         });
         const script = createCodingPlanAuthInjectionScript({
           provider,
@@ -349,8 +349,8 @@ export function CodingPlanEmbeddedWebviewDialog({
         setLoadError(event.details.reason);
         onOpenResultRef.current?.(false);
       };
-      // ipc-message: 官网页通过 preload 的 window.zcodeBridge.notifyPurchaseComplete
-      // 发回购买完成信号（zcode:coding-plan-purchase-complete）。
+      // ipc-message: 官网页通过 preload 的 window.airaBridge.notifyPurchaseComplete
+      // 发回购买完成信号（aira:coding-plan-purchase-complete）。
       // 参照 useEmbeddedBrowserWheelChain.ts 的 ipc-message handler 模式。
       const handleIpcMessage = (event: ElectronWebviewIpcMessageEvent) => {
         if (event.channel !== CodingPlanWebviewChannels.PurchaseComplete) {
@@ -502,7 +502,7 @@ export function CodingPlanEmbeddedWebviewDialog({
           <webview
             ref={handleWebviewRef}
             allowpopups={"" as unknown as boolean}
-            partition="persist:zcode-coding-plan"
+            partition="persist:aira-coding-plan"
             src={webviewUrl}
             className={cn(
               "min-h-0 flex-1 bg-background [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",

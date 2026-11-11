@@ -1,9 +1,9 @@
 import { useProviderSettingsView } from "@/hooks/useProviderSettingsView.js";
 import { buildStartPlanEntitlementOptions } from "@/lib/startPlanEntitlementOptions.js";
 import { useCallback, useEffect, useMemo, useRef, useSyncExternalStore } from "react";
-import { BUILTIN_MODEL_PROVIDER_IDS, isStartPlanModelProviderId } from "@zcode/shared";
-import type { IUsageStatsService } from "@zcode/services";
-import type { SessionErrorInfo, SessionPhase } from "@zcode/shared/zcode-protocol-v4";
+import { BUILTIN_MODEL_PROVIDER_IDS, isStartPlanModelProviderId } from "@aira/shared";
+import type { IUsageStatsService } from "@aira/services";
+import type { SessionErrorInfo, SessionPhase } from "@aira/shared/aira-protocol-v4";
 import { useUsageEntitlementWithService } from "@/hooks/useUsageEntitlement.js";
 import {
   resolveGlmQuotaBannerBusinessCode,
@@ -28,8 +28,8 @@ import { startPlanQuotaReminderStore } from "@/v4/startPlanQuotaReminderStore.js
 
 function isGlmQuotaBannerProviderId(providerId: string | null): boolean {
   return (
-    providerId === BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan ||
-    providerId === BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan ||
+    providerId === BUILTIN_MODEL_PROVIDER_IDS.airaIndividualCodingPlan ||
+    providerId === BUILTIN_MODEL_PROVIDER_IDS.airaStartPlan ||
     providerId === BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan ||
     providerId === BUILTIN_MODEL_PROVIDER_IDS.bigmodelStartPlan
   );

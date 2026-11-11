@@ -1,0 +1,40 @@
+{
+  "name": "@aira/cli",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Main CLI application for aira",
+  "bin": {
+    "aira": "./dist/aira.cjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "main": "./dist/aira.cjs",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "build:desktop-agent": "node scripts/build.mjs --desktop-agent",
+    "build:sea": "pnpm --dir ../../../.. exec turbo --skip-infer --cwd apps/aira-cli run build --filter=!@aira/cli --force && pnpm build && node scripts/build-sea.mjs --all",
+    "sea": "node scripts/build-sea.mjs",
+    "upload:sea": "node scripts/upload-sea-smb.mjs",
+    "clean": "node ../../scripts/clean-dist.mjs",
+    "dev": "tsx src/main.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint src",
+    "lint:fix": "oxlint --write src"
+  },
+  "dependencies": {
+    "@aira/adapters": "workspace:*",
+    "@aira/bootstrap": "workspace:*",
+    "@aira/contracts": "workspace:*",
+    "@aira/core": "workspace:*",
+    "@aira/dynamic-workflow-runtime": "workspace:*",
+    "@aira/i18n": "workspace:*",
+    "@aira/provider-node": "workspace:*",
+    "@aira/shared": "workspace:*",
+    "@aira/shared-types": "workspace:*",
+    "@aira/tui": "workspace:*",
+    "dotenv": "^17.4.2",
+    "playwright-core": "1.59.1"
+  }
+}

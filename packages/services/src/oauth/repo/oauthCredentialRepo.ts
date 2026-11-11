@@ -5,15 +5,15 @@ import type {
   OAuthProviderId,
   OAuthTokenSet,
   OAuthUserProfile,
-} from "@zcode/shared";
-import { BIGMODEL_PROVIDER_ID, isCredentialDecryptError, ZAI_PROVIDER_ID } from "@zcode/shared";
+} from "@aira/shared";
+import { BIGMODEL_PROVIDER_ID, isCredentialDecryptError, AIRA_PROVIDER_ID } from "@aira/shared";
 import type { ICredentialService } from "../../credential/credential.js";
 import { createServiceLogger } from "../../logger/serviceLogger.js";
 
 const ACTIVE_PROVIDER_KEY = "oauth:active_provider";
 const LOGIN_ATTRIBUTION_KEY = "oauth:login_attribution";
-const ZCODE_JWT_TOKEN_KEY = "zcodejwttoken";
-const KNOWN_OAUTH_PROVIDER_IDS = [BIGMODEL_PROVIDER_ID, ZAI_PROVIDER_ID] as const;
+const AIRA_JWT_TOKEN_KEY = "airajwttoken";
+const KNOWN_OAUTH_PROVIDER_IDS = [BIGMODEL_PROVIDER_ID, AIRA_PROVIDER_ID] as const;
 const log = createServiceLogger("oauthCredentialRepo");
 
 interface OAuthCredentialRepoOptions {
@@ -92,7 +92,7 @@ function toBase64ImageDataUrl(raw: string): string | null {
   return `data:${inferBase64ImageMimeType(decoded)};base64,${normalized}`;
 }
 
-function normalizeStoredZaiAvatarUrl(avatar: string | undefined): string | undefined {
+function normalizeStoredAiraAvatarUrl(avatar: string | undefined): string | undefined {
   const trimmed = avatar?.trim();
   if (!trimmed) {
     return undefined;
@@ -110,12 +110,12 @@ function normalizeStoredZaiAvatarUrl(avatar: string | undefined): string | undef
   return trimmed;
 }
 
-function toOAuthUserProfileFromRawZaiUser(raw: Record<string, unknown>): OAuthUserProfile | null {
+function toOAuthUserProfileFromRawAiraUser(raw: Record<string, unknown>): OAuthUserProfile | null {
   const id = typeof raw.user_id === "string" ? raw.user_id : "unknown";
   const name = typeof raw.name === "string" ? raw.name.trim() : "";
   const email = typeof raw.email === "string" ? raw.email : "";
   const username = name || email || id;
-  const avatarUrl = normalizeStoredZaiAvatarUrl(
+  const avatarUrl = normalizeStoredAiraAvatarUrl(
     typeof raw.avatar === "string" ? raw.avatar : undefined,
   );
 
@@ -298,15 +298,15 @@ export class OAuthCredentialRepo {
 
       const refreshToken = await this.credentialService.load(refreshTokenKey(provider));
 
-      const zcodeJwtToken =
-        provider === ZAI_PROVIDER_ID || provider === BIGMODEL_PROVIDER_ID
-          ? await this.credentialService.load(ZCODE_JWT_TOKEN_KEY)
+      const airaJwtToken =
+        provider === AIRA_PROVIDER_ID || provider === BIGMODEL_PROVIDER_ID
+          ? await this.credentialService.load(AIRA_JWT_TOKEN_KEY)
           : null;
 
       return {
         accessToken,
         ...(refreshToken ? { refreshToken } : {}),
-        ...(zcodeJwtToken ? { zcodeJwtToken } : {}),
+        ...(airaJwtToken ? { airaJwtToken } : {}),
       };
     } catch (error) {
       if (!isCredentialDecryptError(error)) {
@@ -327,14 +327,14 @@ export class OAuthCredentialRepo {
       await this.credentialService.delete(refreshTokenKey(provider));
     }
 
-    if (provider === ZAI_PROVIDER_ID || provider === BIGMODEL_PROVIDER_ID) {
-      if (tokenSet.zcodeJwtToken) {
-        // BigModel Start Plan 与 Z.ai Start Plan 一样消费 zcode JWT。
+    if (provider === AIRA_PROVIDER_ID || provider === BIGMODEL_PROVIDER_ID) {
+      if (tokenSet.airaJwtToken) {
+        // BigModel Start Plan 与 Aira AI Start Plan 一样消费 aira JWT。
         // JWT 必须在 OAuth callback 阶段随 tokenSet 落盘，后续 balance/runtime 只读取它，
         // 不能再拿 BigModel access token 拼另一个 /oauth/token body 临时兑换。
-        await this.credentialService.save(ZCODE_JWT_TOKEN_KEY, tokenSet.zcodeJwtToken);
+        await this.credentialService.save(AIRA_JWT_TOKEN_KEY, tokenSet.airaJwtToken);
       } else {
-        await this.credentialService.delete(ZCODE_JWT_TOKEN_KEY);
+        await this.credentialService.delete(AIRA_JWT_TOKEN_KEY);
       }
     }
   }
@@ -384,12 +384,12 @@ export class OAuthCredentialRepo {
         };
       }
 
-      if (provider === ZAI_PROVIDER_ID && typeof parsed === "object" && parsed !== null) {
+      if (provider === AIRA_PROVIDER_ID && typeof parsed === "object" && parsed !== null) {
         // ZAI user_info 现在按后端 data.user 原样持久化，
         // 启动恢复时需要从 user_id/name/avatar 重新映射展示字段。
-        const zaiProfile = toOAuthUserProfileFromRawZaiUser(parsed as Record<string, unknown>);
-        if (zaiProfile) {
-          return zaiProfile;
+        const airaProfile = toOAuthUserProfileFromRawAiraUser(parsed as Record<string, unknown>);
+        if (airaProfile) {
+          return airaProfile;
         }
       }
     } catch {
@@ -403,7 +403,7 @@ export class OAuthCredentialRepo {
     // ZAI 后端返回的 data.user 是后续账号态排查与恢复的源数据，
     // 之前只保存归一化展示字段会丢失 email/name/avatar 原始结构。
     const persistProfile =
-      provider === ZAI_PROVIDER_ID && profile.rawProfile ? profile.rawProfile : profile;
+      provider === AIRA_PROVIDER_ID && profile.rawProfile ? profile.rawProfile : profile;
 
     await this.credentialService.save(userInfoKey(provider), JSON.stringify(persistProfile));
   }
@@ -416,8 +416,8 @@ export class OAuthCredentialRepo {
     await this.credentialService.delete(accessTokenKey(provider));
     await this.credentialService.delete(refreshTokenKey(provider));
     await this.credentialService.delete(userInfoKey(provider));
-    if (shouldClearZcodeJwtOnLogout(provider)) {
-      await this.credentialService.delete(ZCODE_JWT_TOKEN_KEY);
+    if (shouldClearAiraJwtOnLogout(provider)) {
+      await this.credentialService.delete(AIRA_JWT_TOKEN_KEY);
     }
   }
 
@@ -431,7 +431,7 @@ export class OAuthCredentialRepo {
 
   private async clearCorruptOAuthSession(): Promise<void> {
     // AES-GCM 解密失败说明当前运行时已经无法信任本地 OAuth 登录态。
-    // 等价于强制登出已注册 OAuth provider：先清 provider 命名空间与共享 zcode JWT，
+    // 等价于强制登出已注册 OAuth provider：先清 provider 命名空间与共享 aira JWT，
     // 再通知 service 层清理 Start/Coding Plan 这类派生模型凭据，同时避免误删 SSH 等其他独立凭据。
     for (const provider of this.knownProviderIds) {
       await this.clearProvider(provider);
@@ -447,6 +447,6 @@ export class OAuthCredentialRepo {
   }
 }
 
-function shouldClearZcodeJwtOnLogout(provider: OAuthProviderId): boolean {
-  return provider === ZAI_PROVIDER_ID || provider === BIGMODEL_PROVIDER_ID;
+function shouldClearAiraJwtOnLogout(provider: OAuthProviderId): boolean {
+  return provider === AIRA_PROVIDER_ID || provider === BIGMODEL_PROVIDER_ID;
 }
