@@ -1,12 +1,12 @@
 import type {
-  ZCodeModelTrajectoryMessage,
-  ZCodeModelTrajectoryRecord,
-  ZCodeModelTrajectoryUsage,
-} from "@zcode/services";
+  AiraModelTrajectoryMessage,
+  AiraModelTrajectoryRecord,
+  AiraModelTrajectoryUsage,
+} from "@aira/services";
 import { Fragment } from "react";
 import { cn } from "@/components/lib/utils.js";
 import { Badge } from "@/components/ui/badge.js";
-import { useZCodeIntl } from "@/i18n/IntlProvider.js";
+import { useAiraIntl } from "@/i18n/IntlProvider.js";
 import { ContentPartView, EmptyState, summarizeRecords } from "@/ModelTrajectoryPaneDetails.js";
 import { ExpandableTrajectoryMessage } from "@/ModelTrajectoryExpandableMessage.js";
 import { ModelTrajectoryErrorBlock } from "@/ModelTrajectoryErrorBlock.js";
@@ -20,7 +20,7 @@ import { TrajectorySectionTitle } from "@/ModelTrajectorySectionTitle.js";
 
 export { EmptyState, summarizeRecords } from "@/ModelTrajectoryPaneDetails.js";
 
-export type IntlShape = ReturnType<typeof useZCodeIntl>["intl"];
+export type IntlShape = ReturnType<typeof useAiraIntl>["intl"];
 
 export function CallCard({
   record,
@@ -29,9 +29,9 @@ export function CallCard({
   expansionKeyPrefix,
   intl,
 }: {
-  record: ZCodeModelTrajectoryRecord;
+  record: AiraModelTrajectoryRecord;
   index: number;
-  inputMessages: ZCodeModelTrajectoryMessage[];
+  inputMessages: AiraModelTrajectoryMessage[];
   expansionKeyPrefix?: string;
   intl: IntlShape;
 }) {
@@ -113,8 +113,8 @@ export function CallCard({
   );
 }
 
-function SourceTitle({ record, intl }: { record: ZCodeModelTrajectoryRecord; intl: IntlShape }) {
-  const callSource: NonNullable<ZCodeModelTrajectoryRecord["callSource"]> = record.callSource ?? {
+function SourceTitle({ record, intl }: { record: AiraModelTrajectoryRecord; intl: IntlShape }) {
+  const callSource: NonNullable<AiraModelTrajectoryRecord["callSource"]> = record.callSource ?? {
     kind: "main",
   };
   const labelId = sourceLabelId(callSource);
@@ -133,7 +133,7 @@ function SourceTitle({ record, intl }: { record: ZCodeModelTrajectoryRecord; int
   );
 }
 
-function sourceLabelId(callSource: NonNullable<ZCodeModelTrajectoryRecord["callSource"]>): string {
+function sourceLabelId(callSource: NonNullable<AiraModelTrajectoryRecord["callSource"]>): string {
   switch (callSource.querySource) {
     case "main_turn":
       return "modelTrajectory.source.main";
@@ -173,7 +173,7 @@ function MessageBlock({
   expansionKey,
   intl,
 }: {
-  message: ZCodeModelTrajectoryMessage;
+  message: AiraModelTrajectoryMessage;
   callStartedAt: string;
   callDurationMs?: number;
   isAlt: boolean;
@@ -181,7 +181,7 @@ function MessageBlock({
   intl: IntlShape;
 }) {
   // 调用时间按界面语言格式化（不跟系统语言）
-  const { locale } = useZCodeIntl();
+  const { locale } = useAiraIntl();
   // 只有已知角色才有 i18n key，未知角色直接展示原始 role，避免触发缺失 key。
   const knownRole = ["system", "user", "assistant", "tool"].includes(message.role);
   const roleLabel = knownRole
@@ -258,7 +258,7 @@ function ResponseBlock({
   expansionKeyPrefix,
   intl,
 }: {
-  response: NonNullable<ZCodeModelTrajectoryRecord["response"]>;
+  response: NonNullable<AiraModelTrajectoryRecord["response"]>;
   callStartedAt: string;
   callDurationMs?: number;
   startRowIndex: number;
@@ -273,7 +273,7 @@ function ResponseBlock({
   }
 
   const rows: Array<{
-    message: ZCodeModelTrajectoryMessage;
+    message: AiraModelTrajectoryMessage;
     roleLabel: string;
     key: string;
     visualRole?: "reasoning";
@@ -346,7 +346,7 @@ function ResponseMessageRow({
   expansionKey,
   intl,
 }: {
-  message: ZCodeModelTrajectoryMessage;
+  message: AiraModelTrajectoryMessage;
   roleLabel: string;
   visualRole?: "reasoning";
   callStartedAt: string;
@@ -356,7 +356,7 @@ function ResponseMessageRow({
   intl: IntlShape;
 }) {
   // 调用时间按界面语言格式化（不跟系统语言）
-  const { locale } = useZCodeIntl();
+  const { locale } = useAiraIntl();
   return (
     <ExpandableTrajectoryMessage
       message={message}
@@ -379,11 +379,11 @@ function CallMetadata({
   record,
   usage,
 }: {
-  record: ZCodeModelTrajectoryRecord;
-  usage?: ZCodeModelTrajectoryUsage;
+  record: AiraModelTrajectoryRecord;
+  usage?: AiraModelTrajectoryUsage;
 }) {
   // token 数与时间按界面语言格式化（不跟系统语言）
-  const { locale } = useZCodeIntl();
+  const { locale } = useAiraIntl();
   const items: Array<{ text: string; title?: string }> = [];
   if (typeof usage?.inputTokens === "number") {
     items.push({ text: `IN ${usage.inputTokens.toLocaleString(locale)}` });

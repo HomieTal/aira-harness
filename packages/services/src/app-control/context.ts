@@ -1,4 +1,4 @@
-import { SessionControlError, type AppTrustedContext } from "@zcode/session-control/contracts";
+import { SessionControlError, type AppTrustedContext } from "@aira/session-control/contracts";
 import type {
   AppControlBinding,
   AppControlClientBinding,

@@ -1,5 +1,5 @@
-import { BufferReader, BufferWriter, deserialize, serialize, VSBuffer } from "@zcode/rpc";
-import { ISourceServerManagementService } from "@zcode/services";
+import { BufferReader, BufferWriter, deserialize, serialize, VSBuffer } from "@aira/rpc";
+import { ISourceServerManagementService } from "@aira/services";
 
 interface SnapshotFault {
   requests: number[][];

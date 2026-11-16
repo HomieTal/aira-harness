@@ -1,5 +1,5 @@
-import type { OutputStyle, OutputStyleConfig } from "@zcode/shared";
-import { ServiceChannels } from "@zcode/shared";
+import type { OutputStyle, OutputStyleConfig } from "@aira/shared";
+import { ServiceChannels } from "@aira/shared";
 import { createServiceDescriptor } from "../descriptors.js";
 
 export interface IOutputStyleService {

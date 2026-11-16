@@ -1,21 +1,21 @@
-import type { IRemoteBackend, RemoteUploadOptions } from "@zcode/server/remote";
-import { quotePosixPathArg } from "@zcode/server/remote/posixShell.js";
-import type { TraceId, ZCodePromptAttachment } from "@zcode/shared";
+import type { IRemoteBackend, RemoteUploadOptions } from "@aira/server/remote";
+import { quotePosixPathArg } from "@aira/server/remote/posixShell.js";
+import type { TraceId, AiraPromptAttachment } from "@aira/shared";
 import { randomUUID } from "node:crypto";
 
-export const REMOTE_PROMPT_ATTACHMENT_ROOT = "~/.zcode/tmp/prompt-attachments";
-const REMOTE_PROMPT_ATTACHMENT_RELATIVE_ROOT = ".zcode/tmp/prompt-attachments";
+export const REMOTE_PROMPT_ATTACHMENT_ROOT = "~/.aira/tmp/prompt-attachments";
+const REMOTE_PROMPT_ATTACHMENT_RELATIVE_ROOT = ".aira/tmp/prompt-attachments";
 
 export interface RemotePromptAttachmentMaterializeInput {
   taskId?: string;
   content: string;
   traceId: TraceId | string;
-  attachments?: ZCodePromptAttachment[];
+  attachments?: AiraPromptAttachment[];
 }
 
 export interface RemotePromptAttachmentMaterializeResult {
   content: string;
-  attachments?: ZCodePromptAttachment[];
+  attachments?: AiraPromptAttachment[];
   uploadedCount: number;
 }
 
@@ -32,7 +32,7 @@ export async function materializeRemotePromptAttachments(
   }
 
   const replacements = new Map<string, string>();
-  const nextAttachments: ZCodePromptAttachment[] = [];
+  const nextAttachments: AiraPromptAttachment[] = [];
   let remoteRootPromise: Promise<string> | undefined;
   let uploadedCount = 0;
   let changed = false;
@@ -88,7 +88,7 @@ export async function materializeRemotePromptAttachments(
     nextAttachments.push({
       ...attachment,
       localPath: remotePath,
-    } as ZCodePromptAttachment);
+    } as AiraPromptAttachment);
     replacements.set(localPath, remotePath);
     uploadedCount += 1;
     changed = true;
@@ -222,7 +222,7 @@ async function waitForRemoteCommand(
   });
 }
 
-function getAttachmentLocalPath(attachment: ZCodePromptAttachment): string | undefined {
+function getAttachmentLocalPath(attachment: AiraPromptAttachment): string | undefined {
   const localPath = attachment.localPath?.trim();
   return localPath ? attachment.localPath : undefined;
 }

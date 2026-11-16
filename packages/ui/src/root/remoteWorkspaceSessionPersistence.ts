@@ -1,5 +1,5 @@
-import type { AppSettings, RemoteWorkspaceSessionEntry } from "@zcode/shared";
-import { parseRemoteWorkspaceIdentity } from "@zcode/shared";
+import type { AppSettings, RemoteWorkspaceSessionEntry } from "@aira/shared";
+import { parseRemoteWorkspaceIdentity } from "@aira/shared";
 import {
   buildWorkspaceSessionKey,
   readPersistedWorkspaceSessionEntries,

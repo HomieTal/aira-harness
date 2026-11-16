@@ -1,4 +1,4 @@
-import { Emitter } from "@zcode/rpc";
+import { Emitter } from "@aira/rpc";
 import {
   normalizeRemoteConnectionError,
   remoteConnectionFailureLogLevel,
@@ -7,8 +7,8 @@ import {
   type ConnectionProfile,
   type RemoteTarget,
   type SourceServerOperationLog,
-} from "@zcode/shared";
-import type { TransportContext } from "@zcode/server/source-server";
+} from "@aira/shared";
+import type { TransportContext } from "@aira/server/source-server";
 
 type Operation = { sequence: number; logs: SourceServerOperationLog[] };
 

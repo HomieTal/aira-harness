@@ -1,6 +1,6 @@
-import { Emitter, type Event } from "@zcode/rpc";
-import type { ContextComposition } from "@zcode/shared/zcode-protocol-v4";
-import type { IZCodeAgentService } from "#src/zcode-agent/zcodeAgent.js";
+import { Emitter, type Event } from "@aira/rpc";
+import type { ContextComposition } from "@aira/shared/aira-protocol-v4";
+import type { IAiraAgentService } from "#src/aira-agent/airaAgent.js";
 import type { ServiceLogger } from "#src/logger/serviceLogger.js";
 import {
   createWorkspaceSubscriptions,
@@ -22,7 +22,7 @@ export interface ContextPump {
 }
 
 export function createContextPump(deps: {
-  agent: Pick<IZCodeAgentService, "getContextComposition" | "onDynamicContextCompositionChanged">;
+  agent: Pick<IAiraAgentService, "getContextComposition" | "onDynamicContextCompositionChanged">;
   workbench: WorkbenchState;
   logger: Pick<ServiceLogger, "debug" | "info">;
 }): ContextPump {

@@ -7,13 +7,13 @@ import {
   type MentionItemsResult,
   type ProvideMentionItemsInput,
   type StaticSlotItem,
-} from "@zcode/shared/extension-host";
-import { zcodeProtocolErrorCodes } from "@zcode/shared";
+} from "@aira/shared/extension-host";
+import { airaProtocolErrorCodes } from "@aira/shared";
 import type { ServiceLogger } from "#src/logger/serviceLogger.js";
 import {
-  ZCODE_AGENT_RUNTIME_UNAVAILABLE_CODE,
-  type IZCodeAgentService,
-} from "#src/zcode-agent/zcodeAgent.js";
+  AIRA_AGENT_RUNTIME_UNAVAILABLE_CODE,
+  type IAiraAgentService,
+} from "#src/aira-agent/airaAgent.js";
 
 // composer.mention 的候选项路由（docs/plugins/extension-host.md §16.6）：
 // - command 条目 → 扩展进程的命令（参数 { query }），返回值按插槽的 commandResult 校验；
@@ -26,7 +26,7 @@ export interface MentionItemsRouterDeps {
   staticTable(): ExtensionStaticTable;
   /** 当前代际的扩展进程连接；没有时为 null。 */
   connection(): { gen: number; host: IExtensionHostChannel } | null;
-  agent: Pick<IZCodeAgentService, "getPluginMentionItems">;
+  agent: Pick<IAiraAgentService, "getPluginMentionItems">;
   logger: Pick<ServiceLogger, "debug" | "warn">;
 }
 
@@ -53,8 +53,8 @@ function toolErrorCode(error: unknown): string {
     }
     const code = (error as { code?: unknown }).code;
     if (
-      code === zcodeProtocolErrorCodes.sessionUnavailable ||
-      code === ZCODE_AGENT_RUNTIME_UNAVAILABLE_CODE
+      code === airaProtocolErrorCodes.sessionUnavailable ||
+      code === AIRA_AGENT_RUNTIME_UNAVAILABLE_CODE
     ) {
       return MENTION_ITEMS_ERROR_CODES.sessionUnavailable;
     }

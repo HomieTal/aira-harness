@@ -1,10 +1,10 @@
-import { encodeCustomModelValue } from "@zcode/shared";
+import { encodeCustomModelValue } from "@aira/shared";
 import {
   TID_CHAT_MODEL_SELECT_GROUP,
   TID_CHAT_MODEL_SELECT_ITEM,
   TID_CHAT_MODEL_SELECT_TRIGGER,
   testId,
-} from "@zcode/shared/test-ids";
+} from "@aira/shared/test-ids";
 import { DEFAULT_WORKSPACE, clearAppData, waitForWorkspaceApp } from "#e2e/helpers/desktop-app";
 import {
   assertUpstreamRequestCapture,

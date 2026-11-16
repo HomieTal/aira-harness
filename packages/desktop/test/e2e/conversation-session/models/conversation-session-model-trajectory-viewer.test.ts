@@ -651,8 +651,8 @@ async function searchHighlightSnapshot() {
         };
       }
     ).highlights;
-    const normalName = "zcode-model-trajectory-find";
-    const activeName = "zcode-model-trajectory-find-active";
+    const normalName = "aira-model-trajectory-find";
+    const activeName = "aira-model-trajectory-find-active";
     return {
       registered: Boolean(registry?.has(normalName) || registry?.has(activeName)),
       normal: registry?.get(normalName)?.size ?? 0,

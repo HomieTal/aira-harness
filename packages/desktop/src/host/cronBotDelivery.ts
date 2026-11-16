@@ -1,15 +1,15 @@
-import type { ZCodeAutomationBotDeliveryTarget } from "@zcode/shared";
+import type { AiraAutomationBotDeliveryTarget } from "@aira/shared";
 
 interface CronBotDeliveryRepo {
   getBotDeliveryTarget(
     automationId: string,
     workspaceKey?: string,
-  ): Promise<ZCodeAutomationBotDeliveryTarget | undefined>;
+  ): Promise<AiraAutomationBotDeliveryTarget | undefined>;
 }
 
 interface CronBotDeliveryService {
   watchAutomationRun(params: {
-    target: ZCodeAutomationBotDeliveryTarget;
+    target: AiraAutomationBotDeliveryTarget;
     runId?: string;
     taskId: string;
     workspacePath: string;

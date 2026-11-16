@@ -145,9 +145,9 @@ export const SETTINGS_SEARCH_ITEMS = [
     visibility: "all",
   },
   {
-    id: "settings.zcodeInteractionBehavior",
+    id: "settings.airaInteractionBehavior",
     section: "agentBehavior",
-    description: "settings.zcodeInteractionBehaviorDescription",
+    description: "settings.airaInteractionBehaviorDescription",
     visibility: "all",
   },
   {

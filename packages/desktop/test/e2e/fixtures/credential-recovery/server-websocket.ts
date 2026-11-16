@@ -6,25 +6,25 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import WebSocket from "ws";
-import { Emitter, VSBuffer, SocketProtocol, type ISocket, type IServerChannel } from "@zcode/rpc";
-import { ZCODE_RPC_HOST_CAPABILITY_HEADER } from "@zcode/shared";
+import { Emitter, VSBuffer, SocketProtocol, type ISocket, type IServerChannel } from "@aira/rpc";
+import { AIRA_RPC_HOST_CAPABILITY_HEADER } from "@aira/shared";
 
 const childMode = process.argv.includes("--stdio-child");
 const home = childMode
-  ? process.env.ZCODE_DATA_BASE_DIR!
+  ? process.env.AIRA_DATA_BASE_DIR!
   : await mkdtemp(join(tmpdir(), "credential-rpc-"));
-process.env.ZCODE_DATA_BASE_DIR = home;
-process.env.ZCODE_DESKTOP_HOME_DIR = home;
-const { createHttpServer } = await import("@zcode/server");
-const { createStdioServer } = await import("@zcode/server/stdio");
+process.env.AIRA_DATA_BASE_DIR = home;
+process.env.AIRA_DESKTOP_HOME_DIR = home;
+const { createHttpServer } = await import("@aira/server");
+const { createStdioServer } = await import("@aira/server/stdio");
 const { createCoreHttpServer } =
-  await import("../../../../../zcode-server-cli/src/server-core/http.js");
+  await import("../../../../../aira-server-cli/src/server-core/http.js");
 const { exposeWindowHostAttachmentServices } =
   await import("../../../../src/host/windowHostAttachmentRpcPolicy.js");
-const { ServiceCollection, ICredentialService } = await import("@zcode/services");
-const { createCredentialService } = await import("@zcode/services/node");
-const { connectViaProtocol } = await import("@zcode/client");
-const file = join(home, ".zcode", "v2", "credentials.json");
+const { ServiceCollection, ICredentialService } = await import("@aira/services");
+const { createCredentialService } = await import("@aira/services/node");
+const { connectViaProtocol } = await import("@aira/client");
+const file = join(home, ".aira", "v2", "credentials.json");
 const raw = Buffer.from('{"unfinished":');
 const token = "synthetic-ingress-token";
 
@@ -38,16 +38,16 @@ if (childMode) {
   await server.stop();
   process.exit(0);
 }
-await mkdir(join(home, ".zcode", "v2"), { recursive: true });
+await mkdir(join(home, ".aira", "v2"), { recursive: true });
 
 async function snapshot() {
   return {
     bytes: (await readFile(file)).toString("base64"),
-    files: await readdir(join(home, ".zcode", "v2")),
+    files: await readdir(join(home, ".aira", "v2")),
     generation: await readFile(`${file}.recovery-generation`, "utf8").catch(() => null),
   };
 }
-async function check(credential: import("@zcode/services").ICredentialService) {
+async function check(credential: import("@aira/services").ICredentialService) {
   await writeFile(file, raw);
   const before = await snapshot();
   const denied: Record<string, string> = {};
@@ -121,18 +121,18 @@ try {
     const sockets: WebSocket[] = [];
     try {
       const ordinary = await connect(`${base.replace("http:", "ws:")}/ws${auth}`, {
-        "x-zcode-client-mode": "desktop-continuous",
+        "x-aira-client-mode": "desktop-continuous",
       });
       sockets.push(ordinary.ws);
       const direct = await check(ordinary.credential);
       const response = await fetch(`${base}/api/rpc-host-capability${auth}`, { method: "POST" });
       assert.equal(response.status, 200);
       const capability = (await response.json()) as { capability: string };
-      const hostHeaders = { [ZCODE_RPC_HOST_CAPABILITY_HEADER]: capability.capability };
+      const hostHeaders = { [AIRA_RPC_HOST_CAPABILITY_HEADER]: capability.capability };
       await assert.rejects(connect(`${base.replace("http:", "ws:")}/ws/host${auth}`), /401/);
       await assert.rejects(
         connect(`${base.replace("http:", "ws:")}/ws/host${auth}`, {
-          [ZCODE_RPC_HOST_CAPABILITY_HEADER]: "synthetic-forged-ticket",
+          [AIRA_RPC_HOST_CAPABILITY_HEADER]: "synthetic-forged-ticket",
         }),
         /401/,
       );
@@ -211,7 +211,7 @@ try {
       ...(kind ? { attachmentScope: { kind } } : {}),
     });
     const channel = channels.get(ICredentialService.channelName)!;
-    const credential: import("@zcode/services").ICredentialService = {
+    const credential: import("@aira/services").ICredentialService = {
       inspectStore: () => channel.call(undefined, "inspectStore", []),
       recoverStore: (fingerprint) => channel.call(undefined, "recoverStore", [fingerprint]),
       load: (key) => channel.call(undefined, "load", [key]),

@@ -3,15 +3,15 @@ import {
   appControlCancelMethod,
   appControlCancelParamsSchema,
   type AppControlAction,
-  type ZCodeProtocolRequest,
-} from "@zcode/shared";
-import { SessionControlError } from "@zcode/session-control/contracts";
+  type AiraProtocolRequest,
+} from "@aira/shared";
+import { SessionControlError } from "@aira/session-control/contracts";
 import type { AppControlBinding, AppControlService } from "#src/app-control/contract.js";
 
 interface ReverseClient {
-  respond(id: ZCodeProtocolRequest["id"], result: unknown): Promise<void>;
+  respond(id: AiraProtocolRequest["id"], result: unknown): Promise<void>;
   respondError(
-    id: ZCodeProtocolRequest["id"],
+    id: AiraProtocolRequest["id"],
     error: { code: number; message: string },
   ): Promise<void>;
 }
@@ -95,7 +95,7 @@ export function createAppControlReverseRpc(options: {
     callerSessionId: string;
     callId: string;
     turnId?: string;
-    trace?: ZCodeProtocolRequest["trace"];
+    trace?: AiraProtocolRequest["trace"];
     signal: AbortSignal;
   }) => Promise<AppControlBinding>;
   onResponseError: (error: unknown) => void;
@@ -103,7 +103,7 @@ export function createAppControlReverseRpc(options: {
   const pending = new Map<string, { controller: AbortController; binding?: AppControlBinding }>();
   let disposed = false;
   return {
-    handle(request: ZCodeProtocolRequest): boolean {
+    handle(request: AiraProtocolRequest): boolean {
       if (request.method === appControlCancelMethod) {
         const parsed = appControlCancelParamsSchema.safeParse(request.params);
         if (!parsed.success) {

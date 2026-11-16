@@ -5,11 +5,11 @@ import type {
   OAuthProviderId,
   OAuthSessionCallbackResult,
   UserInfo,
-} from "@zcode/shared";
-import { ZCODE_JWT_INVALID_BROADCAST_CHANNEL } from "@zcode/shared";
-import type { IServiceAccessor } from "@zcode/services";
+} from "@aira/shared";
+import { AIRA_JWT_INVALID_BROADCAST_CHANNEL } from "@aira/shared";
+import type { IServiceAccessor } from "@aira/services";
 import { useAlertDialog } from "@/hooks/useAlertDialog.js";
-import { useZCodeIntl } from "@/i18n/IntlProvider.js";
+import { useAiraIntl } from "@/i18n/IntlProvider.js";
 import { reportAppTelemetryEvent, resolveProviderTelemetryLabel } from "@/lib/appTelemetry.js";
 import { logger } from "@/logger.js";
 import type { ModelProviderFamilyConnectionSelection } from "@/lib/modelProviderFamilyConnectionSelection.js";
@@ -101,7 +101,7 @@ export function useRootOAuthEffects({
 }) {
   useAccountConnectionLossNotification(services, accountIntentKey, refreshAppSettings);
   const requestAlert = useAlertDialog();
-  const { intl } = useZCodeIntl();
+  const { intl } = useAiraIntl();
   const oauthLoginSucceededRef = useRef(false);
   const oauthLoginSuccessInFlightRef = useRef(false);
   const oauthLoginSuccessOwnerRef = useRef<"polling" | "deep-link" | null>(null);
@@ -193,7 +193,7 @@ export function useRootOAuthEffects({
     let disposed = false;
     let promptPending = false;
     const disposable = services.broadcastService.onMessage((message) => {
-      if (message.channel !== ZCODE_JWT_INVALID_BROADCAST_CHANNEL || disposed || promptPending) {
+      if (message.channel !== AIRA_JWT_INVALID_BROADCAST_CHANNEL || disposed || promptPending) {
         return;
       }
       promptPending = true;

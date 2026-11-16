@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "caseName": "conversation-session-workspace-airaignore",
+  "spec": "./test/e2e/conversation-session/projects/conversation-session-workspace-airaignore.test.ts",
+  "providerFixtures": [
+    "./test/e2e/fixtures/upstream/common.json",
+    "./test/e2e/fixtures/upstream/conversation-session/conversation-session-workspace-airaignore.json"
+  ],
+  "providerRequestPolicy": "none",
+  "fileFixtures": [],
+  "requests": []
+}

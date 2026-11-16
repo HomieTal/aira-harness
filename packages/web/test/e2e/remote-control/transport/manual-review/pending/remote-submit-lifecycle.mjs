@@ -10,10 +10,10 @@ import {
   RemoteServiceAccess,
   connectViaProtocol,
   createAcknowledgedWebRemoteControlRelayProtocol,
-} from "@zcode/client";
-import { ServiceChannels } from "@zcode/shared";
-import { V4_WIRE_PROTOCOL_VERSION } from "@zcode/shared/zcode-protocol-v4";
-import { TID_V4_COMPOSER_INPUT, TID_V4_COMPOSER_SEND } from "@zcode/shared/test-ids";
+} from "@aira/client";
+import { ServiceChannels } from "@aira/shared";
+import { V4_WIRE_PROTOCOL_VERSION } from "@aira/shared/aira-protocol-v4";
+import { TID_V4_COMPOSER_INPUT, TID_V4_COMPOSER_SEND } from "@aira/shared/test-ids";
 import { createDeviceSwitchDesktopBridge } from "../../../projects/manual-review/pending/remote-device-switch.helpers.mjs";
 import { taskSnapshotFrame } from "../../../projects/manual-review/pending/remote-task-open.fixture.mjs";
 import {
@@ -259,7 +259,7 @@ async function scenario({ width, theme, locale, remote }) {
       currentBridge = bridge;
       const frames = new Emitter();
       send(socket, {
-        zcode_type: "workspace-bridge-ready",
+        aira_type: "workspace-bridge-ready",
         requestId: request.requestId,
         bridgeSessionId: bridge.bridgeSessionId,
         bridgeGeneration: bridge.bridgeGeneration,
@@ -270,7 +270,7 @@ async function scenario({ width, theme, locale, remote }) {
         createDeviceSwitchDesktopBridge(socket, bridge, {
           locale,
           theme,
-          events: { [`${ServiceChannels.ZCodeAgent}:onDynamicConversationFrame`]: frames.event },
+          events: { [`${ServiceChannels.AiraAgent}:onDynamicConversationFrame`]: frames.event },
           responses: {
             [`${ServiceChannels.OnboardingRecord}:shouldOnboard`]: false,
             [`${ServiceChannels.SettingsSync}:getFirstRunPromptState`]: { handled: true },
@@ -288,8 +288,8 @@ async function scenario({ width, theme, locale, remote }) {
               projectId: project.id,
               workspacePath,
             },
-            [`${ServiceChannels.ZCodeTask}:getTaskMeta`]: task,
-            [`${ServiceChannels.ZCodeAgent}:helloConversationV4`]: {
+            [`${ServiceChannels.AiraTask}:getTaskMeta`]: task,
+            [`${ServiceChannels.AiraAgent}:helloConversationV4`]: {
               kind: "hello",
               protocolVersion: V4_WIRE_PROTOCOL_VERSION,
               connectionId: bridge.bridgeSessionId,
@@ -304,8 +304,8 @@ async function scenario({ width, theme, locale, remote }) {
                 compression: "none",
               },
             },
-            [`${ServiceChannels.ZCodeAgent}:initializeConversationV4`]: null,
-            [`${ServiceChannels.ZCodeAgent}:subscribeConversationV4`]: () => {
+            [`${ServiceChannels.AiraAgent}:initializeConversationV4`]: null,
+            [`${ServiceChannels.AiraAgent}:subscribeConversationV4`]: () => {
               const subscriptionId = `sub-${bridge.bridgeSessionId}`;
               snapshots.set(bridge.bridgeSessionId, () => {
                 const frame = taskSnapshotFrame(taskId, subscriptionId);
@@ -321,11 +321,11 @@ async function scenario({ width, theme, locale, remote }) {
               });
               return { ack: { subscriptionId, mode: "snapshot", logEpoch: "e2e" } };
             },
-            [`${ServiceChannels.ZCodeAgent}:unsubscribeConversationV4`]: null,
-            [`${ServiceChannels.ZCodeAgent}:conversationWorkflowRunsV4`]: { runs: [] },
-            [`${ServiceChannels.ZCodeAgent}:conversationPlansV4`]: { plans: [] },
-            [`${ServiceChannels.ZCodeAgent}:queryConversationCommandsV4`]: { results: [] },
-            [`${ServiceChannels.ZCodeAgent}:sendConversationCommandV4`]: ({ envelope }) => {
+            [`${ServiceChannels.AiraAgent}:unsubscribeConversationV4`]: null,
+            [`${ServiceChannels.AiraAgent}:conversationWorkflowRunsV4`]: { runs: [] },
+            [`${ServiceChannels.AiraAgent}:conversationPlansV4`]: { plans: [] },
+            [`${ServiceChannels.AiraAgent}:queryConversationCommandsV4`]: { results: [] },
+            [`${ServiceChannels.AiraAgent}:sendConversationCommandV4`]: ({ envelope }) => {
               traffic.commands.push(envelope);
               return {
                 commandId: envelope.commandId,
@@ -392,7 +392,7 @@ async function scenario({ width, theme, locale, remote }) {
         socket.send(JSON.stringify({ type: "pair_status_ack", pair_status: "matched" }));
       const p = m.payload;
       if (!p) return;
-      if (p.zcode_type === "rpc-frame" || p.zcode_type === "rpc-frame-ack") {
+      if (p.aira_type === "rpc-frame" || p.aira_type === "rpc-frame-ack") {
         bridges.get(p.bridgeSessionId)?.acceptPayload(p);
         return;
       }
@@ -402,16 +402,16 @@ async function scenario({ width, theme, locale, remote }) {
         workspaces: [workspace],
         initialViewState: { activeWorkspaceKey: workspaceKey, activeTaskId: taskId, updatedAt: 1 },
       };
-      if (p.zcode_type === "bootstrap-request" || p.zcode_type === "workspace-list-request")
+      if (p.aira_type === "bootstrap-request" || p.aira_type === "workspace-list-request")
         send(socket, {
-          zcode_type: p.zcode_type.replace("request", "response"),
+          aira_type: p.aira_type.replace("request", "response"),
           requestId: p.requestId,
           success: true,
           result,
         });
-      if (p.zcode_type === "mobile-view-state-update")
-        send(socket, { zcode_type: "mobile-view-state-updated", requestId: p.requestId });
-      if (p.zcode_type === "workspace-bridge-open") {
+      if (p.aira_type === "mobile-view-state-update")
+        send(socket, { aira_type: "mobile-view-state-updated", requestId: p.requestId });
+      if (p.aira_type === "workspace-bridge-open") {
         traffic.opens.push(p);
         ready(p);
       }
@@ -464,7 +464,7 @@ async function scenario({ width, theme, locale, remote }) {
     await assertEventually(() => Boolean(heldRead));
     const oldBridge = currentBridge;
     send(socketRef, {
-      zcode_type: "bridge-degraded",
+      aira_type: "bridge-degraded",
       bridgeSessionId: oldBridge.bridgeSessionId,
       reason: "rpc-transport-fault",
     });

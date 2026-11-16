@@ -1,5 +1,5 @@
 {
-  "name": "@zcode/session-control",
+  "name": "@aira/session-control",
   "private": true,
   "type": "module",
   "imports": {

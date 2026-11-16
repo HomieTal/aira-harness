@@ -1,7 +1,7 @@
 import { Duplex } from "node:stream";
 import { StringDecoder } from "node:string_decoder";
-import { isPublicZCodeErrorCode, type PublicZCodeErrorCode } from "@zcode/shared";
-import type { StdioStream } from "@zcode/server/remote/backend.js";
+import { isPublicAiraErrorCode, type PublicAiraErrorCode } from "@aira/shared";
+import type { StdioStream } from "@aira/server/remote/backend.js";
 
 export interface RemoteExecResult {
   exitCode: number;
@@ -50,10 +50,10 @@ export function readStructuredCommandError(value: string): string | null {
 }
 
 /** 读取 Server CLI --json 失败结果里的公开错误码；没有或不是公开码时返回 null。 */
-export function readStructuredCommandCode(value: string): PublicZCodeErrorCode | null {
+export function readStructuredCommandCode(value: string): PublicAiraErrorCode | null {
   try {
     const code = readLastJsonLine(value).code;
-    return isPublicZCodeErrorCode(code) ? code : null;
+    return isPublicAiraErrorCode(code) ? code : null;
   } catch {
     return null;
   }
@@ -71,7 +71,7 @@ export function readUniqueVersion(value: string): string | undefined {
     if (version) versions.add(version);
   }
   const labelled = new RegExp(
-    `\\b(?:zcode|source[ -]server)\\b[^\\n]*?\\bversion\\s*[:=]?\\s*v?${semver}\\b`,
+    `\\b(?:aira|source[ -]server)\\b[^\\n]*?\\bversion\\s*[:=]?\\s*v?${semver}\\b`,
     "giu",
   );
   for (const match of value.matchAll(labelled)) {

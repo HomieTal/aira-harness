@@ -1,23 +1,23 @@
 import {
   createLocalServices,
   getAppConfigDir,
-  type ZCodeAgentCommandResolver,
-} from "@zcode/services/node";
-import { createServerCredentialCipher } from "@zcode/shared/credential-security";
+  type AiraAgentCommandResolver,
+} from "@aira/services/node";
+import { createServerCredentialCipher } from "@aira/shared/credential-security";
 import { join } from "node:path";
-import type { IChannel } from "@zcode/rpc";
+import type { IChannel } from "@aira/rpc";
 import {
   parseServiceAuthorityMode,
-  ZCODE_REMOTE_HTTP_PROXY_ENV_KEY,
-  ZCODE_REMOTE_NO_PROXY_ENV_KEY,
-  ZCODE_REMOTE_RUNTIME_NETWORK_AUTHORITY_ENV_KEY,
-} from "@zcode/shared";
+  AIRA_REMOTE_HTTP_PROXY_ENV_KEY,
+  AIRA_REMOTE_NO_PROXY_ENV_KEY,
+  AIRA_REMOTE_RUNTIME_NETWORK_AUTHORITY_ENV_KEY,
+} from "@aira/shared";
 
 export interface CreateStdioServicesOptions {
   topicResourceRelayChannel?: () => IChannel;
   env?: Record<string, string | undefined>;
-  zcodeBuiltinProviderConfigFilePath: string;
-  zcodeAgentCommandResolver?: ZCodeAgentCommandResolver;
+  airaBuiltinProviderConfigFilePath: string;
+  airaAgentCommandResolver?: AiraAgentCommandResolver;
 }
 
 export interface RemoteAgentNetworkOptions {
@@ -28,12 +28,12 @@ export interface RemoteAgentNetworkOptions {
 export function resolveRemoteAgentNetworkFromEnv(
   env: Record<string, string | undefined>,
 ): RemoteAgentNetworkOptions | undefined {
-  if (env[ZCODE_REMOTE_RUNTIME_NETWORK_AUTHORITY_ENV_KEY]?.trim() !== "1") {
+  if (env[AIRA_REMOTE_RUNTIME_NETWORK_AUTHORITY_ENV_KEY]?.trim() !== "1") {
     return undefined;
   }
   return {
-    httpProxy: env[ZCODE_REMOTE_HTTP_PROXY_ENV_KEY]?.trim() || undefined,
-    noProxy: env[ZCODE_REMOTE_NO_PROXY_ENV_KEY]?.trim() || undefined,
+    httpProxy: env[AIRA_REMOTE_HTTP_PROXY_ENV_KEY]?.trim() || undefined,
+    noProxy: env[AIRA_REMOTE_NO_PROXY_ENV_KEY]?.trim() || undefined,
   };
 }
 
@@ -50,10 +50,10 @@ export async function createStdioServices(options: CreateStdioServicesOptions) {
   // 测试注入 resolver 只用于在 spawn 前观察最终命令，不改变生产默认 resolver。
   const services = createLocalServices({
     credentialCipherProvider,
-    zcodeBuiltinProviderConfigFilePath: options.zcodeBuiltinProviderConfigFilePath,
+    airaBuiltinProviderConfigFilePath: options.airaBuiltinProviderConfigFilePath,
     topicResourceRelayChannel: options.topicResourceRelayChannel,
     serviceAuthorityMode: authorityModeParseResult.mode,
-    zcodeAgentCommandResolver: options.zcodeAgentCommandResolver,
+    airaAgentCommandResolver: options.airaAgentCommandResolver,
     remoteAgentNetwork,
   });
 

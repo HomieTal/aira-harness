@@ -5,9 +5,9 @@ import type {
   CommandSetEnabledParams,
   CommandUpdateParams,
   UserCommand,
-  ZCodeCommand,
-} from "@zcode/shared";
-import type { ICommandsService } from "@zcode/services";
+  AiraCommand,
+} from "@aira/shared";
+import type { ICommandsService } from "@aira/services";
 
 interface CommandsStoreState {
   workspacePath: string | null;
@@ -17,9 +17,9 @@ interface CommandsStoreState {
   loadedWorkspacePath: string | null;
   loadedWorkspaceIdentity: string | null;
   loadedAuthorityKey: string | null;
-  commands: ZCodeCommand[];
+  commands: AiraCommand[];
   userCommands: UserCommand[];
-  pluginCommands: ZCodeCommand[];
+  pluginCommands: AiraCommand[];
   capability: { userScopeAvailable: boolean };
   loading: boolean;
   error: string | null;

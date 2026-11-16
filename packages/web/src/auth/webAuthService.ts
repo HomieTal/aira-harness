@@ -1,5 +1,5 @@
 import { createBrowserNonce } from "#src/auth/oauthStateCodec.js";
-import { BIGMODEL_PROVIDER_ID, ZAI_PROVIDER_ID, type UserInfo } from "@zcode/shared";
+import { BIGMODEL_PROVIDER_ID, ZAI_PROVIDER_ID, type UserInfo } from "@aira/shared";
 import {
   initializeRegionalOAuth,
   pollRegionalOAuth,
@@ -239,13 +239,13 @@ export class WebAuthService {
       redirectUri,
     });
 
-    const token = exchange.tokenSet.zcodeJwtToken;
+    const token = exchange.tokenSet.airaJwtToken;
     if (
       !token ||
       !(await this.repo.commitPrimarySession(
         {
           provider,
-          zcodeJwtToken: token,
+          airaJwtToken: token,
           userInfo: exchange.userInfo,
           revision: this.runtime.createNonce(),
           ...(exchange.tokenSet.accessToken
@@ -282,8 +282,8 @@ export class WebAuthService {
     return this.repo.getSessionRevision();
   }
 
-  getZCodeJwtToken(): string | null {
-    return this.repo.loadZCodeJwtToken();
+  getAiraJwtToken(): string | null {
+    return this.repo.loadAiraJwtToken();
   }
 
   /** 设备页账号行的展示资料；只读，不参与登录判断。 */

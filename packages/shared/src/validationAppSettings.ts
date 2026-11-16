@@ -9,9 +9,9 @@ import { resolvePersistedUiLocale, resolvePersistedUiLocalePreference } from "./
 import { REMOTE_ASSET_INSTALL_MODES } from "./remoteAssetInstallMode.js";
 import { isKnownRemoteResourcePackageId } from "./remoteResourcePackages.js";
 import { wslUserSchema } from "./wslUserValidation.js";
-import { ZCODE_ENABLED_AGENT_PROVIDERS } from "./zcode-agent-policy.js";
+import { AIRA_ENABLED_AGENT_PROVIDERS } from "./aira-agent-policy.js";
 import { DYNAMIC_WORKFLOW_MODES } from "./dynamic-workflow-feature.js";
-import { normalizeZCodeEndpointOrigin } from "./zcodeEndpoint.js";
+import { normalizeAiraEndpointOrigin } from "./airaEndpoint.js";
 import {
   DEFAULT_EMBEDDED_BROWSER_VIEWPORT_PREFERENCE,
   embeddedBrowserViewportPreferenceSchema,
@@ -46,7 +46,7 @@ const nonEmptyStringSchema = z.string().trim().min(1);
 
 export const localeSchema = z.enum(SUPPORTED_LOCALES);
 export const localePreferenceSchema = z.enum(["system", ...SUPPORTED_LOCALES]);
-const zcodeInteractionBehaviorSchema = z.enum(["queue", "guide"]);
+const airaInteractionBehaviorSchema = z.enum(["queue", "guide"]);
 // launch.md「The user's choice」：读文件时未知取值（降级后读到新版本写的值）按「跟随」处理，
 // 不能让一个偏好字段把整份设置读坏。
 const dynamicWorkflowModeSettingSchema = z.enum(DYNAMIC_WORKFLOW_MODES).optional().catch(undefined);
@@ -70,9 +70,9 @@ export const integratedTerminalShellSelectionSchema = z.discriminatedUnion("mode
   }),
 ]);
 const enabledBuiltinAgentCliProvidersSchema = z
-  // 兼容旧 settings：历史列表可能残留三方 CLI provider，解析后统一归一为 ZCode Agent。
+  // 兼容旧 settings：历史列表可能残留三方 CLI provider，解析后统一归一为 Aira Agent。
   .array(z.enum(["claude", "opencode", "gemini", "codex", "glm"]))
-  .transform(() => [...ZCODE_ENABLED_AGENT_PROVIDERS]);
+  .transform(() => [...AIRA_ENABLED_AGENT_PROVIDERS]);
 const providerFamilyDomainSchema = z.enum(["zai", "bigmodel"]);
 
 export const postUpdateReleaseNotesPayloadSchema = z.object({
@@ -169,7 +169,7 @@ const webRemoteControlLastEnabledContextSchema = z.object({
   workspaceIdentity: nonEmptyStringSchema.optional(),
   initialTaskId: nonEmptyStringSchema.optional(),
 });
-const zcodeEndpointOriginSchema = z.preprocess((value) => {
+const airaEndpointOriginSchema = z.preprocess((value) => {
   if (typeof value !== "string") {
     return undefined;
   }
@@ -178,25 +178,25 @@ const zcodeEndpointOriginSchema = z.preprocess((value) => {
     return undefined;
   }
   try {
-    return normalizeZCodeEndpointOrigin(trimmed);
+    return normalizeAiraEndpointOrigin(trimmed);
   } catch {
     return undefined;
   }
 }, z.string().optional());
 
-function sanitizeZCodeEndpointOrigin(value: unknown): unknown {
+function sanitizeAiraEndpointOrigin(value: unknown): unknown {
   if (!value || typeof value !== "object" || Array.isArray(value)) {
     return value;
   }
   const raw = value as Record<string, unknown>;
-  if (!("zcodeEndpointOrigin" in raw)) {
+  if (!("airaEndpointOrigin" in raw)) {
     return value;
   }
-  const parsed = zcodeEndpointOriginSchema.safeParse(raw.zcodeEndpointOrigin);
+  const parsed = airaEndpointOriginSchema.safeParse(raw.airaEndpointOrigin);
   if (parsed.success && typeof parsed.data === "string") {
-    return { ...raw, zcodeEndpointOrigin: parsed.data };
+    return { ...raw, airaEndpointOrigin: parsed.data };
   }
-  const { zcodeEndpointOrigin: _zcodeEndpointOrigin, ...next } = raw;
+  const { airaEndpointOrigin: _airaEndpointOrigin, ...next } = raw;
   // 非生产 endpoint override 是开发辅助字段，坏值只丢弃该字段，不能拖垮整个 settings 读取。
   return next;
 }
@@ -359,12 +359,12 @@ function migrateLegacyBuiltinAgentCliProviders(value: unknown): unknown {
     enabledBuiltinAgentCliProviders?: unknown;
   };
 
-  // Bugfix: 单 ZCode Agent 迁移后，旧 setting.json 可能还保存已移除的第三方 CLI provider
+  // Bugfix: 单 Aira Agent 迁移后，旧 setting.json 可能还保存已移除的第三方 CLI provider
   // 的启用状态。若这些值继续进入 UI / bot 的 provider 选项，会和 server 侧唯一 glm 状态打架。
-  // 这里在 schema 入口统一归一到 ZCode Agent，让核心 provider 状态只有一个事实源。
+  // 这里在 schema 入口统一归一到 Aira Agent，让核心 provider 状态只有一个事实源。
   return {
     ...raw,
-    enabledBuiltinAgentCliProviders: [...ZCODE_ENABLED_AGENT_PROVIDERS],
+    enabledBuiltinAgentCliProviders: [...AIRA_ENABLED_AGENT_PROVIDERS],
   };
 }
 
@@ -564,13 +564,13 @@ const appSettingsObjectSchema = z.object({
   messageStreamShowReasoning: z.boolean().default(true),
   messageStreamShowReasoningMigrationInitialized: z.boolean().default(true),
   messageStreamShowTodos: z.boolean().default(false),
-  zcodeInteractionBehavior: zcodeInteractionBehaviorSchema.default("queue"),
+  airaInteractionBehavior: airaInteractionBehaviorSchema.default("queue"),
   askUserQuestionAutoResolutionEnabled: z.boolean().default(true),
   pluginAutoRecommendationEnabled: z.boolean().default(false),
   modelIoFullRetentionEnabled: z.boolean().default(false),
   dynamicWorkflowMode: dynamicWorkflowModeSettingSchema,
   enabledBuiltinAgentCliProviders: enabledBuiltinAgentCliProvidersSchema.default([
-    ...ZCODE_ENABLED_AGENT_PROVIDERS,
+    ...AIRA_ENABLED_AGENT_PROVIDERS,
   ]),
   startPlanRecommendationDismissed: z.boolean().default(false),
   providerFamilyConnectionSelections: providerFamilyConnectionSelectionSettingsSchema.default({}),
@@ -607,7 +607,7 @@ const appSettingsObjectSchema = z.object({
   webRemoteControlRelayV2Device: webRemoteControlRelayV2DeviceSchema.optional(),
   webRemoteControlExternalRelayDevice: webRemoteControlExternalRelayDeviceSchema.optional(),
   webRemoteControlLastEnabledContext: webRemoteControlLastEnabledContextSchema.optional(),
-  zcodeEndpointOrigin: zcodeEndpointOriginSchema.optional(),
+  airaEndpointOrigin: airaEndpointOriginSchema.optional(),
 });
 
 export const appSettingsSchema = z.preprocess(
@@ -618,7 +618,7 @@ export const appSettingsSchema = z.preprocess(
           migrateCloseToTrayOnWindowsDefault(
             migrateLegacyLocalePreference(
               applyPersistedUiLocaleFields(
-                sanitizeZCodeEndpointOrigin(
+                sanitizeAiraEndpointOrigin(
                   migrateLegacyWorkspaceSession(
                     migrateLegacyBuiltinAgentCliProviders(
                       migrateRemoteBoundaryIntroAcknowledgement(migrateTaskAutoArchiveReset(value)),
@@ -662,7 +662,7 @@ export const appSettingsPatchSchema = z.object({
   messageStreamShowReasoning: z.boolean().optional(),
   messageStreamShowReasoningMigrationInitialized: z.boolean().optional(),
   messageStreamShowTodos: z.boolean().optional(),
-  zcodeInteractionBehavior: zcodeInteractionBehaviorSchema.optional(),
+  airaInteractionBehavior: airaInteractionBehaviorSchema.optional(),
   askUserQuestionAutoResolutionEnabled: z.boolean().optional(),
   pluginAutoRecommendationEnabled: z.boolean().optional(),
   modelIoFullRetentionEnabled: z.boolean().optional(),
@@ -721,5 +721,5 @@ export const appSettingsPatchSchema = z.object({
   webRemoteControlRelayV2Device: webRemoteControlRelayV2DeviceSchema.optional(),
   webRemoteControlExternalRelayDevice: webRemoteControlExternalRelayDeviceSchema.optional(),
   webRemoteControlLastEnabledContext: webRemoteControlLastEnabledContextSchema.optional(),
-  zcodeEndpointOrigin: zcodeEndpointOriginSchema.optional(),
+  airaEndpointOrigin: airaEndpointOriginSchema.optional(),
 });

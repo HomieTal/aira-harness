@@ -1,9 +1,9 @@
-import { ZCodeAgentModelSelectionBasisUnsupportedError } from "@zcode/services";
+import { AiraAgentModelSelectionBasisUnsupportedError } from "@aira/services";
 import {
   BUILTIN_MODEL_PROVIDER_IDS,
   encodeCustomModelValue,
   type ModelSelection,
-} from "@zcode/shared";
+} from "@aira/shared";
 import {
   createBotModelSelectionView,
   createBotsServiceHarness,
@@ -52,7 +52,7 @@ describe("BOT-E2E-SR99 绑定 Session 后的有效选择", () => {
           },
         },
       });
-      harness.zcodeTaskService.getTaskModelSelection = async () => original;
+      harness.airaTaskService.getTaskModelSelection = async () => original;
       try {
         const submission = harness.service.handleInboundMessage({
           botId: "feishu-e2e",
@@ -285,12 +285,12 @@ describe("BOT-E2E-BASIS-01 旧 CLI 配置依据不降级", () => {
         },
       },
     });
-    harness.zcodeTaskService.getTaskModelSelection = async () => selection;
+    harness.airaTaskService.getTaskModelSelection = async () => selection;
     const calls: unknown[] = [];
-    harness.zcodeTaskService.sendPrompt = async (params: unknown) => {
+    harness.airaTaskService.sendPrompt = async (params: unknown) => {
       calls.push(params);
       // RPC 还原后不保留原型；验证通过稳定错误身份展示，不依赖 instanceof 子类。
-      const source = new ZCodeAgentModelSelectionBasisUnsupportedError();
+      const source = new AiraAgentModelSelectionBasisUnsupportedError();
       throw Object.assign(new Error(source.message), { name: source.name, code: source.code });
     };
     try {

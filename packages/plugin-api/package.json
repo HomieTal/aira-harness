@@ -1,12 +1,12 @@
 {
-  "name": "@zcode-dev/plugin-api",
+  "name": "@aira-dev/plugin-api",
   "version": "1.4.0",
-  "description": "Type definitions for ZCode plugin extensions.",
+  "description": "Type definitions for Aira plugin extensions.",
   "keywords": [
     "extension",
     "plugin",
     "types",
-    "zcode"
+    "aira"
   ],
   "license": "Apache-2.0",
   "files": [

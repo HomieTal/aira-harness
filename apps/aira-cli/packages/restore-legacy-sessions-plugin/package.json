@@ -1,0 +1,8 @@
+{
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "@aira/restore-legacy-sessions-plugin",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "description": "Legacy Aira session restoration skills published as an official Aira plugin."
+}

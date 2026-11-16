@@ -1,4 +1,4 @@
-import type { UsageEntitlementSnapshot, UsageQuotaLimit } from "@zcode/shared";
+import type { UsageEntitlementSnapshot, UsageQuotaLimit } from "@aira/shared";
 
 export type CodingPlanQuotaResetFormat = "date" | "dateTime" | "adaptive";
 

@@ -1,16 +1,16 @@
-import type { ISkillsService } from "@zcode/services";
+import type { ISkillsService } from "@aira/services";
 import {
-  normalizeAgentProviderToZCodeAgent,
-  ZCODE_AGENT_PROVIDER,
-  type ZCodeProvider,
-} from "@zcode/shared";
+  normalizeAgentProviderToAiraAgent,
+  AIRA_AGENT_PROVIDER,
+  type AiraProvider,
+} from "@aira/shared";
 import { useSkillStore } from "@/store/skillStore.js";
 
 export async function refreshSharedSkillStoreForWorkspace(params: {
   workspacePath: string | null | undefined;
   workspaceIdentity?: string | null;
   skillsService: ISkillsService;
-  provider?: ZCodeProvider;
+  provider?: AiraProvider;
 }): Promise<void> {
   const workspacePath = params.workspacePath;
   if (!workspacePath) {
@@ -18,8 +18,8 @@ export async function refreshSharedSkillStoreForWorkspace(params: {
   }
   const skillStore = useSkillStore.getState();
   const normalizedWorkspaceIdentity = params.workspaceIdentity?.trim() || null;
-  const normalizedProvider = normalizeAgentProviderToZCodeAgent(
-    params.provider ?? ZCODE_AGENT_PROVIDER,
+  const normalizedProvider = normalizeAgentProviderToAiraAgent(
+    params.provider ?? AIRA_AGENT_PROVIDER,
   );
   const refreshes: Promise<void>[] = [];
 
@@ -28,7 +28,7 @@ export async function refreshSharedSkillStoreForWorkspace(params: {
     skillStore.workspaceIdentity === normalizedWorkspaceIdentity &&
     skillStore.loadedWorkspacePath === workspacePath &&
     skillStore.loadedWorkspaceIdentity === normalizedWorkspaceIdentity &&
-    normalizeAgentProviderToZCodeAgent(skillStore.provider) === normalizedProvider &&
+    normalizeAgentProviderToAiraAgent(skillStore.provider) === normalizedProvider &&
     skillStore.loadedProvider === normalizedProvider
   ) {
     refreshes.push(

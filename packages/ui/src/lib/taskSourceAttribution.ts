@@ -1,4 +1,4 @@
-import { parseRemoteWorkspaceIdentity } from "@zcode/shared";
+import { parseRemoteWorkspaceIdentity } from "@aira/shared";
 
 export interface TaskSourceAttributionInput {
   workspacePath: string;

@@ -1,10 +1,10 @@
-import type { ModelSelectionView, ProviderSettingsView } from "@zcode/services";
+import type { ModelSelectionView, ProviderSettingsView } from "@aira/services";
 import {
   resolveModelProviderFamilySpecByProviderId,
   type ProviderFamilyDomain,
   type ProviderFamilyConnectionSelection,
-  type ZCodeProvider,
-} from "@zcode/shared";
+  type AiraProvider,
+} from "@aira/shared";
 import type { ModelSelectGroup, ModelSelectGroupItem } from "@/ModelConfigSelect.js";
 import {
   buildRegistryModelSelectGroups,
@@ -56,7 +56,7 @@ export function buildComposerPlanGroups(
   groups: readonly ModelSelectGroup[],
   products: readonly TeamProduct[],
   settingsView?: ProviderSettingsView | null,
-  agentProvider: ZCodeProvider = "glm",
+  agentProvider: AiraProvider = "glm",
   labels: ModelProviderGroupLabelOptions = {},
   selections?: Partial<Record<ProviderFamilyDomain, ProviderFamilyConnectionSelection>>,
 ): ComposerPlanGroup[] {

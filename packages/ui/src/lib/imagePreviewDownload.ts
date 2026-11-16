@@ -1,4 +1,4 @@
-import type { IPlatformService } from "@zcode/shared";
+import type { IPlatformService } from "@aira/shared";
 
 export interface ImagePreviewDialogItem {
   alt: string;

@@ -1,11 +1,11 @@
-import type { ZCodeProvider } from "@zcode/shared";
-import type { WorkspaceZCodeUIState } from "@/store/zcodeSessionStore.js";
+import type { AiraProvider } from "@aira/shared";
+import type { WorkspaceAiraUIState } from "@/store/airaSessionStore.js";
 
 interface ResolveWorkspaceSwitchDraftProviderOptions {
-  currentSelectedProvider: ZCodeProvider;
+  currentSelectedProvider: AiraProvider;
   targetWorkspacePath: string;
   targetWorkspaceIdentity?: string;
-  workspaces: Record<string, WorkspaceZCodeUIState | undefined>;
+  workspaces: Record<string, WorkspaceAiraUIState | undefined>;
 }
 
 export function resolveWorkspaceSwitchDraftProvider({
@@ -13,7 +13,7 @@ export function resolveWorkspaceSwitchDraftProvider({
   targetWorkspacePath,
   targetWorkspaceIdentity,
   workspaces,
-}: ResolveWorkspaceSwitchDraftProviderOptions): ZCodeProvider {
+}: ResolveWorkspaceSwitchDraftProviderOptions): AiraProvider {
   const workspaceKey = targetWorkspaceIdentity?.trim() || targetWorkspacePath;
   const targetWorkspaceState = workspaces[workspaceKey] ?? workspaces[targetWorkspacePath];
 

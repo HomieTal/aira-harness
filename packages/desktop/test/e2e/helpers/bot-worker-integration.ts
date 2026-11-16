@@ -7,20 +7,20 @@ import {
   ModelPropertiesConfig,
   ProviderApiConfig,
   ProviderConfig,
-} from "@zcode/provider";
+} from "@aira/provider";
 import {
   NodePersonalProviderConfigRepository,
   NodeProviderRegistryRuntime,
   createNodeModelSelectionFacade,
-} from "@zcode/provider-node";
+} from "@aira/provider-node";
 import {
-  createZCodeAgentService,
-  createZCodeTaskServiceAdapter,
+  createAiraAgentService,
+  createAiraTaskServiceAdapter,
   getDataBaseDir,
   setDataBaseDir,
-} from "@zcode/services/node";
+} from "@aira/services/node";
 import { TaskIndexRepo } from "../../../../services/src/session/taskIndexRepo.js";
-import { createZCodeTaskIndexSyncer } from "../../../../services/src/zcode-agent/zcodeTaskIndexSyncer.js";
+import { createAiraTaskIndexSyncer } from "../../../../services/src/aira-agent/airaTaskIndexSyncer.js";
 import { getE2EAppDataPaths } from "./desktop-app.js";
 import {
   createBotsServiceHarness,
@@ -47,7 +47,7 @@ export async function createBotWorkerIntegration(baseUrl: string, dropTextContai
     if (errors.length) throw new AggregateError(errors, "Bot worker fixture cleanup failed");
   };
   try {
-    const personalFilePath = join(home, ".zcode/v2/provider_config.json");
+    const personalFilePath = join(home, ".aira/v2/provider_config.json");
     const modelSelection = {
       providerId: "e2e-bot-worker",
       modelId: "e2e-bot-model",
@@ -86,10 +86,10 @@ export async function createBotWorkerIntegration(baseUrl: string, dropTextContai
       ),
     }));
     personal.dispose();
-    const builtin = resolve("../../config/provider/zcode-builtin.json");
+    const builtin = resolve("../../config/provider/aira-builtin.json");
     const runtime = new NodeProviderRegistryRuntime({
       personalFilePath,
-      zcodeBuiltinFilePath: builtin,
+      airaBuiltinFilePath: builtin,
       watch: false,
       personalPollingIntervalMs: false,
     });
@@ -138,7 +138,7 @@ export async function createBotWorkerIntegration(baseUrl: string, dropTextContai
     });
     const reverseReplies: unknown[] = [];
     const reverseResources: unknown[] = [];
-    const agent = createZCodeAgentService({
+    const agent = createAiraAgentService({
       // 项目化创建要求先预留 task 归属；旧夹具漏接此 Host 端口，在调用 CLI 前即失败。
       prepareSessionCreation: async (target) => {
         const prepared = projects.reserveCreatedTask({
@@ -155,17 +155,17 @@ export async function createBotWorkerIntegration(baseUrl: string, dropTextContai
       commandResolver: () => ({
         command: process.execPath,
         args: [
-          resolve("../../apps/zcode-cli/packages/cli/dist/zcode.cjs"),
+          resolve("../../apps/aira-cli/packages/cli/dist/aira.cjs"),
           "app-server",
           "--stdio",
         ],
         env: {
           HOME: home,
           USERPROFILE: home,
-          ZCODE_DATA_BASE_DIR: home,
-          ZCODE_RUNTIME_ENV: "development",
-          ZCODE_BUILTIN_PROVIDER_CONFIG_FILE: builtin,
-          ZCODE_PERSONAL_PROVIDER_CONFIG_FILE: personalFilePath,
+          AIRA_DATA_BASE_DIR: home,
+          AIRA_RUNTIME_ENV: "development",
+          AIRA_BUILTIN_PROVIDER_CONFIG_FILE: builtin,
+          AIRA_PERSONAL_PROVIDER_CONFIG_FILE: personalFilePath,
         },
       }),
       modelSelectionReadinessSource: modelSelectionService,
@@ -216,15 +216,15 @@ export async function createBotWorkerIntegration(baseUrl: string, dropTextContai
             ...rest,
           );
     }
-    const syncer = createZCodeTaskIndexSyncer({ agentService: agent, taskIndexRepo: repo });
+    const syncer = createAiraTaskIndexSyncer({ agentService: agent, taskIndexRepo: repo });
     cleanup.push(() => syncer.disposeAll());
     cleanup.push(() => bot.service.disposeAllAndWait());
-    const task = createZCodeTaskServiceAdapter({
-      zcodeAgentService: agent,
+    const task = createAiraTaskServiceAdapter({
+      airaAgentService: agent,
       taskIndexRepo: repo,
       taskIndexSyncer: syncer,
     });
-    Object.assign(bot.zcodeTaskService, task);
+    Object.assign(bot.airaTaskService, task);
     return {
       home,
       workspacePath,

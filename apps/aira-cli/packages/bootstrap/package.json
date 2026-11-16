@@ -1,0 +1,49 @@
+{
+  "name": "@aira/bootstrap",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./v4-replay": {
+      "types": "./dist/aira-protocol-v4/replay.d.ts",
+      "import": "./dist/aira-protocol-v4/replay.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "clean": "node ../../scripts/clean-dist.mjs",
+    "test": "vitest tests",
+    "test:fault-matrix": "AIRA_FAULT_MATRIX=full vitest run tests/workflow-fault-matrix tests/fault-matrix-harness.test.ts tests/fake-provider-server.test.ts",
+    "coverage": "vitest run tests --coverage",
+    "typecheck": "tsc --noEmit",
+    "lint": "oxlint src",
+    "lint:fix": "oxlint --write src"
+  },
+  "dependencies": {
+    "@aira/adapters": "workspace:*",
+    "@aira/contracts": "workspace:*",
+    "@aira/core": "workspace:*",
+    "@aira/dynamic-workflow": "workspace:*",
+    "@aira/dynamic-workflow-runtime": "workspace:*",
+    "@aira/i18n": "workspace:*",
+    "@aira/provider": "workspace:*",
+    "@aira/provider-node": "workspace:*",
+    "@aira/session-control": "workspace:*",
+    "@aira/shared": "workspace:*",
+    "@aira/telemetry": "workspace:*",
+    "diff": "^9.0.0",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/yazl": "^3.3.1",
+    "@aira/formal-proof": "workspace:*",
+    "yazl": "^3.3.1"
+  }
+}

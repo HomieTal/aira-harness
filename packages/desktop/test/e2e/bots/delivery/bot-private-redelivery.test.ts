@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
-import type { IZCodeTaskService } from "@zcode/services";
-import type { BotProvider, ZCodeStreamEvent } from "@zcode/shared";
+import type { IAiraTaskService } from "@aira/services";
+import type { BotProvider, AiraStreamEvent } from "@aira/shared";
 import {
   createBotModelSelectionView,
   createBotsServiceHarness,
@@ -10,7 +10,7 @@ import {
   type RecordedRequest,
 } from "#e2e/bots/helpers/bots-service-harness";
 
-type Prompt = Parameters<IZCodeTaskService["sendPrompt"]>[0];
+type Prompt = Parameters<IAiraTaskService["sendPrompt"]>[0];
 type Harness = ReturnType<typeof createBotsServiceHarness>;
 type InboundAttachments = Parameters<Harness["service"]["handleInboundMessage"]>[0]["attachments"];
 
@@ -73,10 +73,10 @@ function setupProvider(provider: BotProvider) {
       },
     },
   });
-  h.zcodeTaskService.getTaskModelSelection = async () => selection;
+  h.airaTaskService.getTaskModelSelection = async () => selection;
   // 任务服务替身按 CLI 命令账本回复：同一个 commandId 第二次提交返回 duplicate，不开新一轮。
   const admitted = new Set<string>();
-  h.zcodeTaskService.sendPrompt = async (params: Prompt) => {
+  h.airaTaskService.sendPrompt = async (params: Prompt) => {
     h.sendPromptCalls.push(params);
     const duplicate = admitted.has(params.traceId);
     admitted.add(params.traceId);
@@ -87,7 +87,7 @@ function setupProvider(provider: BotProvider) {
     };
   };
   let taskStatus = "running";
-  h.zcodeTaskService.getTaskSnapshot = async () => ({ meta: { status: taskStatus } });
+  h.airaTaskService.getTaskSnapshot = async () => ({ meta: { status: taskStatus } });
   const replies: unknown[] = [];
   const send = async (
     providerMessageId: string,
@@ -125,8 +125,8 @@ function setupProvider(provider: BotProvider) {
       type: "task_run_started",
       startedAt: Date.now(),
       inputOrigin: "desktop",
-    } as ZCodeStreamEvent);
-    await emit({ ...base, type: "task_complete", stopReason: "end_turn" } as ZCodeStreamEvent);
+    } as AiraStreamEvent);
+    await emit({ ...base, type: "task_complete", stopReason: "end_turn" } as AiraStreamEvent);
   };
   return {
     h,

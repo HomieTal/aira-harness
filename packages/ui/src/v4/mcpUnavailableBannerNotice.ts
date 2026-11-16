@@ -2,8 +2,8 @@ import type {
   ConversationRow,
   ConversationRowsPartition,
   ToolCallRow,
-} from "@zcode/shared/zcode-protocol-v4";
-import type { OfficialMcpToolErrorCode } from "@zcode/shared";
+} from "@aira/shared/aira-protocol-v4";
+import type { OfficialMcpToolErrorCode } from "@aira/shared";
 import { memoizeByRows } from "@/v4/conversationProjectionStore.js";
 
 /**

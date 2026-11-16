@@ -1,12 +1,12 @@
-import { type McpServerStatus, type ZCodeMcpServer } from "@zcode/shared";
+import { type McpServerStatus, type AiraMcpServer } from "@aira/shared";
 import {
   TID_MCP_OPEN_AUTHORIZATION_BUTTON,
   TID_MCP_SERVER_ROW,
   testId,
-} from "@zcode/shared/test-ids";
+} from "@aira/shared/test-ids";
 import { Button } from "@/components/ui/button.js";
 import { Switch } from "@/components/ui/switch.js";
-import { useZCodeIntl } from "@/i18n/IntlProvider.js";
+import { useAiraIntl } from "@/i18n/IntlProvider.js";
 import { ControlHintTooltip } from "@/ControlHintTooltip.js";
 import { settingsResourceRowInteraction } from "@/settings/settingsResourceRowInteraction.js";
 import { SettingsScopeBadge } from "@/settings/SettingsScopeBadge.js";
@@ -68,18 +68,18 @@ function McpServerItem({
   onTrust,
   hideMetadata,
 }: {
-  server: ZCodeMcpServer;
-  onEdit: (server: ZCodeMcpServer) => void;
+  server: AiraMcpServer;
+  onEdit: (server: AiraMcpServer) => void;
   onToggle: (id: string, enabled: boolean) => void;
-  onOpenAuthorization?: (server: ZCodeMcpServer) => void;
-  onTrust?: (server: ZCodeMcpServer) => void;
+  onOpenAuthorization?: (server: AiraMcpServer) => void;
+  onTrust?: (server: AiraMcpServer) => void;
   hideMetadata: boolean;
 }) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useAiraIntl();
   const typeLabel = server.config.command
     ? "stdio"
     : (server.config.type ?? (server.config.url ? "http" : "?"));
-  const canEdit = !server.location || server.location.source === "zcode";
+  const canEdit = !server.location || server.location.source === "aira";
   const canOpenAuthorization = Boolean(server.authorization?.authorizationUrl);
   const openAuthorizationLabel = intl.formatMessage({
     id: "settings.mcp.oauth.openAuthorization",
@@ -217,17 +217,17 @@ export function McpServerList({
   emptyDescription,
   hideMetadata = false,
 }: {
-  servers: ZCodeMcpServer[];
+  servers: AiraMcpServer[];
   onCreate: () => void;
-  onEdit: (server: ZCodeMcpServer) => void;
+  onEdit: (server: AiraMcpServer) => void;
   onToggle: (id: string, enabled: boolean) => void;
-  onOpenAuthorization?: (server: ZCodeMcpServer) => void;
-  onTrust?: (server: ZCodeMcpServer) => void;
+  onOpenAuthorization?: (server: AiraMcpServer) => void;
+  onTrust?: (server: AiraMcpServer) => void;
   emptyTitle: string;
   emptyDescription: string;
   hideMetadata?: boolean;
 }) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useAiraIntl();
 
   if (servers.length === 0) {
     return (

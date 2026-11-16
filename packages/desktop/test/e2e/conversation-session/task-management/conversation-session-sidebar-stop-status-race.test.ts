@@ -1,7 +1,7 @@
-import { BufferReader, BufferWriter, deserialize, serialize, VSBuffer } from "@zcode/rpc";
-import type { ProjectTree } from "@zcode/services";
-import { ServiceChannels } from "@zcode/shared";
-import { TID_TASK_ITEM, testId } from "@zcode/shared/test-ids";
+import { BufferReader, BufferWriter, deserialize, serialize, VSBuffer } from "@aira/rpc";
+import type { ProjectTree } from "@aira/services";
+import { ServiceChannels } from "@aira/shared";
+import { TID_TASK_ITEM, testId } from "@aira/shared/test-ids";
 import { clearAppData } from "#e2e/helpers/desktop-app";
 import {
   callHandoffHost,
@@ -172,12 +172,12 @@ async function installSidebarIndicatorProbe(taskId: string) {
   const installed = await browser.execute(
     (taskItemTestId) => {
       type ProbeWindow = Window & {
-        __zcodeSidebarIndicatorProbe?: SidebarIndicatorProbe & {
+        __airaSidebarIndicatorProbe?: SidebarIndicatorProbe & {
           observer: MutationObserver;
         };
       };
       const probeWindow = window as ProbeWindow;
-      probeWindow.__zcodeSidebarIndicatorProbe?.observer.disconnect();
+      probeWindow.__airaSidebarIndicatorProbe?.observer.disconnect();
       const probe = {
         seenTerminal: false,
         loadingReappeared: false,
@@ -199,7 +199,7 @@ async function installSidebarIndicatorProbe(taskId: string) {
         subtree: true,
         attributes: true,
       });
-      probeWindow.__zcodeSidebarIndicatorProbe = probe;
+      probeWindow.__airaSidebarIndicatorProbe = probe;
       sample();
       return Boolean(document.querySelector(`[data-testid="${taskItemTestId}"]`));
     },
@@ -212,9 +212,9 @@ async function getSidebarIndicatorProbe(): Promise<SidebarIndicatorProbe | null>
   return browser.execute(() => {
     const probe = (
       window as Window & {
-        __zcodeSidebarIndicatorProbe?: SidebarIndicatorProbe;
+        __airaSidebarIndicatorProbe?: SidebarIndicatorProbe;
       }
-    ).__zcodeSidebarIndicatorProbe;
+    ).__airaSidebarIndicatorProbe;
     return probe
       ? {
           seenTerminal: probe.seenTerminal,
@@ -227,13 +227,13 @@ async function getSidebarIndicatorProbe(): Promise<SidebarIndicatorProbe | null>
 async function disposeSidebarIndicatorProbe() {
   await browser.execute(() => {
     type ProbeWindow = Window & {
-      __zcodeSidebarIndicatorProbe?: SidebarIndicatorProbe & {
+      __airaSidebarIndicatorProbe?: SidebarIndicatorProbe & {
         observer?: MutationObserver;
       };
     };
     const probeWindow = window as ProbeWindow;
-    probeWindow.__zcodeSidebarIndicatorProbe?.observer?.disconnect();
-    delete probeWindow.__zcodeSidebarIndicatorProbe;
+    probeWindow.__airaSidebarIndicatorProbe?.observer?.disconnect();
+    delete probeWindow.__airaSidebarIndicatorProbe;
   });
 }
 

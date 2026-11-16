@@ -10,8 +10,8 @@
     "lib": ["es2024", "dom"],
     "types": [],
     "paths": {
-      "@zcode/shared/extension-host": ["../shared/src/extension-host/index.ts"],
-      "@zcode/shared/zcode-protocol-v4": ["../shared/src/zcode-protocol-v4/index.ts"]
+      "@aira/shared/extension-host": ["../shared/src/extension-host/index.ts"],
+      "@aira/shared/aira-protocol-v4": ["../shared/src/aira-protocol-v4/index.ts"]
     }
   },
   "include": ["src"],

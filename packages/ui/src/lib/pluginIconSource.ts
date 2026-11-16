@@ -9,14 +9,14 @@ import visualizeIconUrl from "@/assets/plugin-icons/visualize.png";
 import { isTrustedImageUrl } from "@/lib/trustedImageUrl.js";
 
 const OFFICIAL_PLUGIN_ICON_BY_ID: Readonly<Record<string, string>> = {
-  "design@zcode-plugins-official": designIconUrl,
-  "documents@zcode-plugins-official": documentsIconUrl,
-  "image-search@zcode-plugins-official": imageSearchIconUrl,
-  "pdf@zcode-plugins-official": pdfIconUrl,
-  "plugin-creator@zcode-plugins-official": pluginCreatorIconUrl,
-  "presentations@zcode-plugins-official": presentationsIconUrl,
-  "spreadsheets@zcode-plugins-official": spreadsheetsIconUrl,
-  "visualize@zcode-plugins-official": visualizeIconUrl,
+  "design@aira-plugins-official": designIconUrl,
+  "documents@aira-plugins-official": documentsIconUrl,
+  "image-search@aira-plugins-official": imageSearchIconUrl,
+  "pdf@aira-plugins-official": pdfIconUrl,
+  "plugin-creator@aira-plugins-official": pluginCreatorIconUrl,
+  "presentations@aira-plugins-official": presentationsIconUrl,
+  "spreadsheets@aira-plugins-official": spreadsheetsIconUrl,
+  "visualize@aira-plugins-official": visualizeIconUrl,
 };
 
 const TRUSTED_BUNDLED_PLUGIN_ICONS = new Set(Object.values(OFFICIAL_PLUGIN_ICON_BY_ID));

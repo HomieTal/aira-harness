@@ -1,6 +1,6 @@
 // HO01：home-only 首页工作区列表与重连入口；真实 Web 入口，受控 relay/桌面响应。
 // 不替代真机、OAuth 与线上部署验收。
-// 启动：pnpm --filter @zcode/web exec vite --host 127.0.0.1 --port 5178 --strictPort
+// 启动：pnpm --filter @aira/web exec vite --host 127.0.0.1 --port 5178 --strictPort
 // 运行：pnpm exec tsx packages/web/test/e2e/remote-control/projects/manual-review/pending/remote-home-only-workspaces.mjs
 import assert from "node:assert/strict";
 import { mkdir, writeFile } from "node:fs/promises";
@@ -62,13 +62,13 @@ try {
             if (message.type === "pair_status_query")
               socket.send(JSON.stringify({ type: "pair_status_ack", pair_status: "matched" }));
             const payload = message.payload;
-            if (payload?.zcode_type === "rpc-frame" || payload?.zcode_type === "rpc-frame-ack") {
+            if (payload?.aira_type === "rpc-frame" || payload?.aira_type === "rpc-frame-ack") {
               bridge?.acceptPayload(payload);
               return;
             }
-            if (payload?.zcode_type === "bootstrap-request")
+            if (payload?.aira_type === "bootstrap-request")
               send(socket, {
-                zcode_type: "bootstrap-response",
+                aira_type: "bootstrap-response",
                 requestId: payload.requestId,
                 success: true,
                 result: {
@@ -77,23 +77,23 @@ try {
                   workspaces,
                 },
               });
-            if (payload?.zcode_type === "workspace-list-request") {
+            if (payload?.aira_type === "workspace-list-request") {
               traffic.lists++;
               send(socket, {
-                zcode_type: "workspace-list-response",
+                aira_type: "workspace-list-response",
                 requestId: payload.requestId,
                 success: true,
                 result: { workspaces },
               });
             }
-            if (payload?.zcode_type === "workspace-reconnect-request") {
+            if (payload?.aira_type === "workspace-reconnect-request") {
               traffic.reconnects.push(payload.workspaceKey);
               const target = workspaces.find(
                 (item) => item.workspaceIdentity === payload.workspaceKey,
               );
               if (target.label === "E2E_BETA") {
                 send(socket, {
-                  zcode_type: "workspace-reconnect-response",
+                  aira_type: "workspace-reconnect-response",
                   requestId: payload.requestId,
                   workspaceKey: payload.workspaceKey,
                   success: false,
@@ -105,15 +105,15 @@ try {
                 connectionState: "connected",
                 remoteSessionId: "remote-alpha",
               });
-              send(socket, { zcode_type: "workspace-list-updated", result: { workspaces } });
+              send(socket, { aira_type: "workspace-list-updated", result: { workspaces } });
               send(socket, {
-                zcode_type: "workspace-reconnect-response",
+                aira_type: "workspace-reconnect-response",
                 requestId: payload.requestId,
                 workspaceKey: payload.workspaceKey,
                 success: true,
               });
             }
-            if (payload?.zcode_type === "workspace-bridge-open") {
+            if (payload?.aira_type === "workspace-bridge-open") {
               traffic.bridgeOpens.push(payload.workspaceKey);
               const target = workspaces.find(
                 (item) => item.workspaceIdentity === payload.workspaceKey,
@@ -125,7 +125,7 @@ try {
                 bridgeGeneration: payload.bridgeGeneration,
               };
               send(socket, {
-                zcode_type: "workspace-bridge-ready",
+                aira_type: "workspace-bridge-ready",
                 requestId: payload.requestId,
                 bridgeSessionId: payload.bridgeSessionId,
                 bridgeGeneration: payload.bridgeGeneration,
@@ -145,7 +145,7 @@ try {
           const onboarding = page.getByTestId("onboarding-page");
           await onboarding.waitFor();
           await onboarding.getByRole("button", { name: /退出引导|Exit onboarding/ }).click();
-          const welcome = page.getByRole("dialog", { name: /欢迎使用 ZCode|Welcome to ZCode/ });
+          const welcome = page.getByRole("dialog", { name: /欢迎使用 Aira|Welcome to Aira/ });
           await welcome.waitFor();
           await welcome.getByRole("button", { name: /^(Close|关闭)$/ }).click();
           await welcome.waitFor({ state: "detached" });

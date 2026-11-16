@@ -11,7 +11,7 @@ import {
   type BrowserViewRestoreTabsRequest,
   type BrowserViewportSize,
   type BrowserViewScreenshotSurfaceReadyPayload,
-} from "@zcode/shared";
+} from "@aira/shared";
 import { registerBrowserDataIpcHandlers } from "./desktopBrowserDataIpc.js";
 
 export type AttachBrowserGuest = (

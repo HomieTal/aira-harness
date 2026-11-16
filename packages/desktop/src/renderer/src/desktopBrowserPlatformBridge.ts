@@ -1,4 +1,4 @@
-import type { IPlatformService } from "@zcode/shared";
+import type { IPlatformService } from "@aira/shared";
 
 type DesktopBrowserPlatformBridge = Pick<
   IPlatformService,
@@ -32,58 +32,58 @@ type DesktopBrowserPlatformBridge = Pick<
 // Rebase 集成：browser bridge 若继续内联在 renderer 入口，会让入口越过 max-lines 门禁。
 // 独立对象只做 preload 委托与旧 bridge 兼容兜底，不持有 Browser 业务状态。
 export const desktopBrowserPlatformBridge = {
-  getPathForFile: (file) => window.zcode.getPathForFile?.(file) ?? null,
+  getPathForFile: (file) => window.aira.getPathForFile?.(file) ?? null,
   saveFile: (payload) =>
-    window.zcode.saveFile?.(payload) ?? Promise.resolve({ success: false, error: "not_supported" }),
+    window.aira.saveFile?.(payload) ?? Promise.resolve({ success: false, error: "not_supported" }),
   // 条件定义而非兜底返回失败：UI 靠方法是否存在做能力检测，旧 preload 下必须保持 undefined
-  printPageToPdf: window.zcode.printPageToPdf ? () => window.zcode.printPageToPdf!() : undefined,
+  printPageToPdf: window.aira.printPageToPdf ? () => window.aira.printPageToPdf!() : undefined,
   // 与 printPageToPdf 一样按 preload 是否提供决定能力是否存在，UI 据此决定是否显示语音输入。
   microphone:
-    window.zcode.ensureMicrophoneAccess &&
-    window.zcode.resetMicrophoneAccess &&
-    window.zcode.openMicrophoneSettings
+    window.aira.ensureMicrophoneAccess &&
+    window.aira.resetMicrophoneAccess &&
+    window.aira.openMicrophoneSettings
       ? {
-          ensureAccess: () => window.zcode.ensureMicrophoneAccess!(),
-          resetAccess: () => window.zcode.resetMicrophoneAccess!(),
-          openSettings: (target) => window.zcode.openMicrophoneSettings!(target),
+          ensureAccess: () => window.aira.ensureMicrophoneAccess!(),
+          resetAccess: () => window.aira.resetMicrophoneAccess!(),
+          openSettings: (target) => window.aira.openMicrophoneSettings!(target),
         }
       : undefined,
   onBrowserViewDownloadStarted: (handler) =>
-    window.zcode.onBrowserViewDownloadStarted?.(handler) ?? (() => {}),
-  captureBrowserGuestPage: window.zcode.captureBrowserGuestPage
-    ? (payload) => window.zcode.captureBrowserGuestPage!(payload)
+    window.aira.onBrowserViewDownloadStarted?.(handler) ?? (() => {}),
+  captureBrowserGuestPage: window.aira.captureBrowserGuestPage
+    ? (payload) => window.aira.captureBrowserGuestPage!(payload)
     : undefined,
-  onBrowserViewReady: (handler) => window.zcode.onBrowserViewReady?.(handler) ?? (() => {}),
-  onBrowserViewOperation: (handler) => window.zcode.onBrowserViewOperation?.(handler) ?? (() => {}),
+  onBrowserViewReady: (handler) => window.aira.onBrowserViewReady?.(handler) ?? (() => {}),
+  onBrowserViewOperation: (handler) => window.aira.onBrowserViewOperation?.(handler) ?? (() => {}),
   onBrowserViewViewportChanged: (handler) =>
-    window.zcode.onBrowserViewViewportChanged?.(handler) ?? (() => {}),
+    window.aira.onBrowserViewViewportChanged?.(handler) ?? (() => {}),
   onBrowserViewVisibility: (handler) =>
-    window.zcode.onBrowserViewVisibility?.(handler) ?? (() => {}),
-  onBrowserViewCloseTab: (handler) => window.zcode.onBrowserViewCloseTab?.(handler) ?? (() => {}),
-  onBrowserViewSuspend: (handler) => window.zcode.onBrowserViewSuspend?.(handler) ?? (() => {}),
-  onBrowserViewRestore: (handler) => window.zcode.onBrowserViewRestore?.(handler) ?? (() => {}),
-  browserViewLoadUrl: (payload) => window.zcode.browserViewLoadUrl!(payload),
+    window.aira.onBrowserViewVisibility?.(handler) ?? (() => {}),
+  onBrowserViewCloseTab: (handler) => window.aira.onBrowserViewCloseTab?.(handler) ?? (() => {}),
+  onBrowserViewSuspend: (handler) => window.aira.onBrowserViewSuspend?.(handler) ?? (() => {}),
+  onBrowserViewRestore: (handler) => window.aira.onBrowserViewRestore?.(handler) ?? (() => {}),
+  browserViewLoadUrl: (payload) => window.aira.browserViewLoadUrl!(payload),
   browserViewAttachGuest: (payload) =>
-    window.zcode.browserViewAttachGuest?.(payload) ??
+    window.aira.browserViewAttachGuest?.(payload) ??
     Promise.resolve({ ok: false, reason: "not-found", recoveryRequested: false }),
   browserViewDetachGuest: (payload) =>
-    window.zcode.browserViewDetachGuest?.(payload) ?? Promise.resolve(false),
+    window.aira.browserViewDetachGuest?.(payload) ?? Promise.resolve(false),
   browserViewCloseTab: (payload) =>
-    window.zcode.browserViewCloseTab?.(payload) ?? Promise.resolve(),
+    window.aira.browserViewCloseTab?.(payload) ?? Promise.resolve(),
   browserViewReportResidency: (payload) =>
-    window.zcode.browserViewReportResidency?.(payload) ?? Promise.resolve(),
+    window.aira.browserViewReportResidency?.(payload) ?? Promise.resolve(),
   browserViewPromoteDraftTabs: (payload) =>
-    window.zcode.browserViewPromoteDraftTabs?.(payload) ?? Promise.resolve([]),
+    window.aira.browserViewPromoteDraftTabs?.(payload) ?? Promise.resolve([]),
   browserViewSuspendReady: (payload) =>
-    window.zcode.browserViewSuspendReady?.(payload) ?? Promise.resolve(),
+    window.aira.browserViewSuspendReady?.(payload) ?? Promise.resolve(),
   browserViewEnsureResident: (payload) =>
-    window.zcode.browserViewEnsureResident?.(payload) ?? Promise.resolve(),
+    window.aira.browserViewEnsureResident?.(payload) ?? Promise.resolve(),
   browserViewRestoreTabs: (payload) =>
-    window.zcode.browserViewRestoreTabs?.(payload) ?? Promise.resolve([]),
+    window.aira.browserViewRestoreTabs?.(payload) ?? Promise.resolve([]),
   browserViewUpdateViewport: (payload) =>
-    window.zcode.browserViewUpdateViewport?.(payload) ?? Promise.resolve(),
+    window.aira.browserViewUpdateViewport?.(payload) ?? Promise.resolve(),
   importChromeBrowserData: (options) =>
-    window.zcode.importChromeBrowserData?.(options) ??
+    window.aira.importChromeBrowserData?.(options) ??
     Promise.resolve({
       success: false,
       cookies: { imported: 0, skipped: 0, failed: 0 },
@@ -96,6 +96,6 @@ export const desktopBrowserPlatformBridge = {
       error: "unsupported",
     }),
   clearEmbeddedBrowserData: (mode) =>
-    window.zcode.clearEmbeddedBrowserData?.(mode) ??
+    window.aira.clearEmbeddedBrowserData?.(mode) ??
     Promise.resolve({ success: false, error: "unsupported" }),
 } satisfies DesktopBrowserPlatformBridge;

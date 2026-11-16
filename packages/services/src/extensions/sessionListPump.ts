@@ -1,11 +1,11 @@
-import type { AppSessionRef } from "@zcode/session-control/contracts";
+import type { AppSessionRef } from "@aira/session-control/contracts";
 import {
   ExtensionError,
   SESSION_LIST_MAX_ROWS,
   type SessionListEvent,
   type SessionListRow,
-} from "@zcode/shared/extension-host";
-import type { WindowHostControllerTaskRow } from "@zcode/shared/zcode-protocol-v4";
+} from "@aira/shared/extension-host";
+import type { WindowHostControllerTaskRow } from "@aira/shared/aira-protocol-v4";
 import type { ServiceLogger } from "#src/logger/serviceLogger.js";
 import type { CapabilitySubscription } from "#src/extensions/capabilityTypes.js";
 

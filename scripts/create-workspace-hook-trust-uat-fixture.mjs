@@ -42,17 +42,17 @@ if (parsed.values.verify !== undefined) {
 
 const workspacePath = parsed.values.target
   ? resolve(parsed.values.target)
-  : await mkdtemp(join(tmpdir(), "zcode-workspace-hook-trust-uat-"));
+  : await mkdtemp(join(tmpdir(), "aira-workspace-hook-trust-uat-"));
 
 if (parsed.values.target) {
   await mkdir(workspacePath);
 }
 
-const zcodeDirectory = join(workspacePath, ".zcode");
-const recorderPath = join(zcodeDirectory, "workspace-hook-trust-uat-recorder.mjs");
-const configPath = join(zcodeDirectory, "config.json");
+const airaDirectory = join(workspacePath, ".aira");
+const recorderPath = join(airaDirectory, "workspace-hook-trust-uat-recorder.mjs");
+const configPath = join(airaDirectory, "config.json");
 const evidencePath = join(workspacePath, ".workspace-hook-trust-uat", "executions.jsonl");
-await mkdir(zcodeDirectory, { recursive: true });
+await mkdir(airaDirectory, { recursive: true });
 
 const recorder = `import { appendFile, mkdir } from "node:fs/promises";
 import { join } from "node:path";
@@ -84,7 +84,7 @@ const config = {
               type: "process",
               command: "node",
               args: [
-                ".zcode/workspace-hook-trust-uat-recorder.mjs",
+                ".aira/workspace-hook-trust-uat-recorder.mjs",
                 "SessionStart",
                 "session-start-a",
               ],
@@ -96,7 +96,7 @@ const config = {
               type: "process",
               command: "node",
               args: [
-                ".zcode/workspace-hook-trust-uat-recorder.mjs",
+                ".aira/workspace-hook-trust-uat-recorder.mjs",
                 "SessionStart",
                 "session-start-b",
               ],
@@ -114,7 +114,7 @@ const config = {
               type: "process",
               command: "node",
               args: [
-                ".zcode/workspace-hook-trust-uat-recorder.mjs",
+                ".aira/workspace-hook-trust-uat-recorder.mjs",
                 "UserPromptSubmit",
                 "prompt-submit",
               ],
@@ -164,7 +164,7 @@ if (parsed.values.json) {
       `config:    ${configPath}`,
       `evidence:  ${evidencePath}`,
       "",
-      "Open the workspace in ZCode Desktop, then follow:",
+      "Open the workspace in Aira Desktop, then follow:",
       "docs/testing/workspace-hook-trust-manual-acceptance.md",
       "",
     ].join("\n"),
@@ -181,7 +181,7 @@ if (parsed.values.json) {
  * 这里在每轮开始前做廉价断言，让污染在数秒内暴露，而不是等测完才发现。
  */
 async function verifyFixture(workspacePath, asJson) {
-  const targetConfigPath = join(workspacePath, ".zcode", "config.json");
+  const targetConfigPath = join(workspacePath, ".aira", "config.json");
   const targetEvidencePath = join(workspacePath, ".workspace-hook-trust-uat", "executions.jsonl");
   const problems = [];
   let declarations = [];

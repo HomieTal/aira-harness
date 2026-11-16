@@ -8,7 +8,7 @@ import {
   projectAccessTokenRequestFailureCode,
   ProjectAccessTokenTransientError,
 } from "./project-access-token.js";
-import { ZCODE_VERSION } from "./version.js";
+import { AIRA_VERSION } from "./version.js";
 import { isCredentialDecryptError } from "./oauth.js";
 
 const MAX_TOKEN_ISSUE_ATTEMPTS = 2;
@@ -224,7 +224,7 @@ export class ProjectAccessTokenClient {
                 {
                   method: "POST",
                   headers,
-                  body: JSON.stringify({ clientType: "zcode", clientVersion: ZCODE_VERSION }),
+                  body: JSON.stringify({ clientType: "aira", clientVersion: AIRA_VERSION }),
                 },
               );
               break;
@@ -352,7 +352,7 @@ export class ProjectAccessTokenClient {
       };
     }
     const url = keyListUrl(origin, location);
-    const name = input.team ? "zcode-team-api-key" : "zcode-api-key";
+    const name = input.team ? "aira-team-api-key" : "aira-api-key";
     const keyHeaders = input.team
       ? {
           ...headers,

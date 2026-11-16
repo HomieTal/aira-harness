@@ -1,15 +1,15 @@
-import type { ZCodeInteractionRequestOrigin } from "@zcode/shared";
+import type { AiraInteractionRequestOrigin } from "@aira/shared";
 import { cn } from "@/components/lib/utils.js";
-import { useZCodeIntl } from "@/i18n/IntlProvider.js";
+import { useAiraIntl } from "@/i18n/IntlProvider.js";
 
 export function InteractionRequestOriginBadge({
   className,
   origin,
 }: {
   className?: string;
-  origin?: ZCodeInteractionRequestOrigin;
+  origin?: AiraInteractionRequestOrigin;
 }) {
-  const { intl } = useZCodeIntl();
+  const { intl } = useAiraIntl();
   if (origin?.kind !== "subagent") {
     return null;
   }

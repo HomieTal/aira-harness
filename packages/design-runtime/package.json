@@ -1,5 +1,5 @@
 {
-  "name": "@zcode/design-runtime",
+  "name": "@aira/design-runtime",
   "private": true,
   "type": "module",
   "exports": {

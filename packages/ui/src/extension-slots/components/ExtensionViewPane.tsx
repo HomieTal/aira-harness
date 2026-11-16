@@ -3,10 +3,10 @@ import {
   findStaticView,
   type ExtensionViewInput,
   type ResolvedScope,
-} from "@zcode/shared/extension-host";
-import { TID_EXTENSION_VIEW } from "@zcode/shared/test-ids";
+} from "@aira/shared/extension-host";
+import { TID_EXTENSION_VIEW } from "@aira/shared/test-ids";
 import { usePlatform } from "@/hooks/usePlatform.js";
-import { useZCodeIntl } from "@/i18n/IntlProvider.js";
+import { useAiraIntl } from "@/i18n/IntlProvider.js";
 import {
   useExtensionSlotsState,
   useExtensionViewsService,
@@ -39,7 +39,7 @@ export function ExtensionViewPane({
   target,
   onOpenExternal,
 }: ExtensionViewPaneProps) {
-  const { intl, locale } = useZCodeIntl();
+  const { intl, locale } = useAiraIntl();
   const platform = usePlatform();
   const sandbox = platform.pluginSandbox ?? null;
   const service = useExtensionsService();

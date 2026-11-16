@@ -1,5 +1,5 @@
-import { encodeCustomModelValue } from "@zcode/shared";
-import { TID_SETTINGS_BACK_BUTTON } from "@zcode/shared/test-ids";
+import { encodeCustomModelValue } from "@aira/shared";
+import { TID_SETTINGS_BACK_BUTTON } from "@aira/shared/test-ids";
 import {
   DEFAULT_WORKSPACE,
   clearAppData,

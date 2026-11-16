@@ -1,4 +1,4 @@
-import type { AssistantTextRow } from "@zcode/shared/zcode-protocol-v4";
+import type { AssistantTextRow } from "@aira/shared/aira-protocol-v4";
 import {
   buildAssistantPreviewCards,
   type AssistantPreviewCard,

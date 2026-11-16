@@ -1,10 +1,10 @@
-import { IProjectService } from "@zcode/services";
+import { IProjectService } from "@aira/services";
 import {
   buildRemoteHostWorkspaceIdentity,
   buildServerRemoteWorkspaceIdentity,
   parseRemoteWorkspaceIdentity,
   remoteHostIdFromWorkspaceIdentity,
-} from "@zcode/shared";
+} from "@aira/shared";
 import type {
   AppControlDiscoverySource,
   AppControlDiscoverySourceResolverOptions,

@@ -1,72 +1,72 @@
 !include nsDialogs.nsh
 !include FileFunc.nsh
 
-!ifndef ZCODE_INSTALLER_DEFAULT_LOG_PATH
-  !define ZCODE_INSTALLER_DEFAULT_LOG_PATH "$TEMP\ZCode-installer.log"
+!ifndef AIRA_INSTALLER_DEFAULT_LOG_PATH
+  !define AIRA_INSTALLER_DEFAULT_LOG_PATH "$TEMP\Aira-installer.log"
 !endif
-!ifndef ZCODE_INSTALLER_ELEVATED_LOG_PATH
-  !define ZCODE_INSTALLER_ELEVATED_LOG_PATH "$WINDIR\Logs\ZCode-installer.log"
+!ifndef AIRA_INSTALLER_ELEVATED_LOG_PATH
+  !define AIRA_INSTALLER_ELEVATED_LOG_PATH "$WINDIR\Logs\Aira-installer.log"
 !endif
-!ifndef ZCODE_INSTALLER_IS_ELEVATED_INNER
+!ifndef AIRA_INSTALLER_IS_ELEVATED_INNER
   ; 修复原因：来源只在测试夹具模拟内层，正式默认恒假会让提权进程继续使用调用方 /LOG。
   ; 使用 electron-builder 同一 UAC 判据；隔离夹具仍可显式替换，不改变真正的提权流程。
   !include UAC.nsh
-  !define ZCODE_INSTALLER_IS_ELEVATED_INNER `${UAC_IsInnerInstance}`
+  !define AIRA_INSTALLER_IS_ELEVATED_INNER `${UAC_IsInnerInstance}`
 !endif
 
-!ifndef ZCODE_INSTALLER_PROCESS_HELPER
+!ifndef AIRA_INSTALLER_PROCESS_HELPER
   ; CR-01 修复原因：普通 NSIS 只有 APP_64/APP_ARM64（压缩包路径），没有 APP_DIR_*；
   ; 正式构建由 afterPack 落盘按架构的 helper define 文件（见 electron-builder.config.js），
   ; 编译时按目标架构 include；缺失不在此报错，宏内在真正使用处明确失败。
   !ifdef APP_ARM64
-    !include /NONFATAL "${__FILEDIR__}\generated\zcode-process-helper-arm64.nsh"
+    !include /NONFATAL "${__FILEDIR__}\generated\aira-process-helper-arm64.nsh"
   !else
-    !include /NONFATAL "${__FILEDIR__}\generated\zcode-process-helper-x64.nsh"
+    !include /NONFATAL "${__FILEDIR__}\generated\aira-process-helper-x64.nsh"
   !endif
 !endif
 
-!ifndef ZCODE_INSTALL_MANIFEST_NAME
-  !define ZCODE_INSTALL_MANIFEST_NAME ".zcode-install-manifest"
+!ifndef AIRA_INSTALL_MANIFEST_NAME
+  !define AIRA_INSTALL_MANIFEST_NAME ".aira-install-manifest"
 !endif
 
-!ifndef ZCODE_UNINSTALLER_LOG_PATH
-  !define ZCODE_UNINSTALLER_LOG_PATH "$TEMP\ZCode-uninstaller.log"
+!ifndef AIRA_UNINSTALLER_LOG_PATH
+  !define AIRA_UNINSTALLER_LOG_PATH "$TEMP\Aira-uninstaller.log"
 !endif
-!ifndef ZCODE_UNINSTALLER_FUNCTION_PREFIX
-  !define ZCODE_UNINSTALLER_FUNCTION_PREFIX "un."
+!ifndef AIRA_UNINSTALLER_FUNCTION_PREFIX
+  !define AIRA_UNINSTALLER_FUNCTION_PREFIX "un."
 !endif
 
 !ifdef BUILD_UNINSTALLER
-  Var ZCodeUninstallerLogUnavailable
+  Var AiraUninstallerLogUnavailable
 
   ; 卸载器只在更新时删除旧文件；单独记录清理阶段，避免外层把权限/空间错误误报成应用仍在运行。
-  !macro ZCodeReportUninstallerStage MESSAGE
-    DetailPrint "ZCode: ${MESSAGE}"
+  !macro AiraReportUninstallerStage MESSAGE
+    DetailPrint "Aira: ${MESSAGE}"
     Push "${MESSAGE}"
-    Call ${ZCODE_UNINSTALLER_FUNCTION_PREFIX}ZCodeWriteUninstallerLog
+    Call ${AIRA_UNINSTALLER_FUNCTION_PREFIX}AiraWriteUninstallerLog
   !macroend
 
-  Function ${ZCODE_UNINSTALLER_FUNCTION_PREFIX}ZCodeWriteUninstallerLog
+  Function ${AIRA_UNINSTALLER_FUNCTION_PREFIX}AiraWriteUninstallerLog
     Exch $R9
     Push $R0
     Push $R1
     Push $R2
 
-    StrCmp $ZCodeUninstallerLogUnavailable "1" zcodeUninstallerLogDone
+    StrCmp $AiraUninstallerLogUnavailable "1" airaUninstallerLogDone
     ClearErrors
-    FileOpen $R1 "${ZCODE_UNINSTALLER_LOG_PATH}" a
-    IfErrors zcodeUninstallerLogFailed zcodeUninstallerLogWrite
-    zcodeUninstallerLogWrite:
+    FileOpen $R1 "${AIRA_UNINSTALLER_LOG_PATH}" a
+    IfErrors airaUninstallerLogFailed airaUninstallerLogWrite
+    airaUninstallerLogWrite:
       System::Call "kernel32::GetCurrentProcessId() i.R0"
       FileSeek $R1 0 END
       FileWrite $R1 "[pid=$R0] $R9$\r$\n"
       FileClose $R1
-      Goto zcodeUninstallerLogDone
-    zcodeUninstallerLogFailed:
+      Goto airaUninstallerLogDone
+    airaUninstallerLogFailed:
       ; 日志不可写不应改变卸载结果，保留原始清理错误供外层处理。
-      StrCpy $ZCodeUninstallerLogUnavailable "1"
+      StrCpy $AiraUninstallerLogUnavailable "1"
       ClearErrors
-    zcodeUninstallerLogDone:
+    airaUninstallerLogDone:
       Pop $R2
       Pop $R1
       Pop $R0
@@ -74,11 +74,11 @@
   FunctionEnd
 
   !macro customRemoveFilesDiagnosticsStart
-    !insertmacro ZCodeReportUninstallerStage "cleanup-started"
+    !insertmacro AiraReportUninstallerStage "cleanup-started"
   !macroend
 
   !macro customRemoveFilesDiagnosticsComplete
-    !insertmacro ZCodeReportUninstallerStage "cleanup-completed"
+    !insertmacro AiraReportUninstallerStage "cleanup-completed"
   !macroend
 !endif
 
@@ -90,58 +90,58 @@
       !insertmacro customRemoveFilesDiagnosticsStart
     !endif
     ClearErrors
-    FileOpen $R0 "$INSTDIR\${ZCODE_INSTALL_MANIFEST_NAME}" r
-    IfErrors zcodeManifestMissing
+    FileOpen $R0 "$INSTDIR\${AIRA_INSTALL_MANIFEST_NAME}" r
+    IfErrors airaManifestMissing
 
-    zcodeManifestRead:
+    airaManifestRead:
       ClearErrors
       FileRead $R0 $R1
-      IfErrors zcodeManifestClose
+      IfErrors airaManifestClose
       ; NSIS FileRead 保留行尾 CRLF；打包清单统一使用换行结尾，先去掉两个行尾字符。
       StrCpy $R1 $R1 -2
-      StrCmp $R1 "" zcodeManifestRead
+      StrCmp $R1 "" airaManifestRead
 
       ; 拒绝绝对路径和 .. 前缀，避免损坏或篡改清单越界删除。
       StrCpy $R2 $R1 1
-      StrCmp $R2 "\\" zcodeManifestRead
-      StrCmp $R2 "/" zcodeManifestRead
+      StrCmp $R2 "\\" airaManifestRead
+      StrCmp $R2 "/" airaManifestRead
       StrCpy $R2 $R1 2
-      StrCmp $R2 ".." zcodeManifestRead
-      StrCmp $R1 "${UNINSTALL_FILENAME}" zcodeManifestRead
+      StrCmp $R2 ".." airaManifestRead
+      StrCmp $R1 "${UNINSTALL_FILENAME}" airaManifestRead
       ; 清单是当前打开的元数据，自引用条目不能当作普通载荷删除。
-      StrCmp $R1 "${ZCODE_INSTALL_MANIFEST_NAME}" zcodeManifestRead
+      StrCmp $R1 "${AIRA_INSTALL_MANIFEST_NAME}" airaManifestRead
       GetFullPathName $R2 "$INSTDIR\$R1"
-      StrCmp $R2 "$INSTDIR\$R1" 0 zcodeManifestRead
+      StrCmp $R2 "$INSTDIR\$R1" 0 airaManifestRead
 
       ; 当前版本卸载器与外层安装器是两个进程；逐项记录到卸载器日志，便于核对真正尝试删除的文件。
       !ifdef BUILD_UNINSTALLER
-        !insertmacro ZCodeReportUninstallerStage "cleanup-file path=$R1"
+        !insertmacro AiraReportUninstallerStage "cleanup-file path=$R1"
       !endif
       ClearErrors
       Delete "$INSTDIR\$R1"
-      IfErrors zcodeManifestDeleteFailed
-      Goto zcodeManifestRead
+      IfErrors airaManifestDeleteFailed
+      Goto airaManifestRead
 
-    zcodeManifestDeleteFailed:
+    airaManifestDeleteFailed:
       System::Call 'kernel32::GetLastError() i.R2'
       FileClose $R0
       !ifdef BUILD_UNINSTALLER
-        !insertmacro ZCodeReportUninstallerStage "cleanup-failed reason=delete-failed path=$R1 win32-error=$R2"
+        !insertmacro AiraReportUninstallerStage "cleanup-failed reason=delete-failed path=$R1 win32-error=$R2"
       !endif
       Abort "无法删除旧版本文件：$INSTDIR\$R1（Win32 错误 $R2）"
 
-    zcodeManifestClose:
+    airaManifestClose:
       FileClose $R0
-      Goto zcodeManifestDone
+      Goto airaManifestDone
 
-    zcodeManifestMissing:
+    airaManifestMissing:
       ; 首次从旧版本升级时没有清单，不能猜测所有权并删除用户文件。
       !ifdef BUILD_UNINSTALLER
-        !insertmacro ZCodeReportUninstallerStage "cleanup-skipped reason=manifest-missing action=preserve"
+        !insertmacro AiraReportUninstallerStage "cleanup-skipped reason=manifest-missing action=preserve"
       !endif
       ClearErrors
 
-    zcodeManifestDone:
+    airaManifestDone:
       !ifdef BUILD_UNINSTALLER
         !insertmacro customRemoveFilesDiagnosticsComplete
       !endif
@@ -153,157 +153,157 @@
 !macroend
 
 !ifndef BUILD_UNINSTALLER
-  Var ZCodeInstallerLogPath
-  Var ZCodeInstallerLogUnavailable
-  Var ZCodeInstallerProcessRole
-  Var ZCodeUninstallerDetailsUnavailable
-  Var ZCodePreviousUninstallerSupportsManifest
+  Var AiraInstallerLogPath
+  Var AiraInstallerLogUnavailable
+  Var AiraInstallerProcessRole
+  Var AiraUninstallerDetailsUnavailable
+  Var AiraPreviousUninstallerSupportsManifest
 
   ; 详情面板和文件日志共用同一条阶段事件，避免静默安装丢失关键上下文。
-  !macro ZCodeReportInstallerStage MESSAGE
+  !macro AiraReportInstallerStage MESSAGE
     SetDetailsPrint listonly
-    DetailPrint "ZCode: ${MESSAGE}"
+    DetailPrint "Aira: ${MESSAGE}"
     Push "${MESSAGE}"
-    Call ZCodeWriteInstallerLog
+    Call AiraWriteInstallerLog
   !macroend
 
-  Function ZCodeWriteInstallerLog
+  Function AiraWriteInstallerLog
     Exch $R9
     Push $R0
     Push $R1
     Push $R2
 
-    StrCmp $ZCodeInstallerLogPath "" zcodeInstallerLogDone
-    StrCmp $ZCodeInstallerLogUnavailable "1" zcodeInstallerLogDone
+    StrCmp $AiraInstallerLogPath "" airaInstallerLogDone
+    StrCmp $AiraInstallerLogUnavailable "1" airaInstallerLogDone
     StrCpy $R2 0
-    zcodeInstallerLogOpen:
+    airaInstallerLogOpen:
       ClearErrors
-      FileOpen $R1 $ZCodeInstallerLogPath a
-      IfErrors zcodeInstallerLogRetry zcodeInstallerLogWrite
-    zcodeInstallerLogRetry:
+      FileOpen $R1 $AiraInstallerLogPath a
+      IfErrors airaInstallerLogRetry airaInstallerLogWrite
+    airaInstallerLogRetry:
       IntOp $R2 $R2 + 1
-      IntCmp $R2 3 zcodeInstallerLogFailed zcodeInstallerLogWait zcodeInstallerLogFailed
-    zcodeInstallerLogWait:
+      IntCmp $R2 3 airaInstallerLogFailed airaInstallerLogWait airaInstallerLogFailed
+    airaInstallerLogWait:
       Sleep 50
-      Goto zcodeInstallerLogOpen
-    zcodeInstallerLogWrite:
+      Goto airaInstallerLogOpen
+    airaInstallerLogWrite:
       System::Call "kernel32::GetCurrentProcessId() i.R0"
       FileSeek $R1 0 END
       FileWrite $R1 "[pid=$R0] $R9$\r$\n"
       FileClose $R1
-      Goto zcodeInstallerLogDone
-    zcodeInstallerLogFailed:
-      StrCpy $ZCodeInstallerLogUnavailable "1"
+      Goto airaInstallerLogDone
+    airaInstallerLogFailed:
+      StrCpy $AiraInstallerLogUnavailable "1"
       ClearErrors
-    zcodeInstallerLogDone:
+    airaInstallerLogDone:
       Pop $R2
       Pop $R1
       Pop $R0
       Pop $R9
   FunctionEnd
 
-  Function ZCodeResetUninstallerLog
-    StrCpy $ZCodeUninstallerDetailsUnavailable ""
+  Function AiraResetUninstallerLog
+    StrCpy $AiraUninstallerDetailsUnavailable ""
     ClearErrors
-    FileOpen $R0 "${ZCODE_UNINSTALLER_LOG_PATH}" w
-    IfErrors zcodeUninstallerDetailsResetFailed zcodeUninstallerDetailsResetSucceeded
-    zcodeUninstallerDetailsResetSucceeded:
+    FileOpen $R0 "${AIRA_UNINSTALLER_LOG_PATH}" w
+    IfErrors airaUninstallerDetailsResetFailed airaUninstallerDetailsResetSucceeded
+    airaUninstallerDetailsResetSucceeded:
       FileClose $R0
-      Goto zcodeUninstallerDetailsResetDone
-    zcodeUninstallerDetailsResetFailed:
+      Goto airaUninstallerDetailsResetDone
+    airaUninstallerDetailsResetFailed:
       ; 外层详情不能读取旧卸载器日志时仍继续安装，文件日志和退出码仍是最终依据。
-      StrCpy $ZCodeUninstallerDetailsUnavailable "1"
+      StrCpy $AiraUninstallerDetailsUnavailable "1"
       ClearErrors
-    zcodeUninstallerDetailsResetDone:
+    airaUninstallerDetailsResetDone:
   FunctionEnd
 
-  Function ZCodeShowUninstallerCleanupDetails
+  Function AiraShowUninstallerCleanupDetails
     Push $R0
     Push $R1
     Push $R2
 
-    StrCmp $ZCodeUninstallerDetailsUnavailable "1" zcodeShowUninstallerDetailsDone
+    StrCmp $AiraUninstallerDetailsUnavailable "1" airaShowUninstallerDetailsDone
     ClearErrors
-    FileOpen $R0 "${ZCODE_UNINSTALLER_LOG_PATH}" r
-    IfErrors zcodeShowUninstallerDetailsDone
-    zcodeShowUninstallerDetailsRead:
+    FileOpen $R0 "${AIRA_UNINSTALLER_LOG_PATH}" r
+    IfErrors airaShowUninstallerDetailsDone
+    airaShowUninstallerDetailsRead:
       ClearErrors
       FileRead $R0 $R1
-      IfErrors zcodeShowUninstallerDetailsClose
-      StrCmp $R1 "" zcodeShowUninstallerDetailsRead
+      IfErrors airaShowUninstallerDetailsClose
+      StrCmp $R1 "" airaShowUninstallerDetailsRead
       SetDetailsPrint listonly
-      DetailPrint "ZCode: cleanup-log $R1"
-      Goto zcodeShowUninstallerDetailsRead
-    zcodeShowUninstallerDetailsClose:
+      DetailPrint "Aira: cleanup-log $R1"
+      Goto airaShowUninstallerDetailsRead
+    airaShowUninstallerDetailsClose:
       FileClose $R0
-    zcodeShowUninstallerDetailsDone:
+    airaShowUninstallerDetailsDone:
       Pop $R2
       Pop $R1
       Pop $R0
   FunctionEnd
 
   !macro preInit
-    Call ZCodeInitializeInstallerLog
+    Call AiraInitializeInstallerLog
   !macroend
 
   !macro customInit
-    IfSilent zcodeInstallerInitSilent zcodeInstallerInitInteractive
-    zcodeInstallerInitSilent:
-      !insertmacro ZCodeReportInstallerStage "installer-initialized mode=silent"
-      Goto zcodeInstallerInitDone
-    zcodeInstallerInitInteractive:
-      !insertmacro ZCodeReportInstallerStage "installer-initialized mode=interactive"
-    zcodeInstallerInitDone:
+    IfSilent airaInstallerInitSilent airaInstallerInitInteractive
+    airaInstallerInitSilent:
+      !insertmacro AiraReportInstallerStage "installer-initialized mode=silent"
+      Goto airaInstallerInitDone
+    airaInstallerInitInteractive:
+      !insertmacro AiraReportInstallerStage "installer-initialized mode=interactive"
+    airaInstallerInitDone:
   !macroend
 
   ; 这些宏由打包时的 electron-builder installSection.nsh 补丁按安装顺序调用。
   ; 只有阶段 marker 写入详情和日志，解压文件明细由 NSIS 的 File 命令在 listonly 模式输出。
   !macro customInstallSectionStarted
-    !insertmacro ZCodeReportInstallerStage "install-started"
+    !insertmacro AiraReportInstallerStage "install-started"
   !macroend
 
   !macro customInstallCleanupStarted
-    Call ZCodeResetUninstallerLog
-    !insertmacro ZCodeReportInstallerStage "cleanup-started"
+    Call AiraResetUninstallerLog
+    !insertmacro AiraReportInstallerStage "cleanup-started"
   !macroend
 
   !macro customInstallCleanupCompleted
-    !insertmacro ZCodeReportInstallerStage "cleanup-completed"
-    Call ZCodeShowUninstallerCleanupDetails
+    !insertmacro AiraReportInstallerStage "cleanup-completed"
+    Call AiraShowUninstallerCleanupDetails
   !macroend
 
   !macro customInstallExtractStarted
-    !insertmacro ZCodeReportInstallerStage "extract-started"
+    !insertmacro AiraReportInstallerStage "extract-started"
   !macroend
 
   !macro customInstallExtractCompleted
-    !insertmacro ZCodeReportInstallerStage "extract-completed"
+    !insertmacro AiraReportInstallerStage "extract-completed"
   !macroend
 
   !macro customInstallShortcutsStarted
-    !insertmacro ZCodeReportInstallerStage "shortcuts-started"
+    !insertmacro AiraReportInstallerStage "shortcuts-started"
   !macroend
 
   !macro customInstallShortcutsCompleted
-    !insertmacro ZCodeReportInstallerStage "shortcuts-completed"
+    !insertmacro AiraReportInstallerStage "shortcuts-completed"
   !macroend
 
-  Function ZCodeDetectPreviousUninstallerCapabilities
-    StrCpy $ZCodePreviousUninstallerSupportsManifest "0"
+  Function AiraDetectPreviousUninstallerCapabilities
+    StrCpy $AiraPreviousUninstallerSupportsManifest "0"
     ; manifest 是卸载器能力标记：存在即表示旧卸载器会按清单选择性删除。
-    IfFileExists "$INSTDIR\${ZCODE_INSTALL_MANIFEST_NAME}" 0 zcodePreviousUninstallerCapabilityCheckNested
-      StrCpy $ZCodePreviousUninstallerSupportsManifest "1"
+    IfFileExists "$INSTDIR\${AIRA_INSTALL_MANIFEST_NAME}" 0 airaPreviousUninstallerCapabilityCheckNested
+      StrCpy $AiraPreviousUninstallerSupportsManifest "1"
       Return
 
-    zcodePreviousUninstallerCapabilityCheckNested:
+    airaPreviousUninstallerCapabilityCheckNested:
       ; assisted installer 的目录页会在后续 instfilesPre 才补上 APP_FILENAME 子目录，提前兼容两种形态。
-      IfFileExists "$INSTDIR\${APP_FILENAME}\${ZCODE_INSTALL_MANIFEST_NAME}" 0 zcodePreviousUninstallerCapabilityDone
-        StrCpy $ZCodePreviousUninstallerSupportsManifest "1"
+      IfFileExists "$INSTDIR\${APP_FILENAME}\${AIRA_INSTALL_MANIFEST_NAME}" 0 airaPreviousUninstallerCapabilityDone
+        StrCpy $AiraPreviousUninstallerSupportsManifest "1"
 
-    zcodePreviousUninstallerCapabilityDone:
+    airaPreviousUninstallerCapabilityDone:
   FunctionEnd
 
-  !macro ZCodeCleanupErrorMessage CHINESE ENGLISH
+  !macro AiraCleanupErrorMessage CHINESE ENGLISH
     ${If} $LANGUAGE == 2052
       MessageBox MB_OK|MB_ICONSTOP "${CHINESE}" /SD IDOK
     ${Else}
@@ -311,40 +311,40 @@
     ${EndIf}
   !macroend
 
-  Var ZCodeCleanupSource
-  Var ZCodeCleanupBackup
-  Var ZCodeCleanupMode
-  Var ZCodeCleanupFailed
-  Var ZCodeCleanupManifest
-  Var ZCodeCleanupManifestHasSelf
+  Var AiraCleanupSource
+  Var AiraCleanupBackup
+  Var AiraCleanupMode
+  Var AiraCleanupFailed
+  Var AiraCleanupManifest
+  Var AiraCleanupManifestHasSelf
 
   ; 修复原因：PowerShell 或 Add-Type 被禁用时不能阻断已退出应用的更新；随包 helper 按路径验证句柄。
-  !macro ZCodeStopPreviousInstallProcesses
+  !macro AiraStopPreviousInstallProcesses
     InitPluginsDir
     SetOutPath "$PLUGINSDIR"
     ; CR-01 修复原因：普通 NSIS 只有 APP_64/APP_ARM64（压缩包路径），没有 APP_DIR_*；
     ; helper 来源由文件顶层的生成 define 提供，缺失在此明确失败，不得回退压缩包宏。
-    !ifndef ZCODE_INSTALLER_PROCESS_HELPER
-      !error "Installer process helper requires ZCODE_INSTALLER_PROCESS_HELPER or generated define"
+    !ifndef AIRA_INSTALLER_PROCESS_HELPER
+      !error "Installer process helper requires AIRA_INSTALLER_PROCESS_HELPER or generated define"
     !endif
-    File /oname=zcode-installer-process-helper.exe "${ZCODE_INSTALLER_PROCESS_HELPER}"
-    nsExec::ExecToStack /TIMEOUT=30000 `"$PLUGINSDIR\zcode-installer-process-helper.exe" "$installationDir\${APP_EXECUTABLE_FILENAME}"`
+    File /oname=aira-installer-process-helper.exe "${AIRA_INSTALLER_PROCESS_HELPER}"
+    nsExec::ExecToStack /TIMEOUT=30000 `"$PLUGINSDIR\aira-installer-process-helper.exe" "$installationDir\${APP_EXECUTABLE_FILENAME}"`
     Pop $R1
     Pop $R2
-    StrCmp $R1 "0" zcodePreviousProcessesStopped
-    !insertmacro ZCodeReportInstallerStage "process-cleanup-failed exit-code=$R1 install-dir=$installationDir details=$R2"
-    !insertmacro ZCodeCleanupErrorMessage "无法验证或关闭旧版本进程，安装已停止。请关闭 ZCode 后重试。进程信息：$R2" "Cannot verify or close previous-version processes. Setup stopped. Close ZCode and retry. Process details: $R2"
+    StrCmp $R1 "0" airaPreviousProcessesStopped
+    !insertmacro AiraReportInstallerStage "process-cleanup-failed exit-code=$R1 install-dir=$installationDir details=$R2"
+    !insertmacro AiraCleanupErrorMessage "无法验证或关闭旧版本进程，安装已停止。请关闭 Aira 后重试。进程信息：$R2" "Cannot verify or close previous-version processes. Setup stopped. Close Aira and retry. Process details: $R2"
     SetErrorLevel 2
     Quit
-    zcodePreviousProcessesStopped:
-      !insertmacro ZCodeReportInstallerStage "process-cleanup-completed install-dir=$installationDir details=$R2"
+    airaPreviousProcessesStopped:
+      !insertmacro AiraReportInstallerStage "process-cleanup-completed install-dir=$installationDir details=$R2"
   !macroend
 
   ; 旧卸载器已删除的文件不会自行恢复。新安装器在调用旧代码前尽力保存受管文件，
   ; 只有完整备份才能用于清理失败后的恢复；备份失败不阻断安装。
   ; 自定义 include 先于 common.nsh；延迟展开，确保卸载器名称已定义，避免正式打包 warning 6000。
-  !macro ZCodeDefineCleanupSnapshot
-  Function ZCodeCleanupSnapshot
+  !macro AiraDefineCleanupSnapshot
+  Function AiraCleanupSnapshot
     Push $R0
     Push $R1
     Push $R2
@@ -352,126 +352,126 @@
     Push $R4
     Push $R5
     StrCpy $R5 ""
-    StrCpy $ZCodeCleanupFailed "0"
-    StrCmp $ZCodeCleanupMode "restore" zcodeSnapshotRead
-    StrCpy $ZCodeCleanupBackup ""
-    StrCpy $ZCodeCleanupManifestHasSelf "0"
-    IfFileExists "$ZCodeCleanupSource\${ZCODE_INSTALL_MANIFEST_NAME}" 0 zcodeSnapshotDone
-    ${GetParent} $ZCodeCleanupSource $R0
+    StrCpy $AiraCleanupFailed "0"
+    StrCmp $AiraCleanupMode "restore" airaSnapshotRead
+    StrCpy $AiraCleanupBackup ""
+    StrCpy $AiraCleanupManifestHasSelf "0"
+    IfFileExists "$AiraCleanupSource\${AIRA_INSTALL_MANIFEST_NAME}" 0 airaSnapshotDone
+    ${GetParent} $AiraCleanupSource $R0
     ClearErrors
-    GetTempFileName $ZCodeCleanupBackup $R0
-    IfErrors zcodeSnapshotFailed
-    Delete "$ZCodeCleanupBackup"
-    CreateDirectory "$ZCodeCleanupBackup"
-    IfErrors zcodeSnapshotFailed
-    System::Call 'kernel32::CopyFileW(w "$ZCodeCleanupSource\${ZCODE_INSTALL_MANIFEST_NAME}", w "$ZCodeCleanupBackup\${ZCODE_INSTALL_MANIFEST_NAME}", i 1) i.R3 ?e'
+    GetTempFileName $AiraCleanupBackup $R0
+    IfErrors airaSnapshotFailed
+    Delete "$AiraCleanupBackup"
+    CreateDirectory "$AiraCleanupBackup"
+    IfErrors airaSnapshotFailed
+    System::Call 'kernel32::CopyFileW(w "$AiraCleanupSource\${AIRA_INSTALL_MANIFEST_NAME}", w "$AiraCleanupBackup\${AIRA_INSTALL_MANIFEST_NAME}", i 1) i.R3 ?e'
     Pop $R4
-    StrCmp $R3 "0" zcodeSnapshotFailed
-    GetTempFileName $ZCodeCleanupManifest "$ZCodeCleanupBackup"
-    IfErrors zcodeSnapshotFailed
-    FileOpen $R5 "$ZCodeCleanupManifest" w
-    IfErrors zcodeSnapshotFailed
+    StrCmp $R3 "0" airaSnapshotFailed
+    GetTempFileName $AiraCleanupManifest "$AiraCleanupBackup"
+    IfErrors airaSnapshotFailed
+    FileOpen $R5 "$AiraCleanupManifest" w
+    IfErrors airaSnapshotFailed
 
-    zcodeSnapshotRead:
-      StrCmp $ZCodeCleanupBackup "" zcodeSnapshotDone
+    airaSnapshotRead:
+      StrCmp $AiraCleanupBackup "" airaSnapshotDone
       ClearErrors
-      FileOpen $R0 "$ZCodeCleanupBackup\${ZCODE_INSTALL_MANIFEST_NAME}" r
-      IfErrors zcodeSnapshotFailed
-    zcodeSnapshotNext:
+      FileOpen $R0 "$AiraCleanupBackup\${AIRA_INSTALL_MANIFEST_NAME}" r
+      IfErrors airaSnapshotFailed
+    airaSnapshotNext:
       ClearErrors
       FileRead $R0 $R1
-      IfErrors zcodeSnapshotClose
+      IfErrors airaSnapshotClose
       StrCpy $R1 $R1 -2
-      StrCmp $R1 "" zcodeSnapshotNext
-      StrCmp $ZCodeCleanupMode "restore" zcodeSnapshotValidateEntry
-      StrCmp $R1 "${ZCODE_INSTALL_MANIFEST_NAME}" zcodeSnapshotSelfEntry
+      StrCmp $R1 "" airaSnapshotNext
+      StrCmp $AiraCleanupMode "restore" airaSnapshotValidateEntry
+      StrCmp $R1 "${AIRA_INSTALL_MANIFEST_NAME}" airaSnapshotSelfEntry
       FileWrite $R5 "$R1$\r$\n"
-      IfErrors zcodeSnapshotFailedClose
-      Goto zcodeSnapshotValidateEntry
-    zcodeSnapshotSelfEntry:
-      StrCpy $ZCodeCleanupManifestHasSelf "1"
-      Goto zcodeSnapshotNext
-    zcodeSnapshotFailedClose:
-      StrCpy $ZCodeCleanupFailed "1"
-      Goto zcodeSnapshotClose
-    zcodeSnapshotValidateEntry:
+      IfErrors airaSnapshotFailedClose
+      Goto airaSnapshotValidateEntry
+    airaSnapshotSelfEntry:
+      StrCpy $AiraCleanupManifestHasSelf "1"
+      Goto airaSnapshotNext
+    airaSnapshotFailedClose:
+      StrCpy $AiraCleanupFailed "1"
+      Goto airaSnapshotClose
+    airaSnapshotValidateEntry:
       ; 只接受清单中规范的相对路径，拒绝越界、通配符和卸载器自身。
       StrCpy $R2 $R1 1
-      StrCmp $R2 "\" zcodeSnapshotNext
-      StrCmp $R2 "/" zcodeSnapshotNext
+      StrCmp $R2 "\" airaSnapshotNext
+      StrCmp $R2 "/" airaSnapshotNext
       StrCpy $R2 $R1 2
-      StrCmp $R2 ".." zcodeSnapshotNext
-      StrCmp $R1 "${UNINSTALL_FILENAME}" zcodeSnapshotNext
+      StrCmp $R2 ".." airaSnapshotNext
+      StrCmp $R1 "${UNINSTALL_FILENAME}" airaSnapshotNext
       ; 清单已在循环前单独备份；自引用时再次排他复制会因目标存在而中止更新。
-      StrCmp $R1 "${ZCODE_INSTALL_MANIFEST_NAME}" zcodeSnapshotNext
+      StrCmp $R1 "${AIRA_INSTALL_MANIFEST_NAME}" airaSnapshotNext
       ; Windows NSIS 对已删除的目标返回空路径；恢复时校验仍存在的备份，不能跳过待补回文件。
-      StrCpy $R3 "$ZCodeCleanupSource"
-      StrCmp $ZCodeCleanupMode "restore" 0 +2
-        StrCpy $R3 "$ZCodeCleanupBackup"
+      StrCpy $R3 "$AiraCleanupSource"
+      StrCmp $AiraCleanupMode "restore" 0 +2
+        StrCpy $R3 "$AiraCleanupBackup"
       GetFullPathName $R2 "$R3\$R1"
-      StrCmp $R2 "$R3\$R1" 0 zcodeSnapshotNext
+      StrCmp $R2 "$R3\$R1" 0 airaSnapshotNext
       StrCpy $R2 0
-    zcodeSnapshotValidate:
+    airaSnapshotValidate:
       StrCpy $R3 $R1 1 $R2
-      StrCmp $R3 "" zcodeSnapshotCopy
-      StrCmp $R3 "*" zcodeSnapshotInvalidPath
-      StrCmp $R3 "?" zcodeSnapshotInvalidPath
-      StrCmp $R3 ":" zcodeSnapshotInvalidPath
+      StrCmp $R3 "" airaSnapshotCopy
+      StrCmp $R3 "*" airaSnapshotInvalidPath
+      StrCmp $R3 "?" airaSnapshotInvalidPath
+      StrCmp $R3 ":" airaSnapshotInvalidPath
       IntOp $R2 $R2 + 1
-      Goto zcodeSnapshotValidate
-    zcodeSnapshotInvalidPath:
-      StrCpy $ZCodeCleanupFailed "1"
-      Goto zcodeSnapshotClose
-    zcodeSnapshotCopy:
-      StrCmp $ZCodeCleanupMode "restore" zcodeSnapshotRestore
-      IfFileExists "$ZCodeCleanupSource\$R1" 0 zcodeSnapshotNext
-      ${GetParent} "$ZCodeCleanupBackup\$R1" $R2
+      Goto airaSnapshotValidate
+    airaSnapshotInvalidPath:
+      StrCpy $AiraCleanupFailed "1"
+      Goto airaSnapshotClose
+    airaSnapshotCopy:
+      StrCmp $AiraCleanupMode "restore" airaSnapshotRestore
+      IfFileExists "$AiraCleanupSource\$R1" 0 airaSnapshotNext
+      ${GetParent} "$AiraCleanupBackup\$R1" $R2
       CreateDirectory "$R2"
-      System::Call 'kernel32::CopyFileW(w "$ZCodeCleanupSource\$R1", w "$ZCodeCleanupBackup\$R1", i 1) i.R3 ?e'
+      System::Call 'kernel32::CopyFileW(w "$AiraCleanupSource\$R1", w "$AiraCleanupBackup\$R1", i 1) i.R3 ?e'
       Pop $R4
-      Goto zcodeSnapshotCopyResult
-    zcodeSnapshotRestore:
-      IfFileExists "$ZCodeCleanupBackup\$R1" 0 zcodeSnapshotNext
-      IfFileExists "$ZCodeCleanupSource\$R1" 0 zcodeSnapshotRestoreMissing
+      Goto airaSnapshotCopyResult
+    airaSnapshotRestore:
+      IfFileExists "$AiraCleanupBackup\$R1" 0 airaSnapshotNext
+      IfFileExists "$AiraCleanupSource\$R1" 0 airaSnapshotRestoreMissing
       ; 同名目录不能充当恢复后的文件，否则会误报已恢复主程序。
-      System::Call 'kernel32::GetFileAttributesW(w "$ZCodeCleanupSource\$R1") i.R3'
+      System::Call 'kernel32::GetFileAttributesW(w "$AiraCleanupSource\$R1") i.R3'
       IntOp $R3 $R3 & 0x10
-      StrCmp $R3 0 zcodeSnapshotNext
-      StrCpy $ZCodeCleanupFailed "1"
-      Goto zcodeSnapshotNext
-    zcodeSnapshotRestoreMissing:
-      ${GetParent} "$ZCodeCleanupSource\$R1" $R2
+      StrCmp $R3 0 airaSnapshotNext
+      StrCpy $AiraCleanupFailed "1"
+      Goto airaSnapshotNext
+    airaSnapshotRestoreMissing:
+      ${GetParent} "$AiraCleanupSource\$R1" $R2
       CreateDirectory "$R2"
-      System::Call 'kernel32::CopyFileW(w "$ZCodeCleanupBackup\$R1", w "$ZCodeCleanupSource\$R1", i 1) i.R3 ?e'
+      System::Call 'kernel32::CopyFileW(w "$AiraCleanupBackup\$R1", w "$AiraCleanupSource\$R1", i 1) i.R3 ?e'
       Pop $R4
-    zcodeSnapshotCopyResult:
+    airaSnapshotCopyResult:
       ; System 的 ?e 在 CopyFileW 返回时保存 Win32 错误，避免插件后续调用覆盖 GetLastError。
-      StrCmp $R3 "0" 0 zcodeSnapshotNext
-      !insertmacro ZCodeReportInstallerStage "cleanup-$ZCodeCleanupMode-file-failed path=$R1 win32-error=$R4"
-      StrCpy $ZCodeCleanupFailed "1"
-      StrCmp $ZCodeCleanupMode "restore" zcodeSnapshotNext
-    zcodeSnapshotClose:
+      StrCmp $R3 "0" 0 airaSnapshotNext
+      !insertmacro AiraReportInstallerStage "cleanup-$AiraCleanupMode-file-failed path=$R1 win32-error=$R4"
+      StrCpy $AiraCleanupFailed "1"
+      StrCmp $AiraCleanupMode "restore" airaSnapshotNext
+    airaSnapshotClose:
       FileClose $R0
-      StrCmp $ZCodeCleanupMode "restore" zcodeSnapshotRestoreManifest
+      StrCmp $AiraCleanupMode "restore" airaSnapshotRestoreManifest
       FileClose $R5
       StrCpy $R5 ""
-      StrCmp $ZCodeCleanupFailed "1" zcodeSnapshotDone
-      StrCmp $ZCodeCleanupManifestHasSelf "1" 0 zcodeSnapshotDone
+      StrCmp $AiraCleanupFailed "1" airaSnapshotDone
+      StrCmp $AiraCleanupManifestHasSelf "1" 0 airaSnapshotDone
       ; 旧卸载器也会删除打开中的清单。完整备份后，仅原子移除自引用项供旧代码读取。
-      System::Call 'kernel32::MoveFileExW(w "$ZCodeCleanupManifest", w "$ZCodeCleanupSource\${ZCODE_INSTALL_MANIFEST_NAME}", i 9) i.R3 ?e'
+      System::Call 'kernel32::MoveFileExW(w "$AiraCleanupManifest", w "$AiraCleanupSource\${AIRA_INSTALL_MANIFEST_NAME}", i 9) i.R3 ?e'
       Pop $R4
-      StrCmp $R3 "0" zcodeSnapshotFailed zcodeSnapshotDone
-    zcodeSnapshotRestoreManifest:
+      StrCmp $R3 "0" airaSnapshotFailed airaSnapshotDone
+    airaSnapshotRestoreManifest:
       ; 旧清单可能仍存在但已去掉自引用；失败回滚须恢复原始字节，而非仅补不存在的文件。
-      System::Call 'kernel32::CopyFileW(w "$ZCodeCleanupBackup\${ZCODE_INSTALL_MANIFEST_NAME}", w "$ZCodeCleanupSource\${ZCODE_INSTALL_MANIFEST_NAME}", i 0) i.R3 ?e'
+      System::Call 'kernel32::CopyFileW(w "$AiraCleanupBackup\${AIRA_INSTALL_MANIFEST_NAME}", w "$AiraCleanupSource\${AIRA_INSTALL_MANIFEST_NAME}", i 0) i.R3 ?e'
       Pop $R4
-      StrCmp $R3 "0" zcodeSnapshotFailed zcodeSnapshotDone
-    zcodeSnapshotFailed:
-      StrCpy $ZCodeCleanupFailed "1"
-    zcodeSnapshotDone:
+      StrCmp $R3 "0" airaSnapshotFailed airaSnapshotDone
+    airaSnapshotFailed:
+      StrCpy $AiraCleanupFailed "1"
+    airaSnapshotDone:
       StrCmp $R5 "" +2
         FileClose $R5
-      !insertmacro ZCodeReportInstallerStage "cleanup-$ZCodeCleanupMode-completed failed=$ZCodeCleanupFailed backup=$ZCodeCleanupBackup"
+      !insertmacro AiraReportInstallerStage "cleanup-$AiraCleanupMode-completed failed=$AiraCleanupFailed backup=$AiraCleanupBackup"
       Pop $R5
       Pop $R4
       Pop $R3
@@ -482,81 +482,81 @@
   !macroend
 
   !macro customOldUninstallPrepare
-    StrCpy $ZCodeCleanupSource "$installationDir"
-    !insertmacro ZCodeStopPreviousInstallProcesses
-    StrCpy $ZCodeCleanupMode "backup"
-    Call ZCodeCleanupSnapshot
-    ${If} $ZCodeCleanupFailed == "1"
+    StrCpy $AiraCleanupSource "$installationDir"
+    !insertmacro AiraStopPreviousInstallProcesses
+    StrCpy $AiraCleanupMode "backup"
+    Call AiraCleanupSnapshot
+    ${If} $AiraCleanupFailed == "1"
       ; 修复原因：备份是可选保护；失败时弃用半份备份，避免旧卸载失败后误用它恢复。
-      !insertmacro ZCodeReportInstallerStage "cleanup-backup-skipped path=$ZCodeCleanupBackup"
-      StrCmp $ZCodeCleanupBackup "" zcodePreviousBackupCleanupDone
+      !insertmacro AiraReportInstallerStage "cleanup-backup-skipped path=$AiraCleanupBackup"
+      StrCmp $AiraCleanupBackup "" airaPreviousBackupCleanupDone
       ClearErrors
-      RMDir /r "$ZCodeCleanupBackup"
-      IfErrors zcodePreviousBackupCleanupFailed
-      Goto zcodePreviousBackupCleanupDone
-      zcodePreviousBackupCleanupFailed:
-        !insertmacro ZCodeReportInstallerStage "cleanup-backup-delete-failed path=$ZCodeCleanupBackup"
-      zcodePreviousBackupCleanupDone:
-      StrCpy $ZCodeCleanupBackup ""
+      RMDir /r "$AiraCleanupBackup"
+      IfErrors airaPreviousBackupCleanupFailed
+      Goto airaPreviousBackupCleanupDone
+      airaPreviousBackupCleanupFailed:
+        !insertmacro AiraReportInstallerStage "cleanup-backup-delete-failed path=$AiraCleanupBackup"
+      airaPreviousBackupCleanupDone:
+      StrCpy $AiraCleanupBackup ""
     ${EndIf}
   !macroend
 
   !macro customOldUninstallRetryFailed
     ; 上游把任意卸载非零都显示成应用未关闭；实际进程检查仍由 CHECK_APP_RUNNING 负责。
     ; 备份失败被弃用后没有可恢复的完整备份；提示必须与能否恢复一致，不能在无备份时承诺恢复。
-    StrCmp $ZCodeCleanupBackup "" zcodeRetryExhaustedNoBackup
-    !insertmacro ZCodeReportInstallerStage "cleanup-retries-exhausted exit-code=$R0 recoverable=1"
+    StrCmp $AiraCleanupBackup "" airaRetryExhaustedNoBackup
+    !insertmacro AiraReportInstallerStage "cleanup-retries-exhausted exit-code=$R0 recoverable=1"
     ${If} $LANGUAGE == 2052
-      MessageBox MB_RETRYCANCEL|MB_ICONEXCLAMATION "旧版本清理失败（错误码 $R0）。请排除文件占用或权限问题后重试，或取消以恢复旧版本。日志：$ZCodeInstallerLogPath" /SD IDCANCEL IDRETRY OneMoreAttempt
+      MessageBox MB_RETRYCANCEL|MB_ICONEXCLAMATION "旧版本清理失败（错误码 $R0）。请排除文件占用或权限问题后重试，或取消以恢复旧版本。日志：$AiraInstallerLogPath" /SD IDCANCEL IDRETRY OneMoreAttempt
     ${Else}
-      MessageBox MB_RETRYCANCEL|MB_ICONEXCLAMATION "Previous version cleanup failed (exit code $R0). Resolve file locks or permissions and retry, or cancel to restore the previous version. Log: $ZCodeInstallerLogPath" /SD IDCANCEL IDRETRY OneMoreAttempt
+      MessageBox MB_RETRYCANCEL|MB_ICONEXCLAMATION "Previous version cleanup failed (exit code $R0). Resolve file locks or permissions and retry, or cancel to restore the previous version. Log: $AiraInstallerLogPath" /SD IDCANCEL IDRETRY OneMoreAttempt
     ${EndIf}
-    Goto zcodeRetryExhaustedDone
-    zcodeRetryExhaustedNoBackup:
-    !insertmacro ZCodeReportInstallerStage "cleanup-retries-exhausted exit-code=$R0 recoverable=0"
+    Goto airaRetryExhaustedDone
+    airaRetryExhaustedNoBackup:
+    !insertmacro AiraReportInstallerStage "cleanup-retries-exhausted exit-code=$R0 recoverable=0"
     ${If} $LANGUAGE == 2052
-      MessageBox MB_RETRYCANCEL|MB_ICONEXCLAMATION "旧版本清理失败（错误码 $R0）。本次更新没有完整备份：排除占用后可重试，取消将退出安装且无法自动恢复旧版本文件。日志：$ZCodeInstallerLogPath" /SD IDCANCEL IDRETRY OneMoreAttempt
+      MessageBox MB_RETRYCANCEL|MB_ICONEXCLAMATION "旧版本清理失败（错误码 $R0）。本次更新没有完整备份：排除占用后可重试，取消将退出安装且无法自动恢复旧版本文件。日志：$AiraInstallerLogPath" /SD IDCANCEL IDRETRY OneMoreAttempt
     ${Else}
-      MessageBox MB_RETRYCANCEL|MB_ICONEXCLAMATION "Previous version cleanup failed (exit code $R0). No complete backup exists for this update: retry after resolving file locks, or cancel to exit setup without automatic restore. Log: $ZCodeInstallerLogPath" /SD IDCANCEL IDRETRY OneMoreAttempt
+      MessageBox MB_RETRYCANCEL|MB_ICONEXCLAMATION "Previous version cleanup failed (exit code $R0). No complete backup exists for this update: retry after resolving file locks, or cancel to exit setup without automatic restore. Log: $AiraInstallerLogPath" /SD IDCANCEL IDRETRY OneMoreAttempt
     ${EndIf}
-    zcodeRetryExhaustedDone:
+    airaRetryExhaustedDone:
   !macroend
 
-  Function ZCodeFinishOldUninstall
+  Function AiraFinishOldUninstall
     ${If} $R0 != 0
       ; 修复原因：没有完整备份时不能用半份文件恢复，旧卸载失败仍由原流程报告。
-      StrCmp $ZCodeCleanupBackup "" zcodeFinishOldUninstallDone
-      StrCpy $ZCodeCleanupMode "restore"
-      Call ZCodeCleanupSnapshot
-      ${If} $ZCodeCleanupFailed == "1"
-        !insertmacro ZCodeCleanupErrorMessage "旧版本文件恢复失败，备份已保留：$ZCodeCleanupBackup。详细日志：$ZCodeInstallerLogPath" "Cannot restore the previous version. Backup retained: $ZCodeCleanupBackup. Log: $ZCodeInstallerLogPath"
+      StrCmp $AiraCleanupBackup "" airaFinishOldUninstallDone
+      StrCpy $AiraCleanupMode "restore"
+      Call AiraCleanupSnapshot
+      ${If} $AiraCleanupFailed == "1"
+        !insertmacro AiraCleanupErrorMessage "旧版本文件恢复失败，备份已保留：$AiraCleanupBackup。详细日志：$AiraInstallerLogPath" "Cannot restore the previous version. Backup retained: $AiraCleanupBackup. Log: $AiraInstallerLogPath"
         Return
       ${EndIf}
     ${EndIf}
-    StrCmp $ZCodeCleanupBackup "" zcodeFinishOldUninstallDone
+    StrCmp $AiraCleanupBackup "" airaFinishOldUninstallDone
     ClearErrors
-    RMDir /r "$ZCodeCleanupBackup"
-    IfErrors zcodeFinishOldUninstallBackupDeleteFailed
-    StrCpy $ZCodeCleanupBackup ""
-    Goto zcodeFinishOldUninstallDone
-    zcodeFinishOldUninstallBackupDeleteFailed:
+    RMDir /r "$AiraCleanupBackup"
+    IfErrors airaFinishOldUninstallBackupDeleteFailed
+    StrCpy $AiraCleanupBackup ""
+    Goto airaFinishOldUninstallDone
+    airaFinishOldUninstallBackupDeleteFailed:
       ; 修复原因：备份清理故障不影响旧卸载结果及后续新版本安装，只保留路径供排查。
-      !insertmacro ZCodeReportInstallerStage "cleanup-backup-delete-failed path=$ZCodeCleanupBackup"
-    zcodeFinishOldUninstallDone:
+      !insertmacro AiraReportInstallerStage "cleanup-backup-delete-failed path=$AiraCleanupBackup"
+    airaFinishOldUninstallDone:
   FunctionEnd
 
   !macro customUnInstallCheck
-    Call ZCodeFinishOldUninstall
+    Call AiraFinishOldUninstall
     ; handleUninstallResult 会把旧卸载器的退出码放在 $R0；失败时显示清理诊断，
     ; 不再复用 appCannotBeClosed（该文案只适用于进程占用）。
     ${if} $R0 != 0
       ; 修复原因：静默自动更新无人值守，未设置 /SD 的模态框会一直等待用户点击，
       ; 使明确的退出码无法返回 electron-updater。静默时自动采用 IDOK，交互时仍显示提示。
       SetDetailsPrint listonly
-      DetailPrint "ZCode: cleanup-failed exit-code=$R0"
-      Call ZCodeShowUninstallerCleanupDetails
+      DetailPrint "Aira: cleanup-failed exit-code=$R0"
+      Call AiraShowUninstallerCleanupDetails
       ; 最终错误也沿用安装器语言，避免英文 Retry/Cancel 之后固定切回中文。
-      !insertmacro ZCodeCleanupErrorMessage "旧版本清理失败（错误码 $R0）。可能是文件被占用、权限不足或磁盘空间不足。详细日志：${ZCODE_UNINSTALLER_LOG_PATH}" "Previous version cleanup failed (exit code $R0). Files may be in use, permissions may be insufficient, or disk space may be low. Log: ${ZCODE_UNINSTALLER_LOG_PATH}"
+      !insertmacro AiraCleanupErrorMessage "旧版本清理失败（错误码 $R0）。可能是文件被占用、权限不足或磁盘空间不足。详细日志：${AIRA_UNINSTALLER_LOG_PATH}" "Previous version cleanup failed (exit code $R0). Files may be in use, permissions may be insufficient, or disk space may be low. Log: ${AIRA_UNINSTALLER_LOG_PATH}"
       SetErrorLevel 2
       Quit
     ${endif}
@@ -569,39 +569,39 @@
   !macroend
 !endif
 
-!define ZCODE_INSTALL_DIR_BACK_BUTTON_WIDTH 180
+!define AIRA_INSTALL_DIR_BACK_BUTTON_WIDTH 180
 
 !macro customHeader
   !ifndef BUILD_UNINSTALLER
-    !insertmacro ZCodeDefineCleanupSnapshot
+    !insertmacro AiraDefineCleanupSnapshot
     ; 修复原因：异步生成的 header 可能先 include 本文件，再注册 UAC 插件目录。
     ; 在 customHeader 展开函数，确保插件已注册；preInit 仍调用同一函数和真实 UAC 判据。
-    Function ZCodeInitializeInstallerLog
+    Function AiraInitializeInstallerLog
       Push $R0
       Push $R1
       Push $R2
-      StrCpy $ZCodeInstallerLogUnavailable ""
-      ${If} ${ZCODE_INSTALLER_IS_ELEVATED_INNER}
-        StrCpy $ZCodeInstallerProcessRole "elevated-inner"
-        StrCpy $ZCodeInstallerLogPath "${ZCODE_INSTALLER_ELEVATED_LOG_PATH}"
+      StrCpy $AiraInstallerLogUnavailable ""
+      ${If} ${AIRA_INSTALLER_IS_ELEVATED_INNER}
+        StrCpy $AiraInstallerProcessRole "elevated-inner"
+        StrCpy $AiraInstallerLogPath "${AIRA_INSTALLER_ELEVATED_LOG_PATH}"
       ${Else}
-        StrCpy $ZCodeInstallerProcessRole "outer"
+        StrCpy $AiraInstallerProcessRole "outer"
         StrCpy $R0 $CMDLINE
         ClearErrors
         ${GetOptions} $R0 "/LOG=" $R1
-        IfErrors zcodeInstallerLogUseDefault
-        StrCmp $R1 "" zcodeInstallerLogUseDefault
-        StrCpy $ZCodeInstallerLogPath $R1
-        Goto zcodeInstallerLogPathReady
-        zcodeInstallerLogUseDefault:
-          StrCpy $ZCodeInstallerLogPath "${ZCODE_INSTALLER_DEFAULT_LOG_PATH}"
-        zcodeInstallerLogPathReady:
-          ${GetParent} $ZCodeInstallerLogPath $R2
-          StrCmp $R2 "" zcodeInstallerLogInitialized
+        IfErrors airaInstallerLogUseDefault
+        StrCmp $R1 "" airaInstallerLogUseDefault
+        StrCpy $AiraInstallerLogPath $R1
+        Goto airaInstallerLogPathReady
+        airaInstallerLogUseDefault:
+          StrCpy $AiraInstallerLogPath "${AIRA_INSTALLER_DEFAULT_LOG_PATH}"
+        airaInstallerLogPathReady:
+          ${GetParent} $AiraInstallerLogPath $R2
+          StrCmp $R2 "" airaInstallerLogInitialized
           CreateDirectory "$R2"
       ${EndIf}
-      zcodeInstallerLogInitialized:
-        !insertmacro ZCodeReportInstallerStage "installer-process-started role=$ZCodeInstallerProcessRole"
+      airaInstallerLogInitialized:
+        !insertmacro AiraReportInstallerStage "installer-process-started role=$AiraInstallerProcessRole"
       Pop $R2
       Pop $R1
       Pop $R0
@@ -623,23 +623,23 @@
 !ifndef BUILD_UNINSTALLER
   ; 修复原因：electron-builder 会先编译卸载器，但快捷方式目标读取只在安装更新流程中调用。
   ; 若把函数带入卸载器，NSIS 会产生 6010 未引用告警，并在 /WX 下直接中断 Windows CI。
-  Function ZCodeReadShortcutTarget
+  Function AiraReadShortcutTarget
     Exch $R9
     Push $R1
     Push $R2
 
     StrCpy $R2 ""
-    System::Call 'Kernel32::SetEnvironmentVariableW(w "ZCODE_SHORTCUT_PATH", w "$R9") i.R1'
-    StrCmp $R1 "0" zcodeReadShortcutTargetDone 0
+    System::Call 'Kernel32::SetEnvironmentVariableW(w "AIRA_SHORTCUT_PATH", w "$R9") i.R1'
+    StrCmp $R1 "0" airaReadShortcutTargetDone 0
 
-    nsExec::ExecToStack /TIMEOUT=5000 `"$SYSDIR\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -NonInteractive -Command "[Console]::Out.Write(([Activator]::CreateInstance([type]::GetTypeFromProgID('WScript.Shell'))).CreateShortcut([Environment]::GetEnvironmentVariable('ZCODE_SHORTCUT_PATH')).TargetPath)"`
+    nsExec::ExecToStack /TIMEOUT=5000 `"$SYSDIR\WindowsPowerShell\v1.0\powershell.exe" -NoProfile -NonInteractive -Command "[Console]::Out.Write(([Activator]::CreateInstance([type]::GetTypeFromProgID('WScript.Shell'))).CreateShortcut([Environment]::GetEnvironmentVariable('AIRA_SHORTCUT_PATH')).TargetPath)"`
     Pop $R1
     Pop $R2
-    StrCmp $R1 "0" zcodeReadShortcutTargetDone 0
+    StrCmp $R1 "0" airaReadShortcutTargetDone 0
     StrCpy $R2 ""
 
-    zcodeReadShortcutTargetDone:
-      System::Call 'Kernel32::SetEnvironmentVariableW(w "ZCODE_SHORTCUT_PATH", p 0) i.R1'
+    airaReadShortcutTargetDone:
+      System::Call 'Kernel32::SetEnvironmentVariableW(w "AIRA_SHORTCUT_PATH", p 0) i.R1'
       StrCpy $R9 "$R2"
       Pop $R2
       Pop $R1
@@ -647,10 +647,10 @@
   FunctionEnd
 !endif
 
-!macro ZCodeRepairShortcutIfNeeded SHORTCUT_PATH LABEL_PREFIX
+!macro AiraRepairShortcutIfNeeded SHORTCUT_PATH LABEL_PREFIX
   ${if} ${FileExists} "${SHORTCUT_PATH}"
     Push "${SHORTCUT_PATH}"
-    Call ZCodeReadShortcutTarget
+    Call AiraReadShortcutTarget
     Pop $R0
     StrCmp $R0 "$appExe" ${LABEL_PREFIX}Done 0
 
@@ -673,16 +673,16 @@
 
 !macro customInstall
   !ifndef BUILD_UNINSTALLER
-    !insertmacro ZCodeReportInstallerStage "install-finalization-started"
+    !insertmacro AiraReportInstallerStage "install-finalization-started"
   !endif
   ${if} ${isUpdated}
   ${orIf} $keepShortcuts == "true"
     !ifndef DO_NOT_CREATE_START_MENU_SHORTCUT
-      !insertmacro ZCodeRepairShortcutIfNeeded "$newStartMenuLink" zcodeStartMenuShortcutRepair
+      !insertmacro AiraRepairShortcutIfNeeded "$newStartMenuLink" airaStartMenuShortcutRepair
     !endif
 
     !ifndef DO_NOT_CREATE_DESKTOP_SHORTCUT
-      !insertmacro ZCodeRepairShortcutIfNeeded "$newDesktopLink" zcodeDesktopShortcutRepair
+      !insertmacro AiraRepairShortcutIfNeeded "$newDesktopLink" airaDesktopShortcutRepair
     !endif
   ${endIf}
 
@@ -697,17 +697,17 @@
   !endif
   StrCpy $launchLink "$appExe"
   !ifndef BUILD_UNINSTALLER
-    !insertmacro ZCodeReportInstallerStage "install-completed"
+    !insertmacro AiraReportInstallerStage "install-completed"
   !endif
 !macroend
 
 !macro customPageAfterChangeDir
-  Function ZCodeResizeInstallDirBackButton
+  Function AiraResizeInstallDirBackButton
     GetDlgItem $1 $HWNDPARENT 3
-    StrCmp $1 0 zcodeResizeInstallDirBackButtonDone 0
+    StrCmp $1 0 airaResizeInstallDirBackButtonDone 0
 
     System::Call "*(i 0, i 0, i 0, i 0) p.r2"
-    StrCmp $2 0 zcodeResizeInstallDirBackButtonDone 0
+    StrCmp $2 0 airaResizeInstallDirBackButtonDone 0
     System::Call "user32::GetWindowRect(p r1, p r2)"
     System::Call "user32::MapWindowPoints(p 0, p $HWNDPARENT, p r2, i 2)"
     System::Call "*$2(i.r3,i.r4,i.r5,i.r6)"
@@ -715,88 +715,88 @@
 
     IntOp $7 $5 - $3
     IntOp $8 $6 - $4
-    IntCmp $7 ${ZCODE_INSTALL_DIR_BACK_BUTTON_WIDTH} zcodeResizeInstallDirBackButtonDone zcodeResizeInstallDirBackButtonResize zcodeResizeInstallDirBackButtonDone
+    IntCmp $7 ${AIRA_INSTALL_DIR_BACK_BUTTON_WIDTH} airaResizeInstallDirBackButtonDone airaResizeInstallDirBackButtonResize airaResizeInstallDirBackButtonDone
 
-    zcodeResizeInstallDirBackButtonResize:
+    airaResizeInstallDirBackButtonResize:
       ; 修复原因：阻断页把“上一步”改成中文动作文案，NSIS 默认按钮宽度可能裁掉文字。
       ; 保持右边缘不动向左扩宽，避免和右侧“安装/取消”按钮重叠。
-      IntOp $3 $5 - ${ZCODE_INSTALL_DIR_BACK_BUTTON_WIDTH}
-      System::Call "user32::MoveWindow(p r1, i r3, i r4, i ${ZCODE_INSTALL_DIR_BACK_BUTTON_WIDTH}, i r8, i 1)"
+      IntOp $3 $5 - ${AIRA_INSTALL_DIR_BACK_BUTTON_WIDTH}
+      System::Call "user32::MoveWindow(p r1, i r3, i r4, i ${AIRA_INSTALL_DIR_BACK_BUTTON_WIDTH}, i r8, i 1)"
 
-    zcodeResizeInstallDirBackButtonDone:
+    airaResizeInstallDirBackButtonDone:
   FunctionEnd
 
-  Function ZCodeFindNestedDataDir
+  Function AiraFindNestedDataDir
     Exch $R9
     Push $0
     Push $1
 
     StrCpy $R2 ""
 
-    IfFileExists "$R9\.zcode\*.*" 0 +2
-      StrCpy $R2 "$R9\.zcode"
-    StrCmp $R2 "" 0 zcodeFindNestedDataDirDone
-    IfFileExists "$R9\.zcode" 0 zcodeFindNestedDataDirListChildren
-      StrCpy $R2 "$R9\.zcode"
-    StrCmp $R2 "" 0 zcodeFindNestedDataDirDone
+    IfFileExists "$R9\.aira\*.*" 0 +2
+      StrCpy $R2 "$R9\.aira"
+    StrCmp $R2 "" 0 airaFindNestedDataDirDone
+    IfFileExists "$R9\.aira" 0 airaFindNestedDataDirListChildren
+      StrCpy $R2 "$R9\.aira"
+    StrCmp $R2 "" 0 airaFindNestedDataDirDone
 
-    zcodeFindNestedDataDirListChildren:
+    airaFindNestedDataDirListChildren:
       FindFirst $0 $1 "$R9\*"
-      IfErrors zcodeFindNestedDataDirDone
+      IfErrors airaFindNestedDataDirDone
 
-    zcodeFindNestedDataDirNext:
-      StrCmp $1 "" zcodeFindNestedDataDirClose
-      StrCmp $1 "." zcodeFindNestedDataDirContinue
-      StrCmp $1 ".." zcodeFindNestedDataDirContinue
-      IfFileExists "$R9\$1\*.*" 0 zcodeFindNestedDataDirContinue
+    airaFindNestedDataDirNext:
+      StrCmp $1 "" airaFindNestedDataDirClose
+      StrCmp $1 "." airaFindNestedDataDirContinue
+      StrCmp $1 ".." airaFindNestedDataDirContinue
+      IfFileExists "$R9\$1\*.*" 0 airaFindNestedDataDirContinue
         Push "$R9\$1"
-        Call ZCodeFindNestedDataDir
-        StrCmp $R2 "" zcodeFindNestedDataDirContinue zcodeFindNestedDataDirClose
+        Call AiraFindNestedDataDir
+        StrCmp $R2 "" airaFindNestedDataDirContinue airaFindNestedDataDirClose
 
-    zcodeFindNestedDataDirContinue:
+    airaFindNestedDataDirContinue:
       FindNext $0 $1
-      IfErrors zcodeFindNestedDataDirClose
-      Goto zcodeFindNestedDataDirNext
+      IfErrors airaFindNestedDataDirClose
+      Goto airaFindNestedDataDirNext
 
-    zcodeFindNestedDataDirClose:
+    airaFindNestedDataDirClose:
       FindClose $0
 
-    zcodeFindNestedDataDirDone:
+    airaFindNestedDataDirDone:
       Pop $1
       Pop $0
       Pop $R9
   FunctionEnd
 
-  Function ZCodeBlockInstallDirContainsData
-    Call ZCodeDetectPreviousUninstallerCapabilities
-    StrCmp $ZCodePreviousUninstallerSupportsManifest "1" zcodeInstallDirDataBlockSkip
+  Function AiraBlockInstallDirContainsData
+    Call AiraDetectPreviousUninstallerCapabilities
+    StrCmp $AiraPreviousUninstallerSupportsManifest "1" airaInstallDirDataBlockSkip
 
-    ; Bugfix: 用户可能把数据存储目录放进安装目录，Windows 更新覆盖安装目录时会清掉 .zcode。
+    ; Bugfix: 用户可能把数据存储目录放进安装目录，Windows 更新覆盖安装目录时会清掉 .aira。
     ; assisted installer 会把不含应用名的选择目录补成 "$INSTDIR\${APP_FILENAME}"，所以这里按相同规则计算最终安装目录。
     ${StrContains} $R1 "${APP_FILENAME}" "$INSTDIR"
-    StrCmp $R1 "" 0 zcodeInstallDirDataBlockUseSelectedDir
+    StrCmp $R1 "" 0 airaInstallDirDataBlockUseSelectedDir
     StrCpy $R0 "$INSTDIR\${APP_FILENAME}"
-    Goto zcodeInstallDirDataBlockCheckDir
+    Goto airaInstallDirDataBlockCheckDir
 
-    zcodeInstallDirDataBlockUseSelectedDir:
+    airaInstallDirDataBlockUseSelectedDir:
       StrCpy $R0 "$INSTDIR"
 
-    zcodeInstallDirDataBlockCheckDir:
-      ; 修复原因：旧阻断只检查最终安装目录直属的 .zcode，漏掉 data\.zcode 等子目录数据。
-      ; 安装器覆盖安装时会管理整个安装目录树，递归命中任意 .zcode 都必须阻断。
+    airaInstallDirDataBlockCheckDir:
+      ; 修复原因：旧阻断只检查最终安装目录直属的 .aira，漏掉 data\.aira 等子目录数据。
+      ; 安装器覆盖安装时会管理整个安装目录树，递归命中任意 .aira 都必须阻断。
       Push "$R0"
-      Call ZCodeFindNestedDataDir
-      StrCmp $R2 "" zcodeInstallDirDataBlockSkip zcodeInstallDirDataBlockFound
+      Call AiraFindNestedDataDir
+      StrCmp $R2 "" airaInstallDirDataBlockSkip airaInstallDirDataBlockFound
 
-    zcodeInstallDirDataBlockFound:
-      IfSilent zcodeInstallDirDataBlockSilent
+    airaInstallDirDataBlockFound:
+      IfSilent airaInstallDirDataBlockSilent
 
-      !insertmacro MUI_HEADER_TEXT "需要修改安装目录" "当前安装目录或其子目录包含 ZCode 数据目录"
+      !insertmacro MUI_HEADER_TEXT "需要修改安装目录" "当前安装目录或其子目录包含 Aira 数据目录"
       nsDialogs::Create 1018
       Pop $0
-      StrCmp $0 error zcodeInstallDirDataBlockDialogFailed 0
+      StrCmp $0 error airaInstallDirDataBlockDialogFailed 0
 
-      ${NSD_CreateLabel} 0u 0u 300u 44u "检测到该安装目录或其子目录中存在 .zcode 数据目录：$\r$\n$R2"
+      ${NSD_CreateLabel} 0u 0u 300u 44u "检测到该安装目录或其子目录中存在 .aira 数据目录：$\r$\n$R2"
       Pop $1
       ${NSD_CreateLabel} 0u 54u 300u 70u "为避免历史会话和配置被安装器清理，请返回上一步选择其他安装目录。$\r$\n$\r$\n当前目录不能继续安装。"
       Pop $1
@@ -806,29 +806,29 @@
       GetDlgItem $1 $HWNDPARENT 3
       EnableWindow $1 1
       SendMessage $1 ${WM_SETTEXT} 0 "STR:重选目录"
-      Call ZCodeResizeInstallDirBackButton
+      Call AiraResizeInstallDirBackButton
 
       nsDialogs::Show
       Return
 
-    zcodeInstallDirDataBlockDialogFailed:
-      MessageBox MB_OK|MB_ICONSTOP "检测到安装目录或其子目录中存在 .zcode 数据目录，安装已停止。请重新运行安装器并选择其他安装目录。"
+    airaInstallDirDataBlockDialogFailed:
+      MessageBox MB_OK|MB_ICONSTOP "检测到安装目录或其子目录中存在 .aira 数据目录，安装已停止。请重新运行安装器并选择其他安装目录。"
       SetErrorLevel 1
       Quit
 
-    zcodeInstallDirDataBlockSilent:
+    airaInstallDirDataBlockSilent:
       SetErrorLevel 1
       Quit
 
-    zcodeInstallDirDataBlockSkip:
+    airaInstallDirDataBlockSkip:
       Abort
   FunctionEnd
 
-  Function ZCodeBlockInstallDirContainsDataLeave
+  Function AiraBlockInstallDirContainsDataLeave
     ; 修复原因：阻断页的下一步按钮已禁用，但自动化或系统快捷键仍可能触发下一页。
     ; leave 回调只处理继续前进的路径，这里强制留在当前页，确保用户只能返回修改安装目录。
     Abort
   FunctionEnd
 
-  Page custom ZCodeBlockInstallDirContainsData ZCodeBlockInstallDirContainsDataLeave
+  Page custom AiraBlockInstallDirContainsData AiraBlockInstallDirContainsDataLeave
 !macroend

@@ -1,14 +1,14 @@
-import type { ZCodeProvider, ZCodeTaskRuntimeStatus } from "@zcode/shared";
+import type { AiraProvider, AiraTaskRuntimeStatus } from "@aira/shared";
 
-function isBusyTaskRuntimeStatus(status: ZCodeTaskRuntimeStatus): boolean {
+function isBusyTaskRuntimeStatus(status: AiraTaskRuntimeStatus): boolean {
   return status === "creating" || status === "restoring" || status === "streaming";
 }
 
 function buildTaskProviderByTaskId(
-  optimisticTaskMetaByTaskId: Record<string, { provider?: ZCodeProvider }>,
-  taskListCache?: Array<{ taskId: string; provider?: ZCodeProvider }> | null,
-): Record<string, ZCodeProvider | undefined> {
-  const providerByTaskId: Record<string, ZCodeProvider | undefined> = {};
+  optimisticTaskMetaByTaskId: Record<string, { provider?: AiraProvider }>,
+  taskListCache?: Array<{ taskId: string; provider?: AiraProvider }> | null,
+): Record<string, AiraProvider | undefined> {
+  const providerByTaskId: Record<string, AiraProvider | undefined> = {};
 
   for (const task of taskListCache ?? []) {
     if (!task.provider) {
@@ -28,10 +28,10 @@ function buildTaskProviderByTaskId(
 }
 
 export function hasBusyTaskInWorkspaceProvider(
-  selectedProvider: ZCodeProvider,
-  taskRuntimeByTaskId: Record<string, { status: ZCodeTaskRuntimeStatus; provider?: ZCodeProvider }>,
-  optimisticTaskMetaByTaskId: Record<string, { provider?: ZCodeProvider }>,
-  taskListCache?: Array<{ taskId: string; provider?: ZCodeProvider }> | null,
+  selectedProvider: AiraProvider,
+  taskRuntimeByTaskId: Record<string, { status: AiraTaskRuntimeStatus; provider?: AiraProvider }>,
+  optimisticTaskMetaByTaskId: Record<string, { provider?: AiraProvider }>,
+  taskListCache?: Array<{ taskId: string; provider?: AiraProvider }> | null,
   activeTaskId?: string | null,
 ): boolean {
   const providerByTaskId = buildTaskProviderByTaskId(optimisticTaskMetaByTaskId, taskListCache);

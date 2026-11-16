@@ -1,4 +1,4 @@
-import { genUiReferenceSchema, type GenUiReference } from "@zcode/shared/gen-ui";
+import { genUiReferenceSchema, type GenUiReference } from "@aira/shared/gen-ui";
 import {
   extractAssistantDirectives,
   findAssistantDirectivePrefixStart,

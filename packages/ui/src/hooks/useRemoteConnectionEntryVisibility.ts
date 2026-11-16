@@ -1,7 +1,7 @@
-import type { ZCodeEnv } from "@zcode/shared";
+import type { AiraEnv } from "@aira/shared";
 
 export function shouldShowRemoteConnectionEntry(params: {
-  env: ZCodeEnv;
+  env: AiraEnv;
   isIntranet: boolean;
 }): boolean {
   void params;

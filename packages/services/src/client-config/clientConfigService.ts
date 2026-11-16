@@ -1,12 +1,12 @@
 import {
-  buildZCodeEndpointUrls,
+  buildAiraEndpointUrls,
   clientConfigReadOptionsSchema,
   parseClientConfigSnapshot,
-  resolveOptionalZCodeAuthorization,
+  resolveOptionalAiraAuthorization,
   type ApiClient,
   type ClientConfigSnapshot,
-  type ZCodeJwtTokenResolver,
-} from "@zcode/shared";
+  type AiraJwtTokenResolver,
+} from "@aira/shared";
 import type { IClientConfigService } from "./clientConfig.js";
 
 const CACHE_TTL_MS = 60 * 60 * 1000;
@@ -28,7 +28,7 @@ interface CacheEntry {
 export function createClientConfigService(dependencies: {
   apiClient: ApiClient;
   resolveRequestContext: () => RequestContext | Promise<RequestContext>;
-  resolveZcodeJwtToken?: ZCodeJwtTokenResolver;
+  resolveAiraJwtToken?: AiraJwtTokenResolver;
 }): IClientConfigService {
   const entries = new Map<string, CacheEntry>();
 
@@ -73,12 +73,12 @@ export function createClientConfigService(dependencies: {
     async getSnapshot(options = {}) {
       const { forceRefresh } = clientConfigReadOptionsSchema.parse(options);
       const context = await dependencies.resolveRequestContext();
-      const authorization = await resolveOptionalZCodeAuthorization(
-        dependencies.resolveZcodeJwtToken,
+      const authorization = await resolveOptionalAiraAuthorization(
+        dependencies.resolveAiraJwtToken,
       );
       const url = new URL(
         "/api/v1/client/configs",
-        buildZCodeEndpointUrls(context.endpointOrigin).origin,
+        buildAiraEndpointUrls(context.endpointOrigin).origin,
       );
       url.searchParams.set("app_version", context.appVersion);
       url.searchParams.set("platform", context.platform);

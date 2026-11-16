@@ -1,4 +1,4 @@
-import type { WebRemoteControlRpcTransportFault } from "@zcode/shared";
+import type { WebRemoteControlRpcTransportFault } from "@aira/shared";
 
 interface PendingDeadlineEntry {
   queuedAt: number;

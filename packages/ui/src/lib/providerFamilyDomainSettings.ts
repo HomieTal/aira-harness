@@ -1,9 +1,9 @@
-import type { ISettingService } from "@zcode/services";
+import type { ISettingService } from "@aira/services";
 import {
   type AppSettings,
   type ProviderFamilyConnectionSelectionSettings,
   type ProviderFamilyDomain,
-} from "@zcode/shared";
+} from "@aira/shared";
 
 export function resolveLogoutProviderFamilyDomain(params: {
   currentDomain: ProviderFamilyDomain | null | undefined;

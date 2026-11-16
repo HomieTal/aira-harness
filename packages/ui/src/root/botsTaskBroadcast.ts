@@ -1,9 +1,9 @@
 import {
   BOT_TASK_BROADCAST_CHANNEL,
-  type ZCodeTaskRuntimeStatus,
+  type AiraTaskRuntimeStatus,
   type BotTaskBroadcastPayload,
-} from "@zcode/shared";
-import type { BroadcastMessage } from "@zcode/services";
+} from "@aira/shared";
+import type { BroadcastMessage } from "@aira/services";
 import { buildTaskWorkspaceKey } from "@/lib/taskQueryCache.js";
 import type { WindowTabState } from "@/store/tabStore.js";
 import { isWorkspaceTab } from "@/store/tabStore.js";
@@ -83,7 +83,7 @@ export function resolveBotTaskBroadcastRefresh(
 
 export function resolveBotTaskBroadcastRuntimeStatus(
   event: BotTaskBroadcastPayload["event"],
-): ZCodeTaskRuntimeStatus {
+): AiraTaskRuntimeStatus {
   switch (event) {
     case "created":
       return "creating";

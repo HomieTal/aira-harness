@@ -5,8 +5,8 @@ import type {
   RemoteTarget,
   RemoteTargetSnapshot,
   RemoteWorkspaceSessionEntry,
-} from "@zcode/shared";
-import { buildServerRemoteWorkspaceIdentity, parseRemoteWorkspaceIdentity } from "@zcode/shared";
+} from "@aira/shared";
+import { buildServerRemoteWorkspaceIdentity, parseRemoteWorkspaceIdentity } from "@aira/shared";
 import type { WindowTabState } from "@/store/tabStore.js";
 import { isWorkspaceTab } from "@/store/tabStore.js";
 

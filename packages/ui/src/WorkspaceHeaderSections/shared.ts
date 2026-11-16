@@ -1,22 +1,22 @@
 import type {
-  ZCodeTaskMeta,
-  ZCodeProvider,
-  ZCodeTaskChangeSummary,
+  AiraTaskMeta,
+  AiraProvider,
+  AiraTaskChangeSummary,
   EditorInfo,
   GitRepositorySummary,
   RemoteTarget,
   UserInfo,
-} from "@zcode/shared";
+} from "@aira/shared";
 
 export interface WorkspaceHeaderState {
-  selectedProvider: ZCodeProvider;
+  selectedProvider: AiraProvider;
 }
 
 export type WorkspaceHeaderVariant = "task" | "draft";
 
 export interface WorkspaceHeaderReloadSessionOptions {
   resumeTaskId?: string | null;
-  provider?: ZCodeProvider | null;
+  provider?: AiraProvider | null;
 }
 
 export interface WorkspaceHeaderTitleSectionProps {
@@ -29,16 +29,16 @@ export interface WorkspaceHeaderTitleSectionProps {
   localWorkspacePath?: string;
   projectName: string;
   activeTaskTitle: string;
-  activeTaskChangeSummary?: ZCodeTaskChangeSummary | null;
+  activeTaskChangeSummary?: AiraTaskChangeSummary | null;
   activeTaskId: string | null;
   activeTraceId: string | null;
   activeSessionId: string | null;
-  activeTaskProvider: ZCodeProvider | null;
-  resolvedActiveTaskMeta?: ZCodeTaskMeta | null;
+  activeTaskProvider: AiraProvider | null;
+  resolvedActiveTaskMeta?: AiraTaskMeta | null;
   gitSummary: GitRepositorySummary;
   gitDirtyFileCount: number;
   sessionLogPath: string | null;
-  nativeSessionLogProvider: ZCodeProvider | null;
+  nativeSessionLogProvider: AiraProvider | null;
   nativeSessionLogPath: string | null;
   nativeSessionLogExists: boolean;
   nativeSessionLogLoading: boolean;

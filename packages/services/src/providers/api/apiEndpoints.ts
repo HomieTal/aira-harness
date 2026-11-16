@@ -1,6 +1,6 @@
-import { buildRuntimeZCodeApiUrl, resolveZaiBusinessBaseUrl } from "@zcode/shared";
+import { buildRuntimeAiraApiUrl, resolveZaiBusinessBaseUrl } from "@aira/shared";
 
-export const ZCODE_CLIENT_SCENES_URL = buildRuntimeZCodeApiUrl(
+export const AIRA_CLIENT_SCENES_URL = buildRuntimeAiraApiUrl(
   process.env,
   "/api/v1/client/scenes",
 );

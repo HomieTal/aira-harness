@@ -1,27 +1,27 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { ZCODE_VERSION } from "@zcode/shared";
-import type { IRemoteBackend } from "@zcode/server/remote/backend.js";
-import type { RemoteEnvironment } from "@zcode/server/remote/backend.js";
+import { AIRA_VERSION } from "@aira/shared";
+import type { IRemoteBackend } from "@aira/server/remote/backend.js";
+import type { RemoteEnvironment } from "@aira/server/remote/backend.js";
 import {
   REMOTE_BASE,
   type DeployLoggers,
   waitForClose,
-} from "@zcode/server/remote/deployShared.js";
+} from "@aira/server/remote/deployShared.js";
 import {
   buildWriteLiteralFileCommand,
   quotePosixPathArg,
-} from "@zcode/server/remote/posixShell.js";
+} from "@aira/server/remote/posixShell.js";
 import {
   fetchRemoteAssetManifestRefFromCdn,
   type RemoteAssetManifest,
   type RemoteAssetManifestRef,
-} from "@zcode/server/remote/remoteAssetCache.js";
+} from "@aira/server/remote/remoteAssetCache.js";
 import {
   buildReleaseBaseCandidates,
   resolveRemoteCdnBaseUrls,
-} from "@zcode/server/remote/remoteAssetCdn.js";
-import type { RemoteAssetNetworkPort } from "@zcode/server/remote/remoteAssetNetwork.js";
+} from "@aira/server/remote/remoteAssetCdn.js";
+import type { RemoteAssetNetworkPort } from "@aira/server/remote/remoteAssetNetwork.js";
 
 const REMOTE_ASSET_COMPONENT_META_DIR = `${REMOTE_BASE}/.asset-components`;
 
@@ -205,14 +205,14 @@ async function resolveFreshComponentManifest(
   if (options.mockCdnDir) {
     try {
       const content = await readFile(
-        join(options.mockCdnDir, "releases", ZCODE_VERSION, `manifest-${platformArch}.json`),
+        join(options.mockCdnDir, "releases", AIRA_VERSION, `manifest-${platformArch}.json`),
         "utf8",
       );
       return {
         manifest: JSON.parse(content) as RemoteAssetManifest,
         releaseBaseCandidatesForComponents: buildReleaseBaseCandidates(
           resolveRemoteCdnBaseUrls(options),
-          ZCODE_VERSION,
+          AIRA_VERSION,
         ),
       };
     } catch (error) {
@@ -229,7 +229,7 @@ async function resolveFreshComponentManifest(
         remoteCdnBaseUrl: options.remoteCdnBaseUrl,
         remoteCdnBaseUrls: options.remoteCdnBaseUrls,
         remoteCacheDir: options.remoteCacheDir,
-        version: ZCODE_VERSION,
+        version: AIRA_VERSION,
         platformArch,
         manifestRequestTimeoutMs: options.manifestRequestTimeoutMs,
         remoteAssetNetwork: options.remoteAssetNetwork,

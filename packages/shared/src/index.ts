@@ -21,7 +21,7 @@ export type {
   IntegratedTerminalShellSelection,
   Locale,
   LocalePreference,
-  ZCodeInteractionBehavior,
+  AiraInteractionBehavior,
   TabId,
   TabState,
   ResourceUsageCategory,
@@ -52,9 +52,9 @@ export type {
   LegacyPersistedLocalePreference,
   PersistedSettingsLocaleFields,
 } from "./locale.js";
-export { ZCODE_VERSION, ZCODE_COMMIT, ZCODE_BUILD_TIME } from "./version.js";
+export { AIRA_VERSION, AIRA_COMMIT, AIRA_BUILD_TIME } from "./version.js";
 export type { HelloMessage, HelloAckMessage } from "./handshake.js";
-export type { ArmsRumEnv, ZCodeEnv, ZCodeProductFlavor } from "./env.js";
+export type { ArmsRumEnv, AiraEnv, AiraProductFlavor } from "./env.js";
 export type { RemoteAssetInstallMode } from "./remoteAssetInstallMode.js";
 export type {
   RemoteResourcePackageId,
@@ -85,18 +85,18 @@ export {
   serializeShortcutBinding,
 } from "./shortcutCommands.js";
 export {
-  ZCODE_ENV,
-  ZCODE_PRODUCT_FLAVOR,
-  ZCODE_APP_VERSION_ENV,
-  ZCODE_BUILD_COMMIT_ID_ENV,
-  ZCODE_CLIENT_LANGUAGE_ENV,
-  RUNTIME_ZCODE_DEBUG,
-  ZCODE_ARMS_RUM_ENDPOINT,
-  ZCODE_TELEMETRY_REPORT_ENDPOINT,
-  ZCODE_AUTO_UPDATE_ENABLED,
-  mapZCodeEnvToArmsRumEnv,
-  normalizeZCodeEnv,
-  normalizeZCodeProductFlavor,
+  AIRA_ENV,
+  AIRA_PRODUCT_FLAVOR,
+  AIRA_APP_VERSION_ENV,
+  AIRA_BUILD_COMMIT_ID_ENV,
+  AIRA_CLIENT_LANGUAGE_ENV,
+  RUNTIME_AIRA_DEBUG,
+  AIRA_ARMS_RUM_ENDPOINT,
+  AIRA_TELEMETRY_REPORT_ENDPOINT,
+  AIRA_AUTO_UPDATE_ENABLED,
+  mapAiraEnvToArmsRumEnv,
+  normalizeAiraEnv,
+  normalizeAiraProductFlavor,
 } from "./env.js";
 export * from "./errors.js";
 export {
@@ -106,33 +106,33 @@ export {
 export * from "./rendererActionTrace.js";
 export * from "./validation.js";
 export * from "./api.js";
-export * from "./zcode-protocol/index.js";
+export * from "./aira-protocol/index.js";
 export * from "./account-provider-state.js";
 // re-home：旧协议承重面的幸存文件（消费者继续走 barrel，零感知）
-export * from "./zcode-protocol-legacy-types.js";
-export * from "./zcode-task-types-core.js";
+export * from "./aira-protocol-legacy-types.js";
+export * from "./aira-task-types-core.js";
 export * from "./task-realtime-core.js";
 export * from "./remote-workspace-identity.js";
-export * from "./zcode-api-retry-status.js";
-export * from "./zcode-network-debug-status.js";
-export * from "./zcode-session-visible-content.js";
+export * from "./aira-api-retry-status.js";
+export * from "./aira-network-debug-status.js";
+export * from "./aira-session-visible-content.js";
 export * from "./official-mcp-auth.js";
 export * from "./official-mcp-tool-error.js";
 export * from "./conversation-message-projection-policy.js";
 export * from "./conversation-share.js";
 export * from "./conversation-share-content.js";
 export * from "./conversation-preview-artifacts.js";
-export * from "./zcode-session-task-status.js";
-export * from "./zcode-session-content-profile.js";
-export * from "./zcode-tool-projection-memory.js";
-export * from "./zcode-slash-command-help.js";
-export * from "./zcodeEndpoint.js";
-export * from "./zcode-source-headers.js";
-export * from "./zcode-agent-policy.js";
-export * from "./zcode-media-policy.js";
+export * from "./aira-session-task-status.js";
+export * from "./aira-session-content-profile.js";
+export * from "./aira-tool-projection-memory.js";
+export * from "./aira-slash-command-help.js";
+export * from "./airaEndpoint.js";
+export * from "./aira-source-headers.js";
+export * from "./aira-agent-policy.js";
+export * from "./aira-media-policy.js";
 export * from "./media-preview.js";
 export * from "./plugin-display-name.js";
-export * from "./zcode-agent-runtime.js";
+export * from "./aira-agent-runtime.js";
 export * from "./runtimeEnv.js";
 export * from "./dynamic-workflow-feature.js";
 export * from "./markdown-artifact-images.js";
@@ -291,7 +291,7 @@ export type {
   UpdateStatePayload,
   WSLDistro,
   WindowControlsOverlayReadyPayload,
-  ZCodeStdioTapDevState,
+  AiraStdioTapDevState,
 } from "./platform.js";
 export type {
   CuaAccessibilitySettingsResult,
@@ -299,15 +299,15 @@ export type {
   OpenCuaPermissionOnboardingOptions,
   PrepareCuaHelperPermissionDragResult,
 } from "./cuaAccessibilitySettings.js";
-export type { ZCodeTaskCreateResult } from "./zcode-task-types.js";
-export * from "./zcode-task-types.js";
+export type { AiraTaskCreateResult } from "./aira-task-types.js";
+export * from "./aira-task-types.js";
 export * from "./automation-types.js";
 export * from "./off-peak-types.js";
 export * from "./background-task-control-merge.js";
 export * from "./background-task-controls.js";
 export * from "./background-task-notifications.js";
 export * from "./background-bash-jobs.js";
-export * from "./zcode-agent-model-state.js";
+export * from "./aira-agent-model-state.js";
 export * from "./task-realtime.js";
 export { formatTimestamp, formatLogPrefix } from "./log-format.js";
 export * from "./model-provider-types.js";
@@ -339,7 +339,7 @@ export * from "./runtime-tool-runtime.js";
 export * from "./git.js";
 export * from "./bots.js";
 export * from "./assistant-message-parts.js";
-export * from "./zcodePersistedMessageMerge.js";
+export * from "./airaPersistedMessageMerge.js";
 export * from "./assistant-presentation.js";
 export * from "./tool-call-summary.js";
 export * from "./tool-identity.js";

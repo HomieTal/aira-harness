@@ -1,4 +1,4 @@
-import { ServiceChannels, type Locale, type MarketingTouchSnapshot } from "@zcode/shared";
+import { ServiceChannels, type Locale, type MarketingTouchSnapshot } from "@aira/shared";
 import { createServiceDescriptor } from "#src/descriptors.js";
 
 export interface IMarketingTouchService {
