@@ -32,6 +32,9 @@ patchedDependencies:
   '@radix-ui/react-menu@2.1.16':
     hash: 4b05eae73074149ac453ee047d9f48707df7d5c9ddedeab8d514f9b9fa097a6c
     path: patches/@radix-ui__react-menu@2.1.16.patch
+  app-builder-lib@26.17.0:
+    hash: 0e2b18c7742b026350889c439df4c750ac1d129fd66f7d164ae12fab419a9f10
+    path: patches/app-builder-lib@26.17.0.patch
   vitest@4.1.7:
     hash: 11fdb66aa985e1d77e68752deeb7c1130ae33c9a4e2968f23aae8adaf8bc9ba0
     path: patches/vitest@4.1.7.patch
@@ -53,6 +56,9 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0(tailwindcss@4.2.2)
     devDependencies:
+      '@aira/aira-cua':
+        specifier: workspace:*
+        version: link:packages/aira-cua
       '@jridgewell/trace-mapping':
         specifier: 0.3.31
         version: 0.3.31
@@ -65,9 +71,6 @@ importers:
       '@types/node':
         specifier: ^25.5.0
         version: 25.6.0
-      '@aira/aira-cua':
-        specifier: workspace:*
-        version: link:packages/aira-cua
       concurrently:
         specifier: ^9.1.2
         version: 9.2.1
@@ -122,49 +125,6 @@ importers:
       yaml:
         specifier: 2.9.0
         version: 2.9.0
-
-  apps/dev-docs:
-    dependencies:
-      '@xyflow/react':
-        specifier: ^12.11.2
-        version: 12.11.2(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(immer@11.1.8)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      elkjs:
-        specifier: ^0.12.0
-        version: 0.12.0
-      lucide-react:
-        specifier: ^1.17.0
-        version: 1.17.0(react@19.2.7)
-      react:
-        specifier: 19.2.7
-        version: 19.2.7
-      react-dom:
-        specifier: 19.2.7
-        version: 19.2.7(react@19.2.7)
-      yaml:
-        specifier: ^2.9.0
-        version: 2.9.0
-    devDependencies:
-      '@tailwindcss/vite':
-        specifier: ^4.2.2
-        version: 4.2.2(vite@8.0.8(@types/node@25.6.0)(esbuild@0.27.7)(jiti@2.7.0)(tsx@4.21.0)(yaml@2.9.0))
-      '@types/react':
-        specifier: ^19.2.14
-        version: 19.2.14
-      '@types/react-dom':
-        specifier: ^19.2.3
-        version: 19.2.3(@types/react@19.2.14)
-      '@vitejs/plugin-react':
-        specifier: ^6.0.1
-        version: 6.0.1(vite@8.0.8(@types/node@25.6.0)(esbuild@0.27.7)(jiti@2.7.0)(tsx@4.21.0)(yaml@2.9.0))
-      tailwindcss:
-        specifier: ^4.2.2
-        version: 4.2.2
-      typescript:
-        specifier: ^6.0.2
-        version: 6.0.2
-      vite:
-        specifier: ^8.0.2
-        version: 8.0.8(@types/node@25.6.0)(esbuild@0.27.7)(jiti@2.7.0)(tsx@4.21.0)(yaml@2.9.0)
 
   apps/aira-cli:
     dependencies:
@@ -223,9 +183,9 @@ importers:
       '@ai-sdk/openai-compatible':
         specifier: ^2.0.58
         version: 2.0.60(patch_hash=9632fe9d821b3dc20939ae509cc35b968d90d018bbd1d812390718898182a38b)(zod@4.6.5)
-      '@modelcontextprotocol/client':
-        specifier: 2.0.0
-        version: 2.0.0
+      '@aira/aira-cua':
+        specifier: workspace:*
+        version: link:../../../../packages/aira-cua
       '@aira/contracts':
         specifier: workspace:*
         version: link:../contracts
@@ -241,9 +201,9 @@ importers:
       '@aira/shared':
         specifier: workspace:*
         version: link:../../../../packages/shared
-      '@aira/aira-cua':
-        specifier: workspace:*
-        version: link:../../../../packages/aira-cua
+      '@modelcontextprotocol/client':
+        specifier: 2.0.0
+        version: 2.0.0
       ai:
         specifier: 6.0.193
         version: 6.0.193(zod@4.6.5)
@@ -293,6 +253,69 @@ importers:
       vitest:
         specifier: ^4.1.5
         version: 4.1.7(patch_hash=11fdb66aa985e1d77e68752deeb7c1130ae33c9a4e2968f23aae8adaf8bc9ba0)(@opentelemetry/api@1.9.1)(@types/node@24.12.2)(@vitest/coverage-v8@4.1.7)(jsdom@29.1.1(@noble/hashes@2.2.0))(msw@2.13.3(@types/node@24.12.2)(typescript@6.0.2))(vite@8.0.8(@types/node@24.12.2)(esbuild@0.27.7)(jiti@2.7.0)(tsx@4.21.0)(yaml@2.9.0))
+
+  apps/aira-cli/packages/aira-cua-plugin:
+    dependencies:
+      '@aira/aira-cua':
+        specifier: workspace:*
+        version: link:../../../../packages/aira-cua
+    devDependencies:
+      '@types/node':
+        specifier: ^24.0.0
+        version: 24.12.2
+      typescript:
+        specifier: ^5.9.0
+        version: 5.9.3
+
+  apps/aira-cli/packages/aira-guide-plugin: {}
+
+  apps/aira-cli/packages/aira-site-plugin:
+    devDependencies:
+      '@aira/shared':
+        specifier: workspace:*
+        version: link:../../../../packages/shared
+      '@modelcontextprotocol/client':
+        specifier: 2.0.0
+        version: 2.0.0
+      '@modelcontextprotocol/core':
+        specifier: 2.0.0
+        version: 2.0.0
+      '@modelcontextprotocol/ext-apps':
+        specifier: 2.0.0
+        version: 2.0.0(@modelcontextprotocol/client@2.0.0)(@modelcontextprotocol/core@2.0.0)(@modelcontextprotocol/server@2.0.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(zod@4.6.5)
+      '@modelcontextprotocol/sdk':
+        specifier: 1.29.0
+        version: 1.29.0(zod@4.6.5)
+      '@types/node':
+        specifier: ^24.0.0
+        version: 24.12.2
+      '@types/react':
+        specifier: ^19.2.14
+        version: 19.2.14
+      '@types/react-dom':
+        specifier: ^19.2.3
+        version: 19.2.3(@types/react@19.2.14)
+      esbuild:
+        specifier: ^0.25.0
+        version: 0.25.12
+      lucide-react:
+        specifier: ^1.17.0
+        version: 1.17.0(react@19.2.7)
+      react:
+        specifier: 19.2.7
+        version: 19.2.7
+      react-dom:
+        specifier: 19.2.7
+        version: 19.2.7(react@19.2.7)
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.2
+      vitest:
+        specifier: ^4.1.5
+        version: 4.1.7(patch_hash=11fdb66aa985e1d77e68752deeb7c1130ae33c9a4e2968f23aae8adaf8bc9ba0)(@opentelemetry/api@1.9.1)(@types/node@24.12.2)(@vitest/coverage-v8@4.1.7)(jsdom@29.1.1(@noble/hashes@2.2.0))(msw@2.13.3(@types/node@24.12.2)(typescript@6.0.2))(vite@8.0.8(@types/node@24.12.2)(esbuild@0.25.12)(jiti@2.7.0)(tsx@4.21.0)(yaml@2.9.0))
+      zod:
+        specifier: 4.6.5
+        version: 4.6.5
 
   apps/aira-cli/packages/android-emulator-plugin:
     dependencies:
@@ -358,24 +381,21 @@ importers:
         specifier: 4.6.5
         version: 4.6.5
     devDependencies:
+      '@aira/formal-proof':
+        specifier: workspace:*
+        version: link:../../../../packages/formal-proof
       '@types/node':
         specifier: ^24.0.0
         version: 24.12.2
       '@types/yazl':
         specifier: ^3.3.1
         version: 3.3.1
-      '@aira/formal-proof':
-        specifier: workspace:*
-        version: link:../../../../packages/formal-proof
       yazl:
         specifier: ^3.3.1
         version: 3.3.1
 
   apps/aira-cli/packages/browser-use-plugin:
     dependencies:
-      '@modelcontextprotocol/server':
-        specifier: 2.0.0
-        version: 2.0.0
       '@aira/contracts':
         specifier: workspace:*
         version: link:../contracts
@@ -388,22 +408,25 @@ importers:
       '@aira/shared':
         specifier: workspace:*
         version: link:../../../../packages/shared
+      '@modelcontextprotocol/server':
+        specifier: 2.0.0
+        version: 2.0.0
       zod:
         specifier: 4.6.5
         version: 4.6.5
     devDependencies:
-      '@modelcontextprotocol/client':
-        specifier: 2.0.0
-        version: 2.0.0
-      '@types/node':
-        specifier: ^24.0.0
-        version: 24.12.2
       '@aira/adapters':
         specifier: workspace:*
         version: link:../adapters
       '@aira/bootstrap':
         specifier: workspace:*
         version: link:../bootstrap
+      '@modelcontextprotocol/client':
+        specifier: 2.0.0
+        version: 2.0.0
+      '@types/node':
+        specifier: ^24.0.0
+        version: 24.12.2
       esbuild:
         specifier: ^0.25.0
         version: 0.25.12
@@ -419,9 +442,6 @@ importers:
 
   apps/aira-cli/packages/cli:
     dependencies:
-      '@napi-rs/keyring':
-        specifier: 2.1.2
-        version: 2.1.2
       '@aira/adapters':
         specifier: workspace:*
         version: link:../adapters
@@ -452,6 +472,9 @@ importers:
       '@aira/tui':
         specifier: workspace:*
         version: link:../tui
+      '@napi-rs/keyring':
+        specifier: 2.1.2
+        version: 2.1.2
       dotenv:
         specifier: ^17.4.2
         version: 17.4.2
@@ -480,6 +503,9 @@ importers:
 
   apps/aira-cli/packages/core:
     dependencies:
+      '@aira/aira-cua':
+        specifier: workspace:*
+        version: link:../../../../packages/aira-cua
       '@aira/contracts':
         specifier: workspace:*
         version: link:../contracts
@@ -495,9 +521,6 @@ importers:
       '@aira/shared-types':
         specifier: workspace:*
         version: link:../shared-types
-      '@aira/aira-cua':
-        specifier: workspace:*
-        version: link:../../../../packages/aira-cua
       cheerio:
         specifier: ^1.0.0
         version: 1.2.0
@@ -532,12 +555,12 @@ importers:
 
   apps/aira-cli/packages/debug:
     dependencies:
-      '@hono/node-server':
-        specifier: ^1.14.4
-        version: 1.19.14(hono@4.12.12)
       '@aira/shared':
         specifier: workspace:*
         version: link:../../../../packages/shared
+      '@hono/node-server':
+        specifier: ^1.14.4
+        version: 1.19.14(hono@4.12.12)
       hono:
         specifier: ^4.10.7
         version: 4.12.12
@@ -659,9 +682,9 @@ importers:
 
   apps/aira-cli/packages/node-repl-host:
     dependencies:
-      '@modelcontextprotocol/server':
-        specifier: 2.0.0
-        version: 2.0.0
+      '@aira/aira-cua':
+        specifier: workspace:*
+        version: link:../../../../packages/aira-cua
       '@aira/contracts':
         specifier: workspace:*
         version: link:../contracts
@@ -671,9 +694,9 @@ importers:
       '@aira/shared':
         specifier: workspace:*
         version: link:../../../../packages/shared
-      '@aira/aira-cua':
-        specifier: workspace:*
-        version: link:../../../../packages/aira-cua
+      '@modelcontextprotocol/server':
+        specifier: 2.0.0
+        version: 2.0.0
       zod:
         specifier: ^4.4.3
         version: 4.6.5
@@ -800,6 +823,9 @@ importers:
 
   apps/aira-cli/packages/telemetry:
     dependencies:
+      '@aira/contracts':
+        specifier: workspace:*
+        version: link:../contracts
       '@opentelemetry/api':
         specifier: ^1.9.0
         version: 1.9.1
@@ -824,9 +850,6 @@ importers:
       '@opentelemetry/sdk-trace-base':
         specifier: 2.6.1
         version: 2.6.1(@opentelemetry/api@1.9.1)
-      '@aira/contracts':
-        specifier: workspace:*
-        version: link:../contracts
     devDependencies:
       '@types/node':
         specifier: ^24.0.0
@@ -837,12 +860,6 @@ importers:
 
   apps/aira-cli/packages/tui:
     dependencies:
-      '@mbears/opentui-core':
-        specifier: 0.2.15
-        version: 0.2.15(typescript@6.0.2)(web-tree-sitter@0.25.10)
-      '@mbears/opentui-react':
-        specifier: 0.2.15
-        version: 0.2.15(react-devtools-core@7.0.1)(react@19.2.7)(typescript@6.0.2)(web-tree-sitter@0.25.10)(ws@8.18.0)
       '@aira/contracts':
         specifier: workspace:*
         version: link:../contracts
@@ -852,6 +869,12 @@ importers:
       '@aira/shared':
         specifier: workspace:*
         version: link:../../../../packages/shared
+      '@mbears/opentui-core':
+        specifier: 0.2.15
+        version: 0.2.15(typescript@6.0.2)(web-tree-sitter@0.25.10)
+      '@mbears/opentui-react':
+        specifier: 0.2.15
+        version: 0.2.15(react-devtools-core@7.0.1)(react@19.2.7)(typescript@6.0.2)(web-tree-sitter@0.25.10)(ws@8.18.0)
       react:
         specifier: 19.2.7
         version: 19.2.7
@@ -876,69 +899,6 @@ importers:
         version: 4.21.0
 
   apps/aira-cli/packages/visualize-plugin: {}
-
-  apps/aira-cli/packages/aira-cua-plugin:
-    dependencies:
-      '@aira/aira-cua':
-        specifier: workspace:*
-        version: link:../../../../packages/aira-cua
-    devDependencies:
-      '@types/node':
-        specifier: ^24.0.0
-        version: 24.12.2
-      typescript:
-        specifier: ^5.9.0
-        version: 5.9.3
-
-  apps/aira-cli/packages/aira-guide-plugin: {}
-
-  apps/aira-cli/packages/aira-site-plugin:
-    devDependencies:
-      '@modelcontextprotocol/client':
-        specifier: 2.0.0
-        version: 2.0.0
-      '@modelcontextprotocol/core':
-        specifier: 2.0.0
-        version: 2.0.0
-      '@modelcontextprotocol/ext-apps':
-        specifier: 2.0.0
-        version: 2.0.0(@modelcontextprotocol/client@2.0.0)(@modelcontextprotocol/core@2.0.0)(@modelcontextprotocol/server@2.0.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)(zod@4.6.5)
-      '@modelcontextprotocol/sdk':
-        specifier: 1.29.0
-        version: 1.29.0(zod@4.6.5)
-      '@types/node':
-        specifier: ^24.0.0
-        version: 24.12.2
-      '@types/react':
-        specifier: ^19.2.14
-        version: 19.2.14
-      '@types/react-dom':
-        specifier: ^19.2.3
-        version: 19.2.3(@types/react@19.2.14)
-      '@aira/shared':
-        specifier: workspace:*
-        version: link:../../../../packages/shared
-      esbuild:
-        specifier: ^0.25.0
-        version: 0.25.12
-      lucide-react:
-        specifier: ^1.17.0
-        version: 1.17.0(react@19.2.7)
-      react:
-        specifier: 19.2.7
-        version: 19.2.7
-      react-dom:
-        specifier: 19.2.7
-        version: 19.2.7(react@19.2.7)
-      typescript:
-        specifier: ^6.0.2
-        version: 6.0.2
-      vitest:
-        specifier: ^4.1.5
-        version: 4.1.7(patch_hash=11fdb66aa985e1d77e68752deeb7c1130ae33c9a4e2968f23aae8adaf8bc9ba0)(@opentelemetry/api@1.9.1)(@types/node@24.12.2)(@vitest/coverage-v8@4.1.7)(jsdom@29.1.1(@noble/hashes@2.2.0))(msw@2.13.3(@types/node@24.12.2)(typescript@6.0.2))(vite@8.0.8(@types/node@24.12.2)(esbuild@0.25.12)(jiti@2.7.0)(tsx@4.21.0)(yaml@2.9.0))
-      zod:
-        specifier: 4.6.5
-        version: 4.6.5
 
   apps/aira-cli/tools/prompt-trajectory:
     devDependencies:
@@ -994,6 +954,107 @@ importers:
 
   apps/aira-cli/tools/typescript: {}
 
+  apps/dev-docs:
+    dependencies:
+      '@xyflow/react':
+        specifier: ^12.11.2
+        version: 12.11.2(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(immer@11.1.8)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      elkjs:
+        specifier: ^0.12.0
+        version: 0.12.0
+      lucide-react:
+        specifier: ^1.17.0
+        version: 1.17.0(react@19.2.7)
+      react:
+        specifier: 19.2.7
+        version: 19.2.7
+      react-dom:
+        specifier: 19.2.7
+        version: 19.2.7(react@19.2.7)
+      yaml:
+        specifier: ^2.9.0
+        version: 2.9.0
+    devDependencies:
+      '@tailwindcss/vite':
+        specifier: ^4.2.2
+        version: 4.2.2(vite@8.0.8(@types/node@25.6.0)(esbuild@0.27.7)(jiti@2.7.0)(tsx@4.21.0)(yaml@2.9.0))
+      '@types/react':
+        specifier: ^19.2.14
+        version: 19.2.14
+      '@types/react-dom':
+        specifier: ^19.2.3
+        version: 19.2.3(@types/react@19.2.14)
+      '@vitejs/plugin-react':
+        specifier: ^6.0.1
+        version: 6.0.1(vite@8.0.8(@types/node@25.6.0)(esbuild@0.27.7)(jiti@2.7.0)(tsx@4.21.0)(yaml@2.9.0))
+      tailwindcss:
+        specifier: ^4.2.2
+        version: 4.2.2
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.2
+      vite:
+        specifier: ^8.0.2
+        version: 8.0.8(@types/node@25.6.0)(esbuild@0.27.7)(jiti@2.7.0)(tsx@4.21.0)(yaml@2.9.0)
+
+  packages/aira-cua:
+    dependencies:
+      '@modelcontextprotocol/sdk':
+        specifier: ^1.27.1
+        version: 1.29.0(zod@4.6.5)
+
+  packages/aira-server-cli:
+    dependencies:
+      '@aira/rpc':
+        specifier: workspace:*
+        version: link:../rpc
+      '@aira/services':
+        specifier: workspace:*
+        version: link:../services
+      '@aira/shared':
+        specifier: workspace:*
+        version: link:../shared
+      '@hono/node-server':
+        specifier: ^1.19.11
+        version: 1.19.14(hono@4.12.12)
+      '@hono/node-ws':
+        specifier: ^1.3.0
+        version: 1.3.0(@hono/node-server@1.19.14(hono@4.12.12))(hono@4.12.12)
+      '@napi-rs/keyring':
+        specifier: 2.1.2
+        version: 2.1.2
+      hono:
+        specifier: ^4.12.9
+        version: 4.12.12
+      ws:
+        specifier: ^8.20.0
+        version: 8.20.0
+      yauzl:
+        specifier: ^3.3.0
+        version: 3.3.0
+      zod:
+        specifier: 4.6.5
+        version: 4.6.5
+    devDependencies:
+      '@types/node':
+        specifier: ^25.5.0
+        version: 25.6.0
+      '@types/ws':
+        specifier: ^8.18.1
+        version: 8.18.1
+      '@types/yauzl':
+        specifier: ^2.10.3
+        version: 2.10.3
+      tsup:
+        specifier: ^8.4.0
+        version: 8.5.1(jiti@2.7.0)(postcss@8.5.9)(tsx@4.21.0)(typescript@6.0.2)(yaml@2.9.0)
+      tsx:
+        specifier: ^4.19.4
+        version: 4.21.0
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.2
+
   packages/client:
     dependencies:
       '@aira/rpc':
@@ -1022,6 +1083,36 @@ importers:
 
   packages/desktop:
     dependencies:
+      '@aira/aira-cua':
+        specifier: workspace:*
+        version: link:../aira-cua
+      '@aira/client':
+        specifier: workspace:*
+        version: link:../client
+      '@aira/e2e-report':
+        specifier: workspace:*
+        version: link:../e2e-report
+      '@aira/provider':
+        specifier: workspace:*
+        version: link:../provider
+      '@aira/provider-node':
+        specifier: workspace:*
+        version: link:../provider-node
+      '@aira/rpc':
+        specifier: workspace:*
+        version: link:../rpc
+      '@aira/server':
+        specifier: workspace:*
+        version: link:../server
+      '@aira/services':
+        specifier: workspace:*
+        version: link:../services
+      '@aira/shared':
+        specifier: workspace:*
+        version: link:../shared
+      '@aira/ui':
+        specifier: workspace:*
+        version: link:../ui
       '@arms/rum-electron':
         specifier: ^0.0.3
         version: 0.0.3(patch_hash=36855354851ea495bc47a03340b0484ff62836b739cad56904b8a69f18e2ae97)(@babel/runtime@7.29.7)(electron@44.7.0)
@@ -1073,36 +1164,6 @@ importers:
       '@opentelemetry/sdk-trace-base':
         specifier: 2.6.1
         version: 2.6.1(@opentelemetry/api@1.9.1)
-      '@aira/client':
-        specifier: workspace:*
-        version: link:../client
-      '@aira/e2e-report':
-        specifier: workspace:*
-        version: link:../e2e-report
-      '@aira/provider':
-        specifier: workspace:*
-        version: link:../provider
-      '@aira/provider-node':
-        specifier: workspace:*
-        version: link:../provider-node
-      '@aira/rpc':
-        specifier: workspace:*
-        version: link:../rpc
-      '@aira/server':
-        specifier: workspace:*
-        version: link:../server
-      '@aira/services':
-        specifier: workspace:*
-        version: link:../services
-      '@aira/shared':
-        specifier: workspace:*
-        version: link:../shared
-      '@aira/ui':
-        specifier: workspace:*
-        version: link:../ui
-      '@aira/aira-cua':
-        specifier: workspace:*
-        version: link:../aira-cua
       electron-updater:
         specifier: 6.8.10
         version: 6.8.10
@@ -1355,12 +1416,12 @@ importers:
         specifier: 4.6.5
         version: 4.6.5
     devDependencies:
-      '@types/node':
-        specifier: ^25.5.0
-        version: 25.6.0
       '@aira/model-option-map':
         specifier: workspace:*
         version: link:../model-option-map
+      '@types/node':
+        specifier: ^25.5.0
+        version: 25.6.0
       typescript:
         specifier: ^6.0.2
         version: 6.0.2
@@ -1376,6 +1437,18 @@ importers:
 
   packages/server:
     dependencies:
+      '@aira/client':
+        specifier: workspace:*
+        version: link:../client
+      '@aira/rpc':
+        specifier: workspace:*
+        version: link:../rpc
+      '@aira/services':
+        specifier: workspace:*
+        version: link:../services
+      '@aira/shared':
+        specifier: workspace:*
+        version: link:../shared
       '@hono/node-server':
         specifier: ^1.19.11
         version: 1.19.14(hono@4.12.12)
@@ -1397,18 +1470,6 @@ importers:
       '@napi-rs/keyring':
         specifier: 2.1.2
         version: 2.1.2
-      '@aira/client':
-        specifier: workspace:*
-        version: link:../client
-      '@aira/rpc':
-        specifier: workspace:*
-        version: link:../rpc
-      '@aira/services':
-        specifier: workspace:*
-        version: link:../services
-      '@aira/shared':
-        specifier: workspace:*
-        version: link:../shared
       axios:
         specifier: ^1.13.6
         version: 1.13.6
@@ -1479,9 +1540,9 @@ importers:
       '@agentclientprotocol/sdk':
         specifier: ^0.21.1
         version: 0.21.1(zod@4.6.5)
-      '@larksuiteoapi/node-sdk':
-        specifier: 1.64.0
-        version: 1.64.0
+      '@aira/aira-cua':
+        specifier: workspace:*
+        version: link:../aira-cua
       '@aira/provider':
         specifier: workspace:*
         version: link:../provider
@@ -1497,9 +1558,9 @@ importers:
       '@aira/shared':
         specifier: workspace:*
         version: link:../shared
-      '@aira/aira-cua':
-        specifier: workspace:*
-        version: link:../aira-cua
+      '@larksuiteoapi/node-sdk':
+        specifier: 1.64.0
+        version: 1.64.0
       chokidar:
         specifier: 4.0.3
         version: 4.0.3
@@ -1568,6 +1629,9 @@ importers:
       '@aiden0z/pptx-renderer':
         specifier: 1.2.4
         version: 1.2.4(patch_hash=e1a90a724324c45a2cc90cf84d1ae1f35755b8fc9438a208d610960bd0d5f65a)(pdfjs-dist@5.4.296)
+      '@aira/shared':
+        specifier: workspace:*
+        version: link:../shared
       '@dnd-kit/core':
         specifier: ^6.3.1
         version: 6.3.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -1637,9 +1701,6 @@ importers:
       '@xyflow/react':
         specifier: ^12.10.1
         version: 12.10.2(@types/react@19.2.14)(immer@11.1.8)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@aira/shared':
-        specifier: workspace:*
-        version: link:../shared
       ai:
         specifier: ^6.0.138
         version: 6.0.159(zod@4.6.5)
@@ -1758,15 +1819,15 @@ importers:
 
   packages/shared:
     dependencies:
-      '@napi-rs/keyring':
-        specifier: 2.1.2
-        version: 2.1.2
       '@aira/model-option-map':
         specifier: workspace:*
         version: link:../model-option-map
       '@aira/session-control':
         specifier: workspace:*
         version: link:../session-control
+      '@napi-rs/keyring':
+        specifier: 2.1.2
+        version: 2.1.2
       zod:
         specifier: 4.6.5
         version: 4.6.5
@@ -1823,6 +1884,21 @@ importers:
       '@aiden0z/pptx-renderer':
         specifier: 1.2.4
         version: 1.2.4(patch_hash=e1a90a724324c45a2cc90cf84d1ae1f35755b8fc9438a208d610960bd0d5f65a)(pdfjs-dist@5.4.296)
+      '@aira/design-runtime':
+        specifier: workspace:*
+        version: link:../design-runtime
+      '@aira/provider':
+        specifier: workspace:*
+        version: link:../provider
+      '@aira/rpc':
+        specifier: workspace:*
+        version: link:../rpc
+      '@aira/services':
+        specifier: workspace:*
+        version: link:../services
+      '@aira/shared':
+        specifier: workspace:*
+        version: link:../shared
       '@dnd-kit/core':
         specifier: ^6.3.1
         version: 6.3.1(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -1907,21 +1983,6 @@ importers:
       '@xyflow/react':
         specifier: ^12.10.1
         version: 12.10.2(@types/react@19.2.14)(immer@11.1.8)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@aira/design-runtime':
-        specifier: workspace:*
-        version: link:../design-runtime
-      '@aira/provider':
-        specifier: workspace:*
-        version: link:../provider
-      '@aira/rpc':
-        specifier: workspace:*
-        version: link:../rpc
-      '@aira/services':
-        specifier: workspace:*
-        version: link:../services
-      '@aira/shared':
-        specifier: workspace:*
-        version: link:../shared
       ai:
         specifier: ^6.0.138
         version: 6.0.159(zod@4.6.5)
@@ -2147,64 +2208,6 @@ importers:
       vite:
         specifier: ^8.0.2
         version: 8.0.8(@types/node@25.6.0)(esbuild@0.27.7)(jiti@2.7.0)(tsx@4.21.0)(yaml@2.9.0)
-
-  packages/aira-cua:
-    dependencies:
-      '@modelcontextprotocol/sdk':
-        specifier: ^1.27.1
-        version: 1.29.0(zod@4.6.5)
-
-  packages/aira-server-cli:
-    dependencies:
-      '@hono/node-server':
-        specifier: ^1.19.11
-        version: 1.19.14(hono@4.12.12)
-      '@hono/node-ws':
-        specifier: ^1.3.0
-        version: 1.3.0(@hono/node-server@1.19.14(hono@4.12.12))(hono@4.12.12)
-      '@napi-rs/keyring':
-        specifier: 2.1.2
-        version: 2.1.2
-      '@aira/rpc':
-        specifier: workspace:*
-        version: link:../rpc
-      '@aira/services':
-        specifier: workspace:*
-        version: link:../services
-      '@aira/shared':
-        specifier: workspace:*
-        version: link:../shared
-      hono:
-        specifier: ^4.12.9
-        version: 4.12.12
-      ws:
-        specifier: ^8.20.0
-        version: 8.20.0
-      yauzl:
-        specifier: ^3.3.0
-        version: 3.3.0
-      zod:
-        specifier: 4.6.5
-        version: 4.6.5
-    devDependencies:
-      '@types/node':
-        specifier: ^25.5.0
-        version: 25.6.0
-      '@types/ws':
-        specifier: ^8.18.1
-        version: 8.18.1
-      '@types/yauzl':
-        specifier: ^2.10.3
-        version: 2.10.3
-      tsup:
-        specifier: ^8.4.0
-        version: 8.5.1(jiti@2.7.0)(postcss@8.5.9)(tsx@4.21.0)(typescript@6.0.2)(yaml@2.9.0)
-      tsx:
-        specifier: ^4.19.4
-        version: 4.21.0
-      typescript:
-        specifier: ^6.0.2
-        version: 6.0.2
 
 packages:
 
@@ -10971,8 +10974,8 @@ packages:
     engines: {node: ^20.19.0 || >=22.12.0}
     hasBin: true
 
-  oxlint-plugin-react-doctor@0.9.22:
-    resolution: {integrity: sha512-kf9MwCpK3YlAWYUyX5Zx7XYrdIbA/4lQD2QREIqC8DvmNb2I+wP8zyjL4NeGl2FO2EC1sLuYvW8ir4Ooq1Xd2A==}
+  oxlint-plugin-react-doctor@0.9.23:
+    resolution: {integrity: sha512-AWC9/Jiki6s7e8b8xqTs0T/Hph8ISEDmoMUDwPkEzTrE0996ZWjwg7Ifaz5vPJQnefnOI9SDQQ/EvwvaZt4Tvg==}
     engines: {node: ^20.19.0 || >=22.13.0}
 
   oxlint@1.60.0:
@@ -11527,8 +11530,8 @@ packages:
   react-devtools-core@7.0.1:
     resolution: {integrity: sha512-C3yNvRHaizlpiASzy7b9vbnBGLrhvdhl1CbdU6EnZgxPNbai60szdLtl+VL76UNOt5bOoVTOz5rNWZxgGt+Gsw==}
 
-  react-doctor@0.9.22:
-    resolution: {integrity: sha512-SyZOIl61VMCZ3sN7v7Vr2zCsPlyy7nNnBshtIrl0B/X+uY+rL9MGfyNhTmp/FLXfuDKEv61Y6xMguya7vn1Ulg==}
+  react-doctor@0.9.23:
+    resolution: {integrity: sha512-mKFbd0fYaiR8CS5PHyydJ//Bcs+TmdYhLVoiArdIvGNsUsG576GstUP69c7KFNMJheheZz7z2ww0byrmkizQLA==}
     engines: {node: ^20.19.0 || >=22.13.0}
     hasBin: true
 
@@ -18614,7 +18617,7 @@ snapshots:
 
   anynum@1.0.1: {}
 
-  app-builder-lib@26.17.0(dmg-builder@26.17.0)(electron-builder-squirrel-windows@26.17.0):
+  app-builder-lib@26.17.0(patch_hash=0e2b18c7742b026350889c439df4c750ac1d129fd66f7d164ae12fab419a9f10)(dmg-builder@26.17.0)(electron-builder-squirrel-windows@26.17.0):
     dependencies:
       '@electron/asar': 3.4.1
       '@electron/fuses': 1.8.0
@@ -19876,7 +19879,7 @@ snapshots:
 
   dmg-builder@26.17.0(electron-builder-squirrel-windows@26.17.0):
     dependencies:
-      app-builder-lib: 26.17.0(dmg-builder@26.17.0)(electron-builder-squirrel-windows@26.17.0)
+      app-builder-lib: 26.17.0(patch_hash=0e2b18c7742b026350889c439df4c750ac1d129fd66f7d164ae12fab419a9f10)(dmg-builder@26.17.0)(electron-builder-squirrel-windows@26.17.0)
       builder-util: 26.16.0
       fs-extra: 10.1.0
       js-yaml: 4.1.1
@@ -19982,7 +19985,7 @@ snapshots:
 
   electron-builder-squirrel-windows@26.17.0(dmg-builder@26.17.0):
     dependencies:
-      app-builder-lib: 26.17.0(dmg-builder@26.17.0)(electron-builder-squirrel-windows@26.17.0)
+      app-builder-lib: 26.17.0(patch_hash=0e2b18c7742b026350889c439df4c750ac1d129fd66f7d164ae12fab419a9f10)(dmg-builder@26.17.0)(electron-builder-squirrel-windows@26.17.0)
       builder-util: 26.16.0
       electron-winstaller: 5.4.0
     transitivePeerDependencies:
@@ -19991,7 +19994,7 @@ snapshots:
 
   electron-builder@26.17.0(electron-builder-squirrel-windows@26.17.0):
     dependencies:
-      app-builder-lib: 26.17.0(dmg-builder@26.17.0)(electron-builder-squirrel-windows@26.17.0)
+      app-builder-lib: 26.17.0(patch_hash=0e2b18c7742b026350889c439df4c750ac1d129fd66f7d164ae12fab419a9f10)(dmg-builder@26.17.0)(electron-builder-squirrel-windows@26.17.0)
       builder-util: 26.16.0
       builder-util-runtime: 9.7.0
       chalk: 4.1.2
@@ -23270,7 +23273,7 @@ snapshots:
       '@oxfmt/binding-win32-ia32-msvc': 0.47.0
       '@oxfmt/binding-win32-x64-msvc': 0.47.0
 
-  oxlint-plugin-react-doctor@0.9.22:
+  oxlint-plugin-react-doctor@0.9.23:
     dependencies:
       '@shaderfrog/glsl-parser': 7.0.1
       '@typescript-eslint/types': 8.72.0
@@ -23918,7 +23921,7 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  react-doctor@0.9.22(@opentelemetry/core@2.12.0(@opentelemetry/api@1.9.1))(eslint@10.13.0(jiti@2.7.0))(react@19.2.7):
+  react-doctor@0.9.23(@opentelemetry/core@2.12.0(@opentelemetry/api@1.9.1))(eslint@10.13.0(jiti@2.7.0))(react@19.2.7):
     dependencies:
       '@astrojs/compiler': 4.0.0
       '@sentry/node': 10.76.2(@opentelemetry/core@2.12.0(@opentelemetry/api@1.9.1))
@@ -23933,7 +23936,7 @@ snapshots:
       oxc-parser: 0.148.0
       oxc-resolver: 11.24.2
       oxlint: 1.81.0
-      oxlint-plugin-react-doctor: 0.9.22
+      oxlint-plugin-react-doctor: 0.9.23
       playwright-core: 1.64.1
       prompts: 2.4.2
       typescript: 5.9.3
@@ -24045,7 +24048,7 @@ snapshots:
       preact: 10.29.8
       prompts: 2.4.2
       react: 19.2.7
-      react-doctor: 0.9.22(@opentelemetry/core@2.12.0(@opentelemetry/api@1.9.1))(eslint@10.13.0(jiti@2.7.0))(react@19.2.7)
+      react-doctor: 0.9.23(@opentelemetry/core@2.12.0(@opentelemetry/api@1.9.1))(eslint@10.13.0(jiti@2.7.0))(react@19.2.7)
       react-dom: 19.2.7(react@19.2.7)
       react-grab: 0.2.0(react@19.2.7)
     optionalDependencies:

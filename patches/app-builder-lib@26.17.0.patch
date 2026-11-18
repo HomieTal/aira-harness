@@ -1,0 +1,48 @@
+diff --git a/out/node-module-collector/index.js b/out/node-module-collector/index.js
+index ba219f3d00f9f62472fbc2795be9886f373ebf79..92cd791bc329195ec7bcb1aaae5cfabe8e8eacde 100644
+--- a/out/node-module-collector/index.js
++++ b/out/node-module-collector/index.js
+@@ -19,7 +19,11 @@ const traversalNodeModulesCollector_1 = require("./traversalNodeModulesCollector
+ function getCollectorByPackageManager(pm, rootDir, tempDirManager) {
+     switch (pm) {
+         case packageManager_1.PM.PNPM:
+-            return new pnpmNodeModulesCollector_1.PnpmNodeModulesCollector(rootDir, tempDirManager);
++            // Patch (Aira): the pnpm collector relies on `pnpm list --json`, whose deduped
++            // stubs (pnpm 10.29.3+) can orphan packages in a hoisted workspace and fail
++            // node-module collection with PKG_NOT_FOUND. Use the traversal collector, which
++            // resolves the physical node_modules tree and is electron-builder's own fallback.
++            return new traversalNodeModulesCollector_1.TraversalNodeModulesCollector(rootDir, tempDirManager);
+         case packageManager_1.PM.YARN:
+             return new yarnNodeModulesCollector_1.YarnNodeModulesCollector(rootDir, tempDirManager);
+         case packageManager_1.PM.YARN_BERRY:
+diff --git a/out/node-module-collector/pnpmNodeModulesCollector.js b/out/node-module-collector/pnpmNodeModulesCollector.js
+index 56194e32d222602e78db13793b9d4af568154a1a..1d2bd928b57ef0baaf21aad0f8fc2b3b3447eb1a 100644
+--- a/out/node-module-collector/pnpmNodeModulesCollector.js
++++ b/out/node-module-collector/pnpmNodeModulesCollector.js
+@@ -296,18 +296,21 @@ class PnpmNodeModulesCollector extends nodeModulesCollector_1.NodeModulesCollect
+     async collectDepsRecursively(tree) {
+         const visit = async (key, value) => {
+             var _a, _b;
+-            if (((_a = value === null || value === void 0 ? void 0 : value.dedupedDependenciesCount) !== null && _a !== void 0 ? _a : 0) > 0) {
+-                return;
+-            }
+             const id = `${key}@${value.version}`;
+-            // The pnpm list output can include the same `name@version` thousands of times across a
+-            // deep workspace; without this guard we re-resolve and re-recurse each occurrence.
++            const isDeduped = ((_a = value === null || value === void 0 ? void 0 : value.dedupedDependenciesCount) !== null && _a !== void 0 ? _a : 0) > 0;
++            // Patch (Aira): pnpm marks subtrees deduped relative to their first expansion, but
++            // that expansion may itself live under a skipped deduped subtree, leaving the package
++            // absent from allDependencies (surfaces as PKG_NOT_FOUND during node-module
++            // collection). Record every occurrence; recurse only into fully expanded ones.
+             if (this.collectedDeps.has(id)) {
+                 return;
+             }
+             this.collectedDeps.add(id);
+             const pkg = await this.locateFromDepOrRoot(key, value.path, value.version);
+             this.allDependencies.set(id, { ...value, path: (_b = pkg === null || pkg === void 0 ? void 0 : pkg.packageDir) !== null && _b !== void 0 ? _b : value.path });
++            if (isDeduped) {
++                return;
++            }
+             await this.collectDepsRecursively(value);
+         };
+         for (const [key, value] of Object.entries(tree.dependencies || {})) {
