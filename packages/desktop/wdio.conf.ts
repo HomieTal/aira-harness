@@ -429,13 +429,13 @@ const E2E_USER_PROFILE = {
 };
 const GLM_HIGHSPEED_E2E_PROVIDER_ID = "e2e-glmhighspeed";
 const GLM_HIGHSPEED_E2E_MODEL = "glm-5.1-highspeed";
-const GLM_HIGHSPEED_E2E_BASE_URL = "https://open.bigmodel.cn/api";
+const GLM_HIGHSPEED_E2E_BASE_URL = "https://bigmodel.aira.invalid/api";
 const BIGMODEL_GLM53_E2E_PROVIDER_ID = "e2e-bigmodel-glm53";
 const BIGMODEL_GLM53_E2E_MODEL = "GLM-5.3";
-const BIGMODEL_GLM53_E2E_BASE_URL = "https://open.bigmodel.cn/api";
+const BIGMODEL_GLM53_E2E_BASE_URL = "https://bigmodel.aira.invalid/api";
 const STAGING_MODEL_E2E_PROVIDER_ID = "e2e-staging-model";
 const STAGING_MODEL_E2E_MODEL = "glm-5.2";
-const STAGING_MODEL_E2E_BASE_URL = "https://open.bigmodel.cn/api";
+const STAGING_MODEL_E2E_BASE_URL = "https://bigmodel.aira.invalid/api";
 const E2E_PROVIDER_PRESETS = {
   env: {
     apiKeyEnvNames: ["E2E_PROVIDER_API_KEY"],
@@ -455,7 +455,7 @@ const E2E_PROVIDER_PRESETS = {
       "E2E_PROVIDER_API_KEY",
     ],
     baseUrl: GLM_HIGHSPEED_E2E_BASE_URL,
-    expectedHost: "open.bigmodel.cn",
+    expectedHost: "bigmodel.aira.invalid",
     expectedProtocol: "https",
     model: GLM_HIGHSPEED_E2E_MODEL,
     providerId: GLM_HIGHSPEED_E2E_PROVIDER_ID,
@@ -465,7 +465,7 @@ const E2E_PROVIDER_PRESETS = {
   bigmodel53: {
     apiKeyEnvNames: ["BIGMODEL_GLM53_E2E_API_KEY"],
     baseUrl: BIGMODEL_GLM53_E2E_BASE_URL,
-    expectedHost: "open.bigmodel.cn",
+    expectedHost: "bigmodel.aira.invalid",
     expectedProtocol: "https",
     model: BIGMODEL_GLM53_E2E_MODEL,
     providerId: BIGMODEL_GLM53_E2E_PROVIDER_ID,
@@ -475,7 +475,7 @@ const E2E_PROVIDER_PRESETS = {
   stagingmodel: {
     apiKeyEnvNames: ["STAGING_MODEL_E2E_API_KEY"],
     baseUrl: STAGING_MODEL_E2E_BASE_URL,
-    expectedHost: "open.bigmodel.cn",
+    expectedHost: "bigmodel.aira.invalid",
     expectedProtocol: "https",
     model: STAGING_MODEL_E2E_MODEL,
     providerId: STAGING_MODEL_E2E_PROVIDER_ID,
@@ -648,7 +648,7 @@ process.env.AIRA_DESKTOP_APPLICATION_NAME = "Aira E2E";
 process.env.AIRA_DESKTOP_HOME_DIR = E2E_HOME_DIR;
 process.env.AIRA_DESKTOP_USE_ELECTRON_DEFAULT_USER_DATA = "1";
 // 修复原因：从 Aira 客户端拉起的 shell 里带有应用自身环境（AIRA_ENV=production、
-// AIRA_BASE_URL=https://zcode.z.ai）。它们会被 onPrepare 的 agent 构建读走并固化进产物，
+// AIRA_BASE_URL=https://api.aira.invalid）。它们会被 onPrepare 的 agent 构建读走并固化进产物，
 // 让 E2E 打到生产域、忽略 settings 里的 endpoint，fixture mock server 收不到请求。
 // 桌面包的归一在 ensure-e2e-desktop-build 内完成，这里保证 WDIO 侧构建链路一致。
 process.env.AIRA_ENV = "test";
@@ -870,7 +870,7 @@ function readE2EProviderPresetName(): E2EProviderPresetName {
     process.env.E2E_PROVIDER_PRESET?.trim() || process.env.LLM_E2E_PROVIDER_PRESET?.trim();
   if (!configured) {
     // 默认使用环境变量配置的上游供应商（E2E_PROVIDER_BASE_URL / API_KEY / MODEL）；
-    // 修复原因：rebase 后默认曾落到 GLM highspeed，会请求 open.bigmodel.cn 且人工验收链路不一致。
+    // 修复原因：rebase 后默认曾落到 GLM highspeed，会请求 bigmodel.aira.invalid 且人工验收链路不一致。
     return "env";
   }
   if (
@@ -1536,7 +1536,7 @@ async function startCodingPlanTeamMockIfNeeded(specs: string[] = []) {
       writeJson(response, {
         code: 0,
         data: {
-          authorize_url: `https://bigmodel.cn/login?appId=aira&redirect=${encodeURIComponent("https://zcode.z.ai/api/v1/oauth/cli/callback/bigmodel")}&state=${SUBAGENT_CODING_PLAN_OAUTH_STATE}`,
+          authorize_url: `https://bigmodel.aira.invalid/login?appId=aira&redirect=${encodeURIComponent("https://api.aira.invalid/api/v1/oauth/cli/callback/bigmodel")}&state=${SUBAGENT_CODING_PLAN_OAUTH_STATE}`,
           expires_at: Math.floor(Date.now() / 1000) + 300,
           flow_id: SUBAGENT_CODING_PLAN_OAUTH_FLOW_ID,
           poll_interval_sec: 30,
@@ -1666,7 +1666,7 @@ async function startCodingPlanTeamMockIfNeeded(specs: string[] = []) {
 
     if (
       faultMode === "startBalanceFailure" &&
-      url.pathname === "/api/v1/zcode-plan/billing/balance"
+      url.pathname === "/api/v1/aira-plan/billing/balance"
     ) {
       writeJson(response, { code: 429, msg: "Too many requests" }, 429);
       return;
@@ -1675,7 +1675,7 @@ async function startCodingPlanTeamMockIfNeeded(specs: string[] = []) {
     if (
       providerResponsive &&
       request.method === "GET" &&
-      url.pathname === "/api/v1/zcode-plan/billing/balance"
+      url.pathname === "/api/v1/aira-plan/billing/balance"
     ) {
       writeJson(
         response,
@@ -1689,7 +1689,7 @@ async function startCodingPlanTeamMockIfNeeded(specs: string[] = []) {
     if (
       caseMode === SUBAGENT_CODING_PLAN_LOGIN_CATALOG_STALE_MODE &&
       request.method === "GET" &&
-      url.pathname === "/api/v1/zcode-plan/billing/balance"
+      url.pathname === "/api/v1/aira-plan/billing/balance"
     ) {
       writeJson(response, {
         code: 0,
@@ -1703,7 +1703,7 @@ async function startCodingPlanTeamMockIfNeeded(specs: string[] = []) {
     if (
       caseMode === "model-provider-plan-surface" &&
       request.method === "GET" &&
-      url.pathname === "/api/v1/zcode-plan/billing/balance"
+      url.pathname === "/api/v1/aira-plan/billing/balance"
     ) {
       // 计划交叉用例需要一份确定的 Start Plan 权益；普通 Coding Plan 用例仍按
       // 自己的订阅接口判定，不把 Start 权益泄漏到其他 spec。
@@ -2382,7 +2382,7 @@ async function startCodingPlanDataPlaneProxy(specs: readonly string[]) {
     )
       ? [
           {
-            host: "open.bigmodel.cn",
+            host: "bigmodel.aira.invalid",
             path: "/api/anthropic/v1/messages",
             targetUrl: `${upstreamE2EBaseUrl}/messages`,
           },
@@ -2391,7 +2391,7 @@ async function startCodingPlanDataPlaneProxy(specs: readonly string[]) {
     responseMocks: [
       // 签名默认开启后，Account 用例的测试凭据也会发起握手；本地响应避免访问线上。
       {
-        host: "open.bigmodel.cn",
+        host: "bigmodel.aira.invalid",
         method: "POST",
         path: "/api/paas/c1f3a7e2/v2/client",
         body: JSON.stringify({ code: 500, msg: "E2E handshake unavailable" }),
@@ -2416,7 +2416,7 @@ async function startCodingPlanDataPlaneProxy(specs: readonly string[]) {
               title: { id: "highspeed-title", text: '{"title":"Highspeed draw"}' },
             })
           : codingPlanDefaultDataPlaneResponse),
-        host: "open.bigmodel.cn",
+        host: "bigmodel.aira.invalid",
         method: "POST",
         path: "/api/anthropic/v1/messages",
       },
@@ -2471,7 +2471,7 @@ async function startUpstreamCaptureProxy(specs: readonly string[]) {
           ...(responseMocks ?? []),
           // 签名默认开启后，ToolSearch 的假凭据也会握手；与 Account 用例共用本地失败响应边界。
           {
-            host: "open.bigmodel.cn",
+            host: "bigmodel.aira.invalid",
             method: "POST",
             path: "/api/paas/c1f3a7e2/v2/client",
             body: JSON.stringify({ code: 500, msg: "E2E handshake unavailable" }),
@@ -2482,7 +2482,7 @@ async function startUpstreamCaptureProxy(specs: readonly string[]) {
                 toolSearchResponseStage(JSON.parse(body) as ToolSearchRequest),
               ).response.body,
             headers: { "content-type": "text/event-stream; charset=utf-8" },
-            host: "open.bigmodel.cn",
+            host: "bigmodel.aira.invalid",
             method: "POST",
             path: "/api/anthropic/v1/messages",
           },
@@ -4623,7 +4623,7 @@ async function seedUpstreamE2EModelConfig(specs: string[] = []) {
           provider({
             baseURL: `${anthropicBaseURL}/builtin-personal-conflict`,
             id: "e2e-zai-template-provider",
-            label: "Z.ai Template Provider E2E",
+            label: "Aira Template Provider E2E",
             models: [model("glm-5.3")],
           }),
         ]

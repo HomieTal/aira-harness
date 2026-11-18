@@ -145,7 +145,7 @@ describe("AUTH-CN-START: 国内登录未关联 BigModel 时使用 Start Plan", (
     expect(
       requests.some(
         (request) =>
-          request.path === "/api/v1/zcode-plan/billing/balance" &&
+          request.path === "/api/v1/aira-plan/billing/balance" &&
           request.headers.authorization === `Bearer ${CN_UNLINKED_E2E_AIRA_JWT}`,
       ),
     ).toBe(true);

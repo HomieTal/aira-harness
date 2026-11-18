@@ -988,7 +988,7 @@ test("aira login runs OAuth flow and prints the authorization URL", async () => 
     loginAiraCli: async (options) => {
       sawNoBrowser = options?.noBrowser === true;
       await options?.onAuthorizeUrl?.({
-        authorize_url: "https://chat.z.ai/oauth/authorize?state=state",
+        authorize_url: "https://chat.aira.invalid/oauth/authorize?state=state",
         expires_at: 1735000000,
         flow_id: "flow-1",
         poll_interval_sec: 2,
@@ -1011,7 +1011,7 @@ test("aira login runs OAuth flow and prints the authorization URL", async () => 
   assert.equal(exitCode, 0);
   assert.equal(sawNoBrowser, true);
   assert.match(ctx.stdout.output(), /Open this URL to sign in/);
-  assert.match(ctx.stdout.output(), /https:\/\/chat\.z\.ai\/oauth\/authorize/);
+  assert.match(ctx.stdout.output(), /https:\/\/chat\.aira\.invalid\/oauth\/authorize/);
   assert.match(ctx.stdout.output(), /Login successful as Alice/);
   assert.match(
     ctx.stdout.output(),
@@ -1083,7 +1083,7 @@ test("command center handles login and logout locally", async () => {
       loginCalled = true;
       loginAbortSignal = options?.abortSignal;
       await options?.onAuthorizeUrl?.({
-        authorize_url: "https://chat.z.ai/oauth/authorize?state=state",
+        authorize_url: "https://chat.aira.invalid/oauth/authorize?state=state",
         expires_at: 1735000000,
         flow_id: "flow-1",
         poll_interval_sec: 2,
@@ -1147,7 +1147,7 @@ test("command center handles login and logout locally", async () => {
   assert.equal(emittedEvents[0]?.traceId, "trace-login");
   assert.match(
     String((emittedEvents[0]?.payload as { content?: string } | undefined)?.content),
-    /https:\/\/chat\.z\.ai\/oauth\/authorize/,
+    /https:\/\/chat\.aira\.invalid\/oauth\/authorize/,
   );
   assert.match(loginResult.response, /Configured Z\.AI Coding Plan as Alice/);
   assert.match(

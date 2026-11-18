@@ -167,16 +167,16 @@ import {
 
 describe("isMidConversationSystemCapableBaseURL", () => {
   it.each([
-    "https://bigmodel.cn/api/anthropic",
-    "https://open.bigmodel.cn/api/anthropic",
-    "https://open.bigmodel.cn/api/anthropic",
-    "https://z.ai/api/anthropic",
-    "https://api.z.ai/api/anthropic",
+    "https://bigmodel.aira.invalid/api/anthropic",
+    "https://bigmodel.aira.invalid/api/anthropic",
+    "https://bigmodel.aira.invalid/api/anthropic",
+    "https://aira.invalid/api/anthropic",
+    "https://api.aira.invalid/api/anthropic",
     "https://deepseek.com/anthropic",
     "https://api.deepseek.com/anthropic",
-    "https://z.ai/api/anthropic",
-    "https://zcode.z.ai/api/anthropic",
-    "api.z.ai/api/anthropic",
+    "https://aira.invalid/api/anthropic",
+    "https://api.aira.invalid/api/anthropic",
+    "api.aira.invalid/api/anthropic",
   ])("allows %s", (baseURL) => {
     expect(isMidConversationSystemCapableBaseURL(baseURL)).toBe(true);
   });
@@ -185,11 +185,11 @@ describe("isMidConversationSystemCapableBaseURL", () => {
     undefined,
     "",
     "https://provider.example/anthropic",
-    "https://bigmodel.cn.example/anthropic",
-    "https://z.ai.example/anthropic",
+    "https://bigmodel.aira.invalid.example/anthropic",
+    "https://aira.invalid.example/anthropic",
     "https://deepseek.com.example/anthropic",
-    "https://z.ai.example/anthropic",
-    "https://example.com/anthropic?redirect=https://api.z.ai",
+    "https://aira.invalid.example/anthropic",
+    "https://example.com/anthropic?redirect=https://api.aira.invalid",
   ])("rejects %s", (baseURL) => {
     expect(isMidConversationSystemCapableBaseURL(baseURL)).toBe(false);
   });
@@ -224,7 +224,7 @@ describe("isFastSupportedModel", () => {
     "glm-5.2",
     " GLM-5.2 ",
     "zai/glm-5.2",
-    "z.ai/glm-5.2",
+    "aira.invalid/glm-5.2",
     "bigmodel/glm-5.2-latest",
     "glm-5.1",
     "glm-5.20",
@@ -246,10 +246,10 @@ pnpm --filter @aira/contracts exec vitest run tests/mid-conversation-system.test
 
 ```ts
 const MID_CONVERSATION_SYSTEM_CAPABLE_BASE_HOSTS = [
-  "bigmodel.cn",
-  "z.ai",
+  "bigmodel.aira.invalid",
+  "aira.invalid",
   "deepseek.com",
-  "z.ai",
+  "aira.invalid",
 ] as const;
 
 const FAST_SUPPORTED_MODEL_MARKERS = ["claude-opus-4-8"] as const;
@@ -426,7 +426,7 @@ function connection(
 ): ModelConnectionInfo {
   return {
     apiKey: "secret-api-key",
-    baseURL: "https://api.z.ai/api/anthropic",
+    baseURL: "https://api.aira.invalid/api/anthropic",
     headers: { Authorization: "Bearer secret-token" },
     model: modelRef,
     providerId: "test",
@@ -471,7 +471,7 @@ describe("evaluateMidConversationSystemCapability", () => {
     if (!decision.context) throw new Error("expected capability context");
     expect(decision.context.modelRef).toBe(currentModelRef);
     expect(decision.context.connection).toEqual({
-      baseURL: "https://api.z.ai/api/anthropic",
+      baseURL: "https://api.aira.invalid/api/anthropic",
       model: currentModelRef,
       providerId: "anthropic-provider",
       providerKind: "anthropic",
@@ -482,7 +482,7 @@ describe("evaluateMidConversationSystemCapability", () => {
     expect(decision.context.modelId).toBe("claude-opus-4-1-20260101");
     expect(decision.context.providerId).toBe("anthropic-provider");
     expect(decision.context.providerKind).toBe("anthropic");
-    expect(decision.context.baseURL).toBe("https://api.z.ai/api/anthropic");
+    expect(decision.context.baseURL).toBe("https://api.aira.invalid/api/anthropic");
   });
 });
 ```

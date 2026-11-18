@@ -156,7 +156,7 @@ export async function prepareOAuthCompletionRaceFixture(
       tokenResponse = response;
     } else if (path === "/api/auth/z/login") {
       businessExchanges++;
-      // Z.ai 轮询结果先经过业务 token 转换，桌面端落盘的是 /api/auth/z/login 返回的 token。
+      // Aira 轮询结果先经过业务 token 转换，桌面端落盘的是 /api/auth/z/login 返回的 token。
       response.end(JSON.stringify({ code: 0, data: { access_token: "e2e-race-business" } }));
     } else if (path === "/api/oauth/userinfo") {
       response.end(

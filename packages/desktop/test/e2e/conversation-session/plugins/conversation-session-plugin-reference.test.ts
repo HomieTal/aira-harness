@@ -39,7 +39,7 @@ import {
 const PLUGIN_STABLE_ID = "skill-creator@aira-plugins-official";
 const STORE_TRY_PLUGIN_STABLE_ID = "aira-guide@aira-plugins-official";
 const STORE_TRY_PLUGIN_ICON =
-  "https://cdn-zcode.z.ai/zcode/official-plugin/assets/aira-guide/icon.png";
+  "https://cdn.aira.invalid/zcode/official-plugin/assets/aira-guide/icon.png";
 const PROMPT_MARKER = "E2E_PLUGIN_REFERENCE";
 const REPLY_MARKER = "PLUGIN_REFERENCE_REPLY_OK";
 const NOTE_RELATIVE_PATH = "plugin-reference-e2e/note.md";

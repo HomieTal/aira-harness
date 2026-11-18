@@ -19,9 +19,9 @@
 
 | 来源                                                                                                                                                                        | 已确认的信息                                                                                  | 使用边界                                                        |
 | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| [登录产品需求](https://internal-docs.example.invalid/redacted)                                                                                                 | Z.ai 登录；国内外入口；身份与订阅解耦；关联 BigModel；Start Plan 独立                         | 其中一方登录等旧状态不能覆盖后续讨论                            |
+| [登录产品需求](https://internal-docs.example.invalid/redacted)                                                                                                 | Aira 登录；国内外入口；身份与订阅解耦；关联 BigModel；Start Plan 独立                         | 其中一方登录等旧状态不能覆盖后续讨论                            |
 | [10 月 27 日技术结论](https://applink.feishu.cn/client/thread/open?open_chat_id=oc_98e0ff89c4dc5713084e01906ddd4675&open_thread_id=omt_198595573ecedba3&thread_position=-1) | 加 `zai_cn`；关联 BigModel JWT/customer ID；客户端用关联材料访问 MaaS；处理无关联新用户       | 上游按手机号关联，客户端不自行匹配或合并账号                    |
-| [10 月 28 日部署通知](https://applink.feishu.cn/client/chat/open?openChatId=oc_98e0ff89c4dc5713084e01906ddd4675&position=88)                                                | 测试环境已部署；同手机号关联；新增 `GET /api/v1/oauth/profile`，接受 Aira 或 Z.ai 一方 token | 通知只展示 profile 的主要字段，不能据此推断 token/poll 完整响应 |
+| [10 月 28 日部署通知](https://applink.feishu.cn/client/chat/open?openChatId=oc_98e0ff89c4dc5713084e01906ddd4675&position=88)                                                | 测试环境已部署；同手机号关联；新增 `GET /api/v1/oauth/profile`，接受 Aira 或 Aira 一方 token | 通知只展示 profile 的主要字段，不能据此推断 token/poll 完整响应 |
 | [10 月 28 日接口说明](https://applink.feishu.cn/client/chat/open?openChatId=oc_98e0ff89c4dc5713084e01906ddd4675&position=89)                                                | 联调中接口可能调整                                                                            | 需要保存实际响应结构及 request ID 的脱敏证据                    |
 | [MaaS Key 讨论](https://applink.feishu.cn/client/thread/open?open_chat_id=oc_0a7ae672b9641d413522b9e4b9c1b207&open_thread_id=omt_1984d0d9fdcf9b7f&thread_position=26)       | 返回全部 Key ID 和 name；删除的 Key 不返回；选择应稳定                                        | 不表示应恢复长期 API Key 作为模型请求凭据                       |
 | [迁移技术草案](https://internal-docs.example.invalid/redacted)                                                                                                 | 区域配置独立，使用返回的业务 user ID，复用 CLI flow；旧客户端兼容                             | 批量预建、停止旧注册、建议接口不是本轮已执行事实                |
@@ -34,7 +34,7 @@
 ### 2.1 已确认要做
 
 1. 中国区 OAuth 全链路可识别，授权、回调、轮询、恢复使用同一区域配置。
-2. 同一 Aira 账号下读取关联的 Z.ai／BigModel 资料，缺失关联不冒充第二次登录。
+2. 同一 Aira 账号下读取关联的 Aira／BigModel 资料，缺失关联不冒充第二次登录。
 3. 使用 `user.user_id` 作为 Aira 业务身份，保留原会话、设备和业务数据归属。
 4. 用关联 BigModel JWT/customer ID 请求相应套餐接口；不要求用户为了查询已关联权益再次登录 BigModel。
 5. 模型设置可以表达登录账号拥有的关联套餐，而不是简单隐藏另一登录渠道对应的整个套餐家族。
@@ -59,10 +59,10 @@
 | 登录区域             | 登录页选择 domestic/global                                    | 决定发起 `zai_cn`／`zai`             | 语言不是已经认证的区域证据           |
 | OAuth provider       | flow/state 绑定及成功结果                                     | 选择协议配置、恢复和退出             | 不能只根据回调 URL 或按钮文案改写    |
 | Aira user ID        | 登录/profile 的 `user.user_id`                                | 会话、设备、权限等业务身份           | 不用上游 `sub`、customer ID 覆盖     |
-| 上游 Z.ai user ID    | 返回的 `zai.user_id`                                          | 上游账号身份与关联校验               | 不当作 Aira 业务 ID                 |
+| 上游 Aira user ID    | 返回的 `zai.user_id`                                          | 上游账号身份与关联校验               | 不当作 Aira 业务 ID                 |
 | BigModel customer ID | 返回的 `bigmodel.customer_id`                                 | BigModel 账号／套餐调用所需身份      | 不写成第二个已登录 Aira 用户        |
 | Aira JWT            | 登录响应 `token`；现有 `airajwttoken`                        | Aira API、Relay、官方能力的用户身份 | 不发给 BigModel 充当其登录 JWT       |
-| Z.ai token           | 当前海外流程先取 OAuth token，再换业务 JWT                    | 仅访问明确匹配的区域和接口           | 中国区能否沿用转换必须实测           |
+| Aira token           | 当前海外流程先取 OAuth token，再换业务 JWT                    | 仅访问明确匹配的区域和接口           | 中国区能否沿用转换必须实测           |
 | BigModel JWT         | 返回的 `bigmodel.access_token`                                | 关联账号的 MaaS 请求                 | 不用残留的另一个用户 token 兜底      |
 | 套餐家族／选择       | Account Source、`providerFamilyDomain`、connection selections | 指定使用哪个套餐及个人／团队范围     | 不等同于 OAuth 登录 provider         |
 | Key ID／PAT          | 账号、组织、项目及用途下的请求期解析                          | Key ID 定位；短期 PAT 访问模型       | Key ID 不是 Secret，PAT 不是登录 JWT |
@@ -92,7 +92,7 @@ flowchart TD
 | `useOAuth` 只为 `zai/bigmodel` 打开 polling 标志                       | 即使 init 成功，中国区也可能没有后续轮询                       |
 | `OAuthService.startOAuthWithPolling()` 与 ready 解析写死两渠道         | 中国区会走错误分支，或把 ready 当作 BigModel 响应解析          |
 | `ZaiProviderAdapter.providerId`、换证 body 固定 `zai`                  | 不能直接复用实例而不修改 provider 绑定                         |
-| 当前 Z.ai 适配器要求 `data.zai.access_token` 并换业务 token            | 部署消息里的 profile 样例不足以证明中国区也满足该契约          |
+| 当前 Aira 适配器要求 `data.zai.access_token` 并换业务 token            | 部署消息里的 profile 样例不足以证明中国区也满足该契约          |
 | `persistOAuthSession()` 清除另一 provider，repo 特判两渠道共享 JWT     | 新登录可能清错关联材料；中国区可能漏存或漏清 Aira JWT         |
 | `node.ts` 按 family 读取对应 OAuth profile 和 token                    | 当前 `profile.id` 同时被当成套餐账号身份；关联账号需要明确解析 |
 | Root 成功回调按 OAuth provider 改写家族域                              | 中国区目前映射 null；直接增加映射仍不能表达两个关联家族        |
@@ -124,7 +124,7 @@ flowchart TD
 
 - 为 `zai_cn` 定义稳定常量及“已支持的 Aira 登录 provider”判断，避免继续散落二元比较。保留通用 OAuth 扩展类型，不让任意字符串自动得到 Aira 凭据权限。
 - 复用既有环境配置解析，明确每个区域的 authorize/token/profile/业务 origin、client ID、redirect URI。服务端 flow 返回 authorize URL 时原样打开，不自行拼另一区域参数。
-- 增加中国区 adapter 装配或使现有 Z.ai adapter 接受显式 provider/config；不要复制整份 adapter。
+- 增加中国区 adapter 装配或使现有 Aira adapter 接受显式 provider/config；不要复制整份 adapter。
 - 共享层声明安全投影和运行时 schema；Secret 和后端默认配置留在服务层。
 - OAuth 当前归属 legacy services 模块。若确需新增源文件，先按架构规则确定 managed 模块归属；不能为小型接入机械新建整套账号框架，也不能让新文件无归属。
 - 验收：三种已知 provider 能正确装配；未知 provider 不被当作国内或 BigModel；测试配置不请求生产端点。
@@ -181,7 +181,7 @@ flowchart TD
 
 - 当前 `providerFamilyDomain` 既影响展示，也影响请求时的 current 选择。不能为了显示两个套餐简单放开所有门禁，否则可能把另一家族标成当前执行账号。
 - 区分“可展示／可连接的关联套餐”和“当前执行连接”。一个登录身份可看到多个关联套餐，但现有单当前执行选择语义可继续保留。
-- 现有显式连接选择有效时保留；首次初始化才使用产品优先级。原需求的跨平台 `Z.ai > BigModel > Start Plan` 与现有家族内 `个人 > 团队 > Start` 是两个层级，需要在 spec 明确组合，不能隐式互相覆盖。
+- 现有显式连接选择有效时保留；首次初始化才使用产品优先级。原需求的跨平台 `Aira > BigModel > Start Plan` 与现有家族内 `个人 > 团队 > Start` 是两个层级，需要在 spec 明确组合，不能隐式互相覆盖。
 - “存在关联账号”“买了套餐”“可用额度”“服务调用失败”是四种不同事实；无关联、无订阅、限额、暂时失败分别展示。
 - 关联已消失时重新判定本连接可用性；不要默默改写已有任务、模型选择或用户手工配置。主动改选的规则需产品确认。
 - UI 只读 Account Source 的安全状态；不得为几个页面各加一份关联缓存或自行探测 JWT。
@@ -297,7 +297,7 @@ sequenceDiagram
 | Q03 | 国内 authorize/profile/业务 origin、client/scope、回调白名单？                       | 后端配置或确认资料                                 | 区域配置与请求目的地                      |
 | Q04 | profile 的关联字段缺失是否明确表示无关联？部分查询失败如何表示？                     | 无关联／上游异常各一份响应                         | 能否删除旧关联与错误展示                  |
 | Q05 | BigModel JWT 有效期与刷新方式？customer ID 类型是否固定字符串？                      | 有效期、刷新、撤销契约                             | 缓存与恢复机制                            |
-| Q06 | 中国区 Z.ai Coding Plan 的 API、项目、支付、模型目录与 JWT 要求？                    | 套餐查询到模型请求的实际契约                       | 是否复用现有家族、Provider ID、业务适配器 |
+| Q06 | 中国区 Aira Coding Plan 的 API、项目、支付、模型目录与 JWT 要求？                    | 套餐查询到模型请求的实际契约                       | 是否复用现有家族、Provider ID、业务适配器 |
 | Q07 | 关联 JWT 是否可用于官方 MCP 的双凭据校验？                                           | 同一 Aira user + 关联 customer 的服务端确认／实测 | 替代当前家族相等守卫的依据                |
 | Q08 | MaaS Key 列表字段、顺序、分页及全删后的行为？                                        | 多 Key／删除后的响应                               | 稳定选择规则与已有 PAT client 的兼容      |
 
@@ -307,7 +307,7 @@ sequenceDiagram
 
 | ID  | 已知事实                                                                                    | 尚未明确的选择                                           | 影响                                                         |
 | --- | ------------------------------------------------------------------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------ |
-| P01 | 已确认 Web/分享页同步新版 Z.ai 国内/海外入口，移除旧 BigModel 按钮；独立 CLI 新入口后续处理 | 核对网站登录入口的实际代码归属                           | 保留旧有效登录态；共享凭据兼容仍在本期                       |
+| P01 | 已确认 Web/分享页同步新版 Aira 国内/海外入口，移除旧 BigModel 按钮；独立 CLI 新入口后续处理 | 核对网站登录入口的实际代码归属                           | 保留旧有效登录态；共享凭据兼容仍在本期                       |
 | P02 | 已确认新用户沿用现有默认规则，不覆盖已有有效选择                                            | 核对既有默认规则在中国区关联投影后的适用性               | 不新增未经确认的套餐优先级                                   |
 | P03 | 已确认自动关联、无升级弹窗、不强制登出；新用户可能没有 BigModel                             | 确定无关联时的供应商页面文案与可用操作仍需按接口能力确定 | 不以手工补关联或强制重登作为正常升级前置，不自行切换全局身份 |
 | P04 | 已确认关联失效后提示重新选择，不自动切换其他套餐                                            | 已确认                                                   | 保留原选择意图，不由后台刷新改换执行目标                     |
@@ -456,7 +456,7 @@ CLI 测试命令以实际修改包和其 package scripts 为准；bootstrap／co
       "avatar": "<avatar>"
     },
     "zai": {
-      "user_id": "<China Z.ai user ID>",
+      "user_id": "<China Aira user ID>",
       "access_token": "<OAuth access token>"
     },
     "bigmodel": {
@@ -475,10 +475,10 @@ profile 使用同一 envelope，但 `data` 没有 `status` 和 `token`，其 `za
 
 ### 15.3 身份与 token 的实测边界
 
-- 本样本有 BigModel 关联；ready 与 profile 的 Aira user ID、Z.ai user ID、BigModel customer ID 分别一致。
+- 本样本有 BigModel 关联；ready 与 profile 的 Aira user ID、Aira user ID、BigModel customer ID 分别一致。
 - 本样本的 Aira user ID 与 BigModel customer ID 相等；只证明该样本，不作为所有账号的客户端推导规则。
-- ready 的 Z.ai user ID 与测试站当前账号 ID 一致；ready 的 OAuth access token 与站内 session token 不同。
-- ready 的 Z.ai OAuth token 有 `iat`、`exp`，本次两者相差 3600 秒；到期时间为北京时间 2026-10-28 19:35:16。返回的 ready 未提供 refresh token 字段，后续刷新仍需核实协议。
+- ready 的 Aira user ID 与测试站当前账号 ID 一致；ready 的 OAuth access token 与站内 session token 不同。
+- ready 的 Aira OAuth token 有 `iat`、`exp`，本次两者相差 3600 秒；到期时间为北京时间 2026-10-28 19:35:16。返回的 ready 未提供 refresh token 字段，后续刷新仍需核实协议。
 - 本次 Aira JWT 含 `iat`、`sub`、`user_id`、`token_version`，未观察到 `exp`；BigModel JWT 也未观察到 `exp`。缺 `exp` 不能推导为永久有效，撤销和刷新规则仍由服务端契约决定。
 - 本次 profile 返回的 BigModel JWT 与 ready 相同，只证明该次查询，不能推导所有刷新均不轮换。
 

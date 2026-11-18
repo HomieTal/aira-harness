@@ -201,7 +201,7 @@ export function createCodingPlanAuthInjectionScript({
         }
       : {
           "oauth:zai:access_token": null,
-          // airajwttoken 是 zcode-plan 域通用凭证（BigModel OAuth callback 同样落盘），
+          // airajwttoken 是 aira-plan 域通用凭证（BigModel OAuth callback 同样落盘），
           // 官网用它查 billing/balance 判定 Start Plan 是否使用中；BigModel 分支缺失注入
           // 会导致官网 Start Plan 卡因查不到权益而误显示「已过期」。业务接口仍走
           // oauth:bigmodel:access_token，互不污染。
@@ -337,7 +337,7 @@ export function createCodingPlanLangInjectionScript(locale: CodingPlanWebviewLoc
 }
 
 export function getCodingPlanCredentialKeys(provider: CodingPlanWebsiteProvider): string[] {
-  // airajwttoken 对两个 provider 都加载：它是 zcode-plan 域通用凭证，
+  // airajwttoken 对两个 provider 都加载：它是 aira-plan 域通用凭证，
   // BigModel OAuth callback 同样落盘（见 resolveBigModelStartPlanAiraJwt）。
   return provider === "zai"
     ? [`oauth:${ZAI_PROVIDER_ID}:access_token`, "airajwttoken"]

@@ -326,8 +326,8 @@ function buildAiraEndpointPromptHtml(currentValue: string): string {
   <body>
     <form id="form">
       <label for="endpoint">Aira endpoint origin</label>
-      <input id="endpoint" value="${value}" placeholder="https://zcode.z.ai" spellcheck="false" />
-      <div class="hint">Use an http or https origin, for example https://zcode.z.ai.</div>
+      <input id="endpoint" value="${value}" placeholder="https://api.aira.invalid" spellcheck="false" />
+      <div class="hint">Use an http or https origin, for example https://api.aira.invalid.</div>
       <div class="actions">
         <button id="cancel" type="button">Cancel</button>
         <button type="submit">Save</button>

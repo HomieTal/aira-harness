@@ -34,13 +34,13 @@ try {
         await page
           .getByText(
             chinese
-              ? "Z.ai 与 BigModel 的账号数据不互通。"
-              : "Z.ai and BigModel do not share account data.",
+              ? "Aira 与 BigModel 的账号数据不互通。"
+              : "Aira and BigModel do not share account data.",
             { exact: false },
           )
           .waitFor();
         await home.waitFor();
-        assert.equal(await home.getAttribute("href"), "https://zcode.z.ai");
+        assert.equal(await home.getAttribute("href"), "https://api.aira.invalid");
         assert.equal(await home.getAttribute("target"), null);
         assert.equal(
           await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
@@ -56,11 +56,11 @@ try {
         await page.locator('[data-share-login-provider="bigmodel"]').waitFor();
         await page.locator('[data-share-login-provider="bigmodel"]').click();
         await home.waitFor();
-        await page.route("https://zcode.z.ai/**", (route) =>
+        await page.route("https://api.aira.invalid/**", (route) =>
           route.fulfill({ contentType: "text/html", body: "<h1>Home</h1>" }),
         );
         await home.click();
-        await page.waitForURL("https://zcode.z.ai/");
+        await page.waitForURL("https://api.aira.invalid/");
         assert.equal(context.pages().length, 1);
         await page.goto(`${baseUrl}/${locale}/mock-expired`);
         await page

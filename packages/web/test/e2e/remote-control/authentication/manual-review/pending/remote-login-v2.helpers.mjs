@@ -207,7 +207,7 @@ export async function checkSwitchConfirmation(h, { screen, width, theme, locale,
   }
   await trigger.click();
   await confirm.click();
-  await page.getByRole("button", { name: /连接 Z.ai 继续使用|Connect to Z.ai/ }).waitFor();
+  await page.getByRole("button", { name: /连接 Aira 继续使用|Connect to Aira/ }).waitFor();
   assert.equal(await page.evaluate(() => localStorage.getItem("airajwttoken")), null);
   assert.equal(page.url(), originalUrl);
   assert.deepEqual(h.errors, []);

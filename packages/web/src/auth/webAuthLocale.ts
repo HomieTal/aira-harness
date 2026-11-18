@@ -33,8 +33,8 @@ const WEB_AUTH_COPY = {
     loginTitle: "登录后继续使用 Web 远程控制",
     loginDescription: "请选择与电脑端相同的登录平台，并使用同一账号。",
     loginAction: {
-      zai: "连接 Z.ai 继续使用",
-      zai_cn: "连接 Z.ai 继续使用",
+      zai: "连接 Aira 继续使用",
+      zai_cn: "连接 Aira 继续使用",
       bigmodel: "连接 BigModel 继续使用",
     },
     loginRegion: { zai: "全球", zai_cn: "中国", bigmodel: "中国" },
@@ -56,8 +56,8 @@ const WEB_AUTH_COPY = {
     loginTitle: "Sign In To Continue",
     loginDescription: "Choose the same sign-in provider and account as on your computer.",
     loginAction: {
-      zai: "Connect to Z.ai",
-      zai_cn: "Connect to Z.ai",
+      zai: "Connect to Aira",
+      zai_cn: "Connect to Aira",
       bigmodel: "Connect to BigModel",
     },
     loginRegion: { zai: "Global", zai_cn: "China", bigmodel: "CN" },

@@ -248,7 +248,7 @@ Deep link 的 BigModel access token 解析保留历史响应形状兼容：依�
 
 依据：[zaiProviderAdapter.ts:318](../../packages/services/src/oauth/providers/zaiProviderAdapter.ts#L318)、`:364`；[zaiBusinessTokenResolver.ts:70](../../packages/services/src/providers/zaiBusinessTokenResolver.ts#L70)；[bigmodelProviderAdapter.ts:130](../../packages/services/src/oauth/providers/bigmodelProviderAdapter.ts#L130)、`:301`；[oauthService.ts:554](../../packages/services/src/oauth/oauthService.ts#L554)、`:683`、`:729`；[bigmodelStartPlanAiraJwt.ts:31](../../packages/services/src/model-provider/bigmodelStartPlanAiraJwt.ts#L31)。
 
-端点由 runtime config 按环境构造，生产示例是 `zcode.z.ai`、`chat.z.ai`、`api.z.ai`、`bigmodel.cn`，测试环境和明确 env 覆盖会改变域名。不要把示例域名当唯一允许部署环境。依据：[zaiProviderConfig.ts:30](../../packages/services/src/oauth/providers/zaiProviderConfig.ts#L30)；[bigmodelProviderConfig.ts:25](../../packages/services/src/oauth/providers/bigmodelProviderConfig.ts#L25)。
+端点由 runtime config 按环境构造，生产示例是 `api.aira.invalid`、`chat.aira.invalid`、`api.aira.invalid`、`bigmodel.aira.invalid`，测试环境和明确 env 覆盖会改变域名。不要把示例域名当唯一允许部署环境。依据：[zaiProviderConfig.ts:30](../../packages/services/src/oauth/providers/zaiProviderConfig.ts#L30)；[bigmodelProviderConfig.ts:25](../../packages/services/src/oauth/providers/bigmodelProviderConfig.ts#L25)。
 
 ### 主要消费者和真实认证头
 
@@ -421,7 +421,7 @@ CLI OAuth ready 响应的源码类型仅含 `status`、`token`、`user`、`zai.a
                 +--> 保存 active=zai + 原始 ZAI OAuth access + Aira JWT + user
                 |      旧 BigModel namespace、旧 ZAI refresh 当前不清
                 |
-                +--> POST api.z.ai/api/auth/z/login（用原始 OAuth access 换 MaaS JWT）
+                +--> POST api.aira.invalid/api/auth/z/login（用原始 OAuth access 换 MaaS JWT）
                 +--> 用 MaaS JWT 查询机构/项目、查找或创建 aira-api-key、copy secret
                 +--> 最终模型 API Key 写 ~/.aira/cli/config.json
 ```

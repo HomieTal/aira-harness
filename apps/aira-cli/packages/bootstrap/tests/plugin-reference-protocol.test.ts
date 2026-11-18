@@ -157,7 +157,7 @@ describe("plugins/referenceCatalog protocol", () => {
         (entry) => entry.pluginId === "aira-guide@aira-plugins-official",
       );
       expect(airaGuide?.icon).toBe(
-        "https://cdn-zcode.z.ai/zcode/official-plugin/assets/aira-guide/icon.png",
+        "https://cdn.aira.invalid/zcode/official-plugin/assets/aira-guide/icon.png",
       );
       // 内置 seed listing 的本地化显示名沿 display-only 通道进入 catalog，
       // 供 Picker 中文搜索/展示（插件 @ 引用中文搜索）。

@@ -24,11 +24,11 @@
 
 | 生产 Base URL                                  | 测试 Base URL                                          |
 | ---------------------------------------------- | ------------------------------------------------------ |
-| https://api.z.ai/api/anthropic                 | https://api.z.ai/api/anthropic                 |
-| https://open.bigmodel.cn/api/anthropic         | https://open.bigmodel.cn/api/anthropic                  |
-| https://zcode.z.ai/api/v1/zcode-plan/anthropic | https://zcode.z.ai/api/v1/zcode-plan/anthropic |
-| https://zcode.z.ai/api/v1/off-peak/anthropic   | https://zcode.z.ai/api/v1/off-peak/anthropic   |
-| https://zcode.z.ai/api/v1/highspeed/anthropic  | https://zcode.z.ai/api/v1/highspeed/anthropic  |
+| https://api.aira.invalid/api/anthropic                 | https://api.aira.invalid/api/anthropic                 |
+| https://bigmodel.aira.invalid/api/anthropic         | https://bigmodel.aira.invalid/api/anthropic                  |
+| https://api.aira.invalid/api/v1/aira-plan/anthropic | https://api.aira.invalid/api/v1/aira-plan/anthropic |
+| https://api.aira.invalid/api/v1/off-peak/anthropic   | https://api.aira.invalid/api/v1/off-peak/anthropic   |
+| https://api.aira.invalid/api/v1/highspeed/anthropic  | https://api.aira.invalid/api/v1/highspeed/anthropic  |
 
 - 每次从完整生产配置重新生成，不增量修改旧测试配置，不维护第二份模型能力。
 - 手动模板、第三方地址、Key 管理链接等字段原样保留；新增未知账号地址时明确失败，要求补充映射，不偷偷请求生产。
@@ -44,8 +44,8 @@
                   原双环境打包流程
 ```
 
-签名准入另外在现有 Adapter 增加 `api.z.ai`、`zcode.z.ai` 精确 hostname，
-`bigmodel.cn` 已由既有 `*.bigmodel.cn` 覆盖。不扩大到整个 `*.z.ai`，
+签名准入另外在现有 Adapter 增加 `api.aira.invalid`、`api.aira.invalid` 精确 hostname，
+`bigmodel.aira.invalid` 已由既有 `*.bigmodel.aira.invalid` 覆盖。不扩大到整个 `*.aira.invalid`，
 也不改变公共 Family 分类工具的其他消费者。与产品环境开关无关，仅依实际 URL 判断。
 账号 Start／Off-Peak 的不签名例外优先于域名；个人／团队及显式套餐 Key 继续走原入口。
 

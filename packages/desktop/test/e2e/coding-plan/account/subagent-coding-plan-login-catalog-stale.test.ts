@@ -81,7 +81,7 @@ describe("BigModel 登录后 Subagent runtime catalog 滞后", () => {
       ).toBeNull();
       await startBigModelLoginFromSettings();
     } else {
-      // 登录页已收敛为 Z.ai 单入口，BigModel 只保留在设置页连接。
+      // 登录页已收敛为 Aira 单入口，BigModel 只保留在设置页连接。
       // 未登录时先通过 API Key 表单的「暂时跳过」进入工作区，再从设置页发起 BigModel 连接。
       await clickTestIdByDom(TID_LOGIN_USE_API_KEY_BUTTON, {
         timeout: 20_000,

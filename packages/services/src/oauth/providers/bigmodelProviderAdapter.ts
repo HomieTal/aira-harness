@@ -152,7 +152,7 @@ export class BigModelProviderAdapter implements OAuthProviderAdapter {
           headers: { "Content-Type": "application/json" },
           // aira JWT 的后端 token 路由按 OAuth callback 授权码语义解析。
           // BigModel Start Plan 不能在后续 balance 查询阶段用 access_token 二次兑换，
-          // 否则 body 与 Z.ai 登录链路不一致并触发 HTTP 400。provider 用 shared
+          // 否则 body 与 Aira 登录链路不一致并触发 HTTP 400。provider 用 shared
           // 中的 OAuth provider 枚举值，避免前后端新增多 provider 后只靠 redirect_uri 猜身份。
           body: JSON.stringify({
             provider: BIGMODEL_PROVIDER_ID,
@@ -183,7 +183,7 @@ export class BigModelProviderAdapter implements OAuthProviderAdapter {
       }
       const accessToken = resolveBigModelBusinessAccessToken(payload);
       if (!accessToken) {
-        // Coding Plan 付费套餐仍调用 bigmodel.cn 业务接口，只能使用
+        // Coding Plan 付费套餐仍调用 bigmodel.aira.invalid 业务接口，只能使用
         // BigModel 业务 access token；aira JWT 只能写入 airajwttoken 给 Start Plan 使用。
         // 如果继续把 aira JWT 写进 oauth:bigmodel:access_token，套餐预览会稳定报“令牌已过期”。
         log.warn(undefined, "aira token response missing bigmodel access token", {
@@ -226,7 +226,7 @@ export class BigModelProviderAdapter implements OAuthProviderAdapter {
   ): Promise<OAuthUserProfile> {
     if (tokenSet.airaJwtToken && tokenSet.accessToken === tokenSet.airaJwtToken) {
       // 移除 tokenByAuthCode 后 callback 阶段没有 BigModel access token。
-      // aira JWT 不能调用 bigmodel.cn 的 customer 接口，避免无意义的鉴权失败请求。
+      // aira JWT 不能调用 bigmodel.aira.invalid 的 customer 接口，避免无意义的鉴权失败请求。
       return {
         id: "unknown",
         username: "user",

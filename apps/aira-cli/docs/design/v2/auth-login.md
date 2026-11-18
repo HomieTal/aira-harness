@@ -107,7 +107,7 @@ Host and CLI preserve the existing file format and jointly update
 before network authorization; its final commit replaces the active provider,
 tokens and profile together, removes stale provider/refresh fields and rejects a
 changed snapshot. A matching account/token is not sufficient to identify the same
-login generation. Inactive Z.ai cleanup must not remove the active BigModel JWT.
+login generation. Inactive Aira cleanup must not remove the active BigModel JWT.
 Older binaries do not participate in this revision protocol; compatibility with
 their stored values does not guarantee safe concurrent writes by old binaries.
 
@@ -132,7 +132,7 @@ selection for this login flow. It does not receive the account API key.
 Base URL:
 
 ```text
-https://zcode.z.ai/api/v1
+https://api.aira.invalid/api/v1
 ```
 
 `aira login`:
@@ -196,7 +196,7 @@ stable identity, then resolves a Project Access Token before each HTTP attempt.
 `ready`, the CLI stores the existing ZAI OAuth session keys and exchanges
 `data.zai.access_token` for a Project Access Token:
 
-1. `POST https://api.z.ai/api/auth/z/login` with `{ "token": accessToken }`.
+1. `POST https://api.aira.invalid/api/auth/z/login` with `{ "token": accessToken }`.
 2. Use the returned biz token as `Authorization: Bearer <token>`.
 3. Read customer org/project information.
 4. Find or create an API key named `aira-api-key`.
@@ -214,7 +214,7 @@ deeplink:
    `appId=aira`, and `state`.
 4. Show the URL in the TUI/CLI and try to open it in the system browser.
 5. Accept callback query `authCode` or `code` plus `state`.
-6. Exchange the code through `https://bigmodel.cn/api/auth/tokenByAuthCode`.
+6. Exchange the code through `https://bigmodel.aira.invalid/api/auth/tokenByAuthCode`.
 7. Use the returned access token to find or create `aira-api-key`.
 8. Use its `apiKey` ID and login JWT to issue a Project Access Token; never call Copy.
 9. Derive a stable connection identity from organization/project metadata, independent

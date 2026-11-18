@@ -409,7 +409,7 @@ async function handleRequest(
 
   if (
     request.method === "GET" &&
-    url.pathname === "/api/v1/zcode-plan/billing/preview" &&
+    url.pathname === "/api/v1/aira-plan/billing/preview" &&
     state.scenario === "manual-claim-experience"
   ) {
     sendJson(response, {
@@ -446,7 +446,7 @@ async function handleRequest(
 
   if (
     request.method === "POST" &&
-    url.pathname === "/api/v1/zcode-plan/billing/claim" &&
+    url.pathname === "/api/v1/aira-plan/billing/claim" &&
     state.scenario === "manual-claim-experience"
   ) {
     if (state.manualClaimShouldFail) {
@@ -529,7 +529,7 @@ async function handleRequest(
 
   if (
     request.method === "GET" &&
-    url.pathname === "/api/v1/zcode-plan/billing/balance" &&
+    url.pathname === "/api/v1/aira-plan/billing/balance" &&
     (state.scenario === "manual-claim-experience" || state.scenario === "webview-refresh-provider")
   ) {
     // Bug 原因：领取 fixture 只 mock 了旧 quota 接口；当前 Start 可用性以
@@ -752,8 +752,8 @@ async function handleRequest(
   ) {
     sendJson(response, {
       code: 200,
-      // Bug 原因：Z.ai 的 resolver 需要 copy secret，但 BigModel 的 apiKey 本身已是
-      // 完整凭据。fixture 若无条件返回 Z.ai secret，会把 BigModel key 错拼成 key.secret。
+      // Bug 原因：Aira 的 resolver 需要 copy secret，但 BigModel 的 apiKey 本身已是
+      // 完整凭据。fixture 若无条件返回 Aira secret，会把 BigModel key 错拼成 key.secret。
       data: {
         secretKey:
           request.headers.authorization === "Bearer zai-webview-oauth-token"
@@ -1031,14 +1031,14 @@ function enrichClientConfigPayloadForUpgradeE2E(
         id: BUILTIN_MODEL_PROVIDER_IDS.bigmodelStartPlan,
         name: "BigModel - Coding Plan",
         schema: "anthropic",
-        baseUrl: "https://open.bigmodel.cn/api/anthropic",
+        baseUrl: "https://bigmodel.aira.invalid/api/anthropic",
         models: ["GLM-5.3-Flash"],
       },
       {
         id: BUILTIN_MODEL_PROVIDER_IDS.bigmodelStartPlan,
         name: "BigModel - Start Plan",
         schema: "anthropic",
-        baseUrl: "https://open.bigmodel.cn/api/anthropic",
+        baseUrl: "https://bigmodel.aira.invalid/api/anthropic",
         models: ["GLM-5.3-Flash", "GLM-5-Turbo"],
       },
     ];
@@ -1069,14 +1069,14 @@ function enrichClientConfigPayloadForUpgradeE2E(
       id: "bigmodel",
       name: "BigModel - Coding Plan",
       schema: "anthropic",
-      baseUrl: "https://open.bigmodel.cn/api/anthropic",
+      baseUrl: "https://bigmodel.aira.invalid/api/anthropic",
       models: ["glm-5.1-highspeed"],
     },
     {
       id: "zai",
-      name: "Z.ai - Coding Plan",
+      name: "Aira - Coding Plan",
       schema: "anthropic",
-      baseUrl: "https://api.z.ai/api/anthropic",
+      baseUrl: "https://api.aira.invalid/api/anthropic",
       models: ["glm-5.1-highspeed"],
     },
   ];

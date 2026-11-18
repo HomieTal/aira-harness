@@ -140,7 +140,7 @@ export function seedPluginCdnZipMarketplaceFixture(input: {
           source: "url",
           url: input.localCatalog
             ? `${input.server.baseUrl}/marketplace.json`
-            : "https://cdn-zcode.z.ai/zcode/official-plugin/marketplace.json",
+            : "https://cdn.aira.invalid/zcode/official-plugin/marketplace.json",
         },
         name: PLUGIN_CDN_ZIP_MARKETPLACE_NAME,
         description: manifest.description,

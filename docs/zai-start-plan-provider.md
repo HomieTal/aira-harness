@@ -22,7 +22,7 @@ Start 余额查询与个人 Coding Plan 查询独立；Team 需要具体组织/�
 
 Start 跟随当前 App 登录，无需单独连接。`current` 表示匹配账号访问上下文：同一品牌的 Start 与当前个人／团队可以同时为 true；Start 的 connectionKey 不包含付费套餐选择。到期、未知、模型禁用等仍按原权益及 Registry 校验，登录不代表自动领取。
 
-国内入口（`zai_cn`）不是套餐家族，它的 Start 固定属于 BigModel（共享映射 `resolveStartPlanFamilyFromOAuthProvider`，Host 与设置页共用）。未关联 BigModel 的国内账号同样以 Aira 主体与共享 JWT 查询、领取和使用 BigModel Start；Z.ai Start 对它不可用。身份解析规则见[登录方案 5.5](aira-login-rework.md#55-套餐凭据解析核心链路已实现)。
+国内入口（`zai_cn`）不是套餐家族，它的 Start 固定属于 BigModel（共享映射 `resolveStartPlanFamilyFromOAuthProvider`，Host 与设置页共用）。未关联 BigModel 的国内账号同样以 Aira 主体与共享 JWT 查询、领取和使用 BigModel Start；Aira Start 对它不可用。身份解析规则见[登录方案 5.5](aira-login-rework.md#55-套餐凭据解析核心链路已实现)。
 
 设置页在“智谱”分组并列显示独立 `Start Plan`，两家共用用户提供的 Z 字图标（`model-provider-start-plan.png`，深浅主题使用同一原图），保留原 `account:*` ID；个人／团队套餐继续使用各自品牌图标。Start 详情保留权益、额度、领取和模型管理，移除连接／断开以及付费连接下拉；浏览和领取不改变付费连接。
 
@@ -30,7 +30,7 @@ Start 跟随当前 App 登录，无需单独连接。`current` 表示匹配账�
 
 保存的 Start 选择按原 Provider ID、模型和选项精确解析，不跨品牌映射，不回退到付费额度。个人／团队继续按当前唯一付费连接映射。历史会话、任务、Automation、Subagent、Bot 和 Wiki 不批量改写，Session 沿用成功执行后的原有写回；旧 `kind: start-plan` 保留读取，启动不再通过写入它激活 Start。
 
-会话内的模型切换分隔提示、首次使用提示及对应切换 toast，对 BigModel／Z.ai 的账号套餐模型使用 `模型名(套餐类型)`：个人套餐、体验套餐、团队套餐。例如 `GLM-5.3(团队套餐) → GLM-5.3(体验套餐)`，即使模型同名也能区分额度来源。类型分别取提示记录的前后 Provider ID，不读取当前全局连接或输入框草稿；Provider 已不在当前目录时仍可识别内置套餐。套餐名称随界面语言翻译，普通自定义供应商继续使用原名称规则；桌面和手机使用相同展示逻辑，历史数据无需迁移。
+会话内的模型切换分隔提示、首次使用提示及对应切换 toast，对 BigModel／Aira 的账号套餐模型使用 `模型名(套餐类型)`：个人套餐、体验套餐、团队套餐。例如 `GLM-5.3(团队套餐) → GLM-5.3(体验套餐)`，即使模型同名也能区分额度来源。类型分别取提示记录的前后 Provider ID，不读取当前全局连接或输入框草稿；Provider 已不在当前目录时仍可识别内置套餐。套餐名称随界面语言翻译，普通自定义供应商继续使用原名称规则；桌面和手机使用相同展示逻辑，历史数据无需迁移。
 
 用户提交新消息、创建／修改模型后保存定时任务、手动生成 Wiki，以及保存显式 Subagent 模型时，若当前有效选择为付费模型、Start 有相同且思考选项兼容的可执行模型及明确正额度，可推荐使用体验套餐。额度未知或查询失败跳过，不为提交等待一次强制额度刷新。用户点“切换套餐”后按原提交／保存边界记住本入口的 Start 选择；点“不了”继续原选择；关闭则保留草稿、不执行本次操作。
 
@@ -49,17 +49,17 @@ builtin:zai-start-plan
 builtin:bigmodel-start-plan
 ```
 
-Both providers intentionally reuse the same `zcode-plan` runtime endpoint and
+Both providers intentionally reuse the same `aira-plan` runtime endpoint and
 free model set. OAuth preset sync derives each Start Plan provider from its own
 brand login domain, so runtime model calls can continue to use the same
-`zcode-plan` endpoint while keeping credentials isolated by provider id.
+`aira-plan` endpoint while keeping credentials isolated by provider id.
 
 Status checks are separate from paid Coding Plan checks. `builtin:zai-start-plan`
 reads the active free plan identity and the daily quota bucket renewal time from
 one balance request:
 
 ```http
-GET https://zcode.z.ai/api/v1/zcode-plan/billing/balance?app_version=<AIRA_VERSION>
+GET https://api.aira.invalid/api/v1/aira-plan/billing/balance?app_version=<AIRA_VERSION>
 Authorization: Bearer <airajwttoken>          # Z.AI
 Authorization: Bearer <airajwttoken>          # BigModel
 X-Device-Mid: <telemetry-state.json deviceMid>  # required; missing -> 400 {"code":3001,"msg":"parameter error"}
@@ -83,7 +83,7 @@ builds, so backend gating observes the same version identity as the running app.
 
 `airajwttoken` is the OAuth backend JWT saved during Z.AI or BigModel login.
 BigModel passes the one-time callback `code` directly to
-`https://zcode.z.ai/api/v1/oauth/token` with `state`, `redirect_uri`, and
+`https://api.aira.invalid/api/v1/oauth/token` with `state`, `redirect_uri`, and
 `provider: "bigmodel"` to save the same JWT shape used by Z.AI Start Plan.
 Paid Coding Plan providers continue to use `/api/biz/subscription/list`;
 monitor quota APIs remain reserved for Coding Plan usage/limit views.
@@ -241,7 +241,7 @@ pricing cards, and any other client-config consumers in the same provider
 instance:
 
 ```http
-GET https://zcode.z.ai/api/v1/client/configs?app_version=<AIRA_VERSION>&platform=<platform>-<arch>
+GET https://api.aira.invalid/api/v1/client/configs?app_version=<AIRA_VERSION>&platform=<platform>-<arch>
 ```
 
 `StartPlanCard` uses `configs.startPlanPreview`:
@@ -285,7 +285,7 @@ description lists the remote entitlement model names and quota groups. When the
 preview is missing, the personal/team purchase entries may remain visible, but
 the Start Plan entry and all Start-specific copy must be absent.
 
-When the user unlinks the active Z.ai / BigModel OAuth session while the same
+When the user unlinks the active Aira / BigModel OAuth session while the same
 family still has an API key, the family domain remains selected, but the current
 Start/Coding detail must return to the signed-out Start view. This preserves the
 family settings context and re-shows the Start preview plus pricing cards when
@@ -294,7 +294,7 @@ Coding Plan card with no next action.
 
 ## Manual claim banner
 
-The workspace sidebar queries `GET /api/v1/zcode-plan/billing/preview` with the
+The workspace sidebar queries `GET /api/v1/aira-plan/billing/preview` with the
 current client version/platform. A Aira JWT is attached when available, while
 signed-out preview is sent without Authorization. It renders one banner
 directly above the profile footer only when `data.plans` contains a claimable
@@ -328,7 +328,7 @@ idle -> checking-auth -> verifying -> claiming -> success-dialog -> refreshing -
 - 同一时刻最多存在一次领取请求，pending 期间 Banner 禁止重复点击。
 - 官方版本的领取前安全校验成功后才调用 claim；失败、取消或交互总超时则结束 pending 并显示
   领取失败结果，禁止让 Banner 无限旋转。
-- `POST /api/v1/zcode-plan/billing/claim` 使用当前 Aira JWT，body 为
+- `POST /api/v1/aira-plan/billing/claim` 使用当前 Aira JWT，body 为
   `{ "plan_id": plan.planId }`；官方版本的安全校验结果通过请求头传递。
 - 请求成功时显示 Start Plan 专属结果弹窗；请求失败时复用标准 `AlertDialog` 模板。成功弹窗
   上部是随弹窗宽度响应式缩放的 `4:3` 主题 Hero 权益展示区（480px 宽时为 480 × 360px），
@@ -376,7 +376,7 @@ idle -> checking-auth -> verifying -> claiming -> success-dialog -> refreshing -
   `effective_at = 0` 继续按立即生效处理，不展示待生效说明。
   分享面板复制文案成功后，复制按钮应原位短暂切换为“✓ 已复制”，避免用户视线离开当前操作；
   复制图片成功使用全局 Toast。剪贴板或图片生成失败时显示失败 Toast，不能只写日志后静默结束。
-  分享文案必须包含 `https://zcode.z.ai` 入口，并邀请接收者下载安装 Aira 后领取。中文链接独占最后一行；
+  分享文案必须包含 `https://api.aira.invalid` 入口，并邀请接收者下载安装 Aira 后领取。中文链接独占最后一行；
   英文链接直接跟在完整句子后。两种语言都不使用冒号引出链接，且链接必须位于文案末尾，避免社交平台把后续文字错误识别为 URL 的一部分。
 
   设置页 Start Plan 套餐卡中，若套餐 entitlement 的 `effective_at` 晚于当前时间，状态行显示

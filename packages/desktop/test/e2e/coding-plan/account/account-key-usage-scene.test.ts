@@ -600,7 +600,7 @@ describe("PAT-KEY-E2E: 账号就绪时创建 Coding Plan Key", () => {
         const state = await readSafeAccountAvailability();
         return state?.families?.includes("bigmodel") === true;
       },
-      { timeout: 15_000, timeoutMsg: "存量 Z.ai 登录没有自动补齐关联" },
+      { timeout: 15_000, timeoutMsg: "存量 Aira 登录没有自动补齐关联" },
     );
     expect((await readSettings()).providerFamilyDomain).toBe("zai");
     expect((await readSettings()).providerFamilyConnectionSelections).toEqual(selections);

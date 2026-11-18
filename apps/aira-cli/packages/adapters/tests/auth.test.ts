@@ -456,7 +456,7 @@ describe("CLI OAuth client", () => {
         data: {
           flow_id: "flow-1",
           poll_token: "poll-token",
-          authorize_url: "https://chat.z.ai/oauth/authorize?state=state",
+          authorize_url: "https://chat.aira.invalid/oauth/authorize?state=state",
           expires_at: 1735000000,
           poll_interval_sec: 2,
         },
@@ -658,7 +658,7 @@ describe("Coding Plan API key resolver", () => {
         family: "zai",
       }),
     ).resolves.toBe("project-token");
-    expect(httpClient.requests[0]?.url).toBe("https://api.z.ai/api/auth/z/login");
+    expect(httpClient.requests[0]?.url).toBe("https://api.aira.invalid/api/auth/z/login");
     expect(httpClient.requests[1]?.headers).toMatchObject({
       authorization: "zai-biz-token",
     });
@@ -697,14 +697,14 @@ describe("Coding Plan API key resolver", () => {
       }),
     ).resolves.toBe("project-token");
     expect(httpClient.requests[0]?.url).toBe(
-      "https://bigmodel.cn/api/biz/customer/getCustomerInfo",
+      "https://bigmodel.aira.invalid/api/biz/customer/getCustomerInfo",
     );
     expect(httpClient.requests[0]?.headers).toMatchObject({
       authorization: "bigmodel-oauth-token",
     });
   });
 
-  it("uses bigmodel.cn for BigModel API key resolution when AIRA_ENV=test", async () => {
+  it("uses bigmodel.aira.invalid for BigModel API key resolution when AIRA_ENV=test", async () => {
     vi.stubEnv("AIRA_ENV", "test");
     const httpClient = new FakeHttpClient([
       customerInfoResponse(),
@@ -735,7 +735,7 @@ describe("Coding Plan API key resolver", () => {
     });
 
     expect(httpClient.requests[0]?.url).toBe(
-      "https://bigmodel.cn/api/biz/customer/getCustomerInfo",
+      "https://bigmodel.aira.invalid/api/biz/customer/getCustomerInfo",
     );
   });
 });
@@ -761,7 +761,7 @@ describe("BigModel OAuth client", () => {
     });
     const tokenSet = await client.exchangeCode({ code: "auth-code" });
 
-    expect(authorizeUrl).toContain("https://bigmodel.cn/login?");
+    expect(authorizeUrl).toContain("https://bigmodel.aira.invalid/login?");
     expect(authorizeUrl).toContain("appId=aira");
     expect(authorizeUrl).toContain("state=state-1");
     expect(tokenSet).toEqual({
@@ -773,7 +773,7 @@ describe("BigModel OAuth client", () => {
     );
   });
 
-  it("uses bigmodel.cn for authorize URL when AIRA_ENV=test", () => {
+  it("uses bigmodel.aira.invalid for authorize URL when AIRA_ENV=test", () => {
     vi.stubEnv("AIRA_ENV", "test");
     const httpClient = new FakeHttpClient([]);
     const client = createBigmodelOAuthClient({
@@ -786,10 +786,10 @@ describe("BigModel OAuth client", () => {
       state: "state-1",
     });
 
-    expect(authorizeUrl).toContain("https://bigmodel.cn/login?");
+    expect(authorizeUrl).toContain("https://bigmodel.aira.invalid/login?");
   });
 
-  it("uses bigmodel.cn for token exchange when AIRA_ENV=test", async () => {
+  it("uses bigmodel.aira.invalid for token exchange when AIRA_ENV=test", async () => {
     vi.stubEnv("AIRA_ENV", "test");
     const httpClient = new FakeHttpClient([
       jsonResponse({
@@ -805,7 +805,7 @@ describe("BigModel OAuth client", () => {
 
     await client.exchangeCode({ code: "auth-code" });
 
-    expect(httpClient.requests[0]?.url).toBe("https://bigmodel.cn/api/auth/tokenByAuthCode");
+    expect(httpClient.requests[0]?.url).toBe("https://bigmodel.aira.invalid/api/auth/tokenByAuthCode");
   });
 
   it("requires an explicit app secret before exchanging auth codes", async () => {

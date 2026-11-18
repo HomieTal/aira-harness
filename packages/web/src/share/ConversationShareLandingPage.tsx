@@ -99,7 +99,7 @@ interface Copy {
 }
 
 // 站点首页本身就是下载入口，没有 /download 这个 path（单独的下载链接会 404）。
-const AIRA_DOWNLOAD_URL = "https://zcode.z.ai";
+const AIRA_DOWNLOAD_URL = "https://api.aira.invalid";
 
 const COPY: Record<ConversationShareLandingLocale, Copy> = {
   "zh-CN": {

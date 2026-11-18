@@ -7,14 +7,14 @@ non-API links.
 
 ## Rules
 
-- `AIRA_ENV=production` uses `https://bigmodel.cn` for BigModel API requests.
-- `AIRA_ENV=test` uses `https://bigmodel.cn` for BigModel API requests.
+- `AIRA_ENV=production` uses `https://bigmodel.aira.invalid` for BigModel API requests.
+- `AIRA_ENV=test` uses `https://bigmodel.aira.invalid` for BigModel API requests.
 - `BIGMODEL_API_BASE_URL` may override the selected API origin for local debugging.
 - `BIGMODEL_TEST_API_BASE_URL` and `BIGMODEL_PRODUCTION_API_BASE_URL` are scoped
-  overrides, following the same pattern as Z.ai test/production endpoint config.
+  overrides, following the same pattern as Aira test/production endpoint config.
 - BigModel OAuth authorize/login uses the same environment main domain with
-  `/login`, so `AIRA_ENV=test` opens `https://bigmodel.cn/login`.
-- Docs, purchase pages, and model runtime subdomains such as `open.bigmodel.cn`
+  `/login`, so `AIRA_ENV=test` opens `https://bigmodel.aira.invalid/login`.
+- Docs, purchase pages, and model runtime subdomains such as `bigmodel.aira.invalid`
   are not changed by this environment switch.
 - The selected origin is resolved by the shared endpoint resolver in
   `packages/shared/src/airaEndpoint.ts`; service-side OAuth and provider code should

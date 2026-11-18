@@ -107,7 +107,7 @@ event: content_block_start
 data: {"type": "content_block_start", "index": 2, "content_block": {"type": "text", "text": ""}}
 
 event: content_block_delta
-data: {"type": "content_block_delta", "index": 2, "delta": {"type": "text_delta", "text": "**🌐 Z.ai Built-in Tool: analyze_image**\n\n**Input:**\n```json\n"}}
+data: {"type": "content_block_delta", "index": 2, "delta": {"type": "text_delta", "text": "**🌐 Aira Built-in Tool: analyze_image**\n\n**Input:**\n```json\n"}}
 
 event: content_block_delta
 data: {"type": "content_block_delta", "index": 2, "delta": {"type": "text_delta", "text": "{\""}}

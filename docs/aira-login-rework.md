@@ -97,7 +97,7 @@ flowchart LR
 
 ### 消费链路复核
 
-旧 Global Z.ai 的显式恢复已用不同ID夹具复现同类覆盖，修复后与BigModel共用只合并展示字段的边界；冷启动缓存与显式恢复均保留Aira主ID。兑换阶段已要求服务端user_id，不能用上游sub/id补成主ID。此结果不证明真实历史账号的服务端映射。
+旧 Global Aira 的显式恢复已用不同ID夹具复现同类覆盖，修复后与BigModel共用只合并展示字段的边界；冷启动缓存与显式恢复均保留Aira主ID。兑换阶段已要求服务端user_id，不能用上游sub/id补成主ID。此结果不证明真实历史账号的服务端映射。
 
 | 消费方                 | 本次迁移风险                                        | 收口方式                                                                |
 | ---------------------- | --------------------------------------------------- | ----------------------------------------------------------------------- |
@@ -113,7 +113,7 @@ flowchart LR
 
 ## 1. 目标与已确认边界
 
-Aira 保留一个浏览器授权按钮，通过国内／海外切换分别选择 `zai_cn`／`zai`。登录后使用 Aira 服务端确认的账号关联，自动在模型供应商处提供对应的 Z.ai 与 BigModel 套餐能力。
+Aira 保留一个浏览器授权按钮，通过国内／海外切换分别选择 `zai_cn`／`zai`。登录后使用 Aira 服务端确认的账号关联，自动在模型供应商处提供对应的 Aira 与 BigModel 套餐能力。
 
 本版**不弹账号服务升级窗口、不强制登出、不要求存量用户先重新授权才能继续使用原有功能**。关联信息补齐失败与登录身份失效必须分开处理。
 
@@ -121,7 +121,7 @@ Aira 保留一个浏览器授权按钮，通过国内／海外切换分别选择
 
 1. 登录页维持单按钮和区域切换；重试沿用失败 attempt 的区域。
 2. 登录主体只有一个。BigModel 关联凭据不代表第二次 App 登录。
-3. Aira 业务身份只使用服务端返回的 `user.user_id`；不从手机号、邮箱、Z.ai ID 或 BigModel customer ID 推导。
+3. Aira 业务身份只使用服务端返回的 `user.user_id`；不从手机号、邮箱、Aira ID 或 BigModel customer ID 推导。
 4. 自动关联在模型供应商处生效；不新增升级弹窗及“已读升级提示”持久化标记。
 5. 保留旧 `bigmodel` 登录协议的兼容；新版登录页不因此重新增加 BigModel 按钮。
 6. 关联多个套餐不等于多账号在线，也不等于允许多个具体套餐并行执行。当前执行连接与已有用户选择的行为继续遵守现行契约。
@@ -134,7 +134,7 @@ Aira 保留一个浏览器授权按钮，通过国内／海外切换分别选择
 | ---------- | ------------------------------------------------------------------------------------------------ |
 | 主链路     | 分区 OAuth、登录与 profile 响应解析、会话保存与恢复、关联账号查询、模型供应商投影、套餐凭据解析  |
 | 必须兼容   | 旧登录态、API Key、Start Plan、个人／团队套餐、支付续接、官方 MCP、桌面内 Agent、远端凭据同步    |
-| 同期接入   | Web 远控／分享登录使用新版 Z.ai 国内／海外入口，移除旧 BigModel 登录按钮并保留有效登录态         |
+| 同期接入   | Web 远控／分享登录使用新版 Aira 国内／海外入口，移除旧 BigModel 登录按钮并保留有效登录态         |
 | 兼容检查   | 桌面内 Agent 与共享凭据消费；独立 CLI 的新登录入口后续处理，不在本期新增对外入口                 |
 | 不在本期内 | 客户端按手机号合并账号、服务端批量迁移、关停旧注册、任务数据库迁移、多套餐实例并行执行、自动发布 |
 
@@ -149,7 +149,7 @@ Aira 保留一个浏览器授权按钮，通过国内／海外切换分别选择
 | 登录保存时清除另一 provider                                  | 不能同时表达一个主体的关联套餐凭据               |
 | 套餐身份和请求 token 按旧 OAuth 键读取                       | 登录渠道与实际套餐账号被绑定在一起               |
 | 购买门禁、官方 MCP 要求登录渠道等于套餐家族                  | 有合法关联也可能被误判未登录或拒绝请求           |
-| 新旧响应沿用同一套 token 假设                                | profile 不带 Z.ai access token，直接替换会丢凭据 |
+| 新旧响应沿用同一套 token 假设                                | profile 不带 Aira access token，直接替换会丢凭据 |
 | 接入前 token 日志对 `data` 使用对象展开                      | 已先改为固定摘要，新增关联字段不得自动进入日志   |
 
 详细代码定位与逐文件任务见[接入计划](plans/2026-10-28-zai-cn-login-integration-plan.md)。上述问题来自接入前源码检查；当前已实现和验证的部分见第 5.3、5.4 节，其余仍在实施。
@@ -160,7 +160,7 @@ Aira 保留一个浏览器授权按钮，通过国内／海外切换分别选择
 | ----------------------- | ------------------------------------------------------------- | ---------------------------------------------- |
 | `loginProvider`         | 已完成认证的登录渠道：`zai`、`zai_cn` 或兼容旧渠道 `bigmodel` | 不直接决定全部套餐可见性                       |
 | `user.user_id`          | Aira 会话、设备、权限和资产归属                              | 不替换为上游 ID                                |
-| `zai.user_id`           | Z.ai 上游账号身份                                             | 不当作 Aira 业务 user ID                      |
+| `zai.user_id`           | Aira 上游账号身份                                             | 不当作 Aira 业务 user ID                      |
 | `bigmodel.customer_id`  | 已关联 BigModel 的账号标识                                    | 不据此创建第二个 Aira 登录主体                |
 | 登录响应 `token`        | Aira JWT，访问 Aira 业务 API                                | 不作为 MaaS 登录 JWT 或模型 PAT                |
 | `zai.access_token`      | 所选区域返回的 OAuth access token                             | 不直接当作 Aira JWT；不默认适用于海外业务端点 |
@@ -206,7 +206,7 @@ Content-Type: application/json
       "avatar": "<avatar>"
     },
     "zai": {
-      "user_id": "<Z.ai user ID>",
+      "user_id": "<Aira user ID>",
       "access_token": "<OAuth access token>"
     },
     "bigmodel": {
@@ -268,7 +268,7 @@ flowchart TD
 建议由一个 Host 私有快照表达以下事实：
 
 - 会话 revision、login provider、Aira user、Aira JWT；
-- 所属区域的 Z.ai user ID、OAuth token 及可解析有效期；
+- 所属区域的 Aira user ID、OAuth token 及可解析有效期；
 - 关联 BigModel customer ID、业务 JWT；
 - 关联刷新结果及最近成功快照的归属。
 
@@ -338,7 +338,7 @@ profile 请求显式声明 `authFailurePolicy: caller-handled`，由当前会话
 
 ### 5.5 套餐凭据解析（核心链路已实现）
 
-Host 从同一原子快照生成套餐访问材料：`loginProvider`、Aira user ID、会话 revision、目标 family、套餐账号 ID、业务 token 和共享 JWT。主登录为全球 Z.ai 时继续提供其原业务凭据；主登录为旧 BigModel 时继续提供其原凭据；Z.ai 登录的关联 BigModel 只在绑定 user ID 与当前主体一致时可用。中国区的上游 OAuth token 不投影成全球 Z.ai 套餐凭据。
+Host 从同一原子快照生成套餐访问材料：`loginProvider`、Aira user ID、会话 revision、目标 family、套餐账号 ID、业务 token 和共享 JWT。主登录为全球 Aira 时继续提供其原业务凭据；主登录为旧 BigModel 时继续提供其原凭据；Aira 登录的关联 BigModel 只在绑定 user ID 与当前主体一致时可用。中国区的上游 OAuth token 不投影成全球 Aira 套餐凭据。
 
 个人与团队套餐必须先匹配调用方请求的账号 ID，再进行 Key ID 定位和短期 Token 签发。网络返回后重新比较同一材料，包括 revision；登录切换或同值重登都丢弃旧结果。整轮 Account Source 刷新在最终 settings 读取后再次核对 revision，旧团队组织补全也核对完整材料，避免较晚的文件读取留下窗口。解析不改变当前执行连接、不代替用户选择，也不伪造第二个登录 provider。
 
@@ -485,12 +485,12 @@ Account Source 根据当前主体的关联信息投影可用套餐；设置页�
 - **远端 Environment：** 沿现有 Provider Provisioning 同步正式凭据；Source 白名单、Target schema、触发器和条件提交一起更新。目标端重新加密，使用自己的 Registry 与 ModelFactory。
 - **旧 Target：** 不支持新快照时在任何写入前明确拒绝或走已确认兼容路径，不部分覆盖，不假报成功。
 - **手机远控：** 继续使用 Aira 身份；关联补齐失败不主动撤销有效连接。`desktop-continuous` 与 `web-remote-replayable` 的投递规则不变。
-- **Web：** `/remote` 和分享登录有独立 state／storage。本期同步接入新版 Z.ai 国内／海外入口，移除旧 BigModel 按钮、保留有效登录态；不能把桌面完整 Secret 快照复制到浏览器。截图中的网站入口如由其他仓库维护，需要与对应维护方同步契约，不在本仓猜测实现。
+- **Web：** `/remote` 和分享登录有独立 state／storage。本期同步接入新版 Aira 国内／海外入口，移除旧 BigModel 按钮、保留有效登录态；不能把桌面完整 Secret 快照复制到浏览器。截图中的网站入口如由其他仓库维护，需要与对应维护方同步契约，不在本仓猜测实现。
 - **CLI：** 桌面内 Agent 的新凭据消费兼容必须验证。独立 CLI 的新登录入口后续处理，本期不新增对外入口；共享文件的读写与清理不得破坏新会话。
 
 ## 10. 日志与运行证据
 
-只记录 provider、阶段、结果、是否有关联、耗时和 request ID，不记录 token、授权码、完整用户资料或 Cookie。本分支已先将 Z.ai adapter 对 `data` 的展开式脱敏改为固定字段摘要；后续关联接入不得恢复原始响应输出。安全回归与原登录竞态 E2E 已通过，见[AUTH-07 补充](testing/desktop-auth-config-e2e-cases.md#auth-07-补充关联凭据日志隔离)。
+只记录 provider、阶段、结果、是否有关联、耗时和 request ID，不记录 token、授权码、完整用户资料或 Cookie。本分支已先将 Aira adapter 对 `data` 的展开式脱敏改为固定字段摘要；后续关联接入不得恢复原始响应输出。安全回归与原登录竞态 E2E 已通过，见[AUTH-07 补充](testing/desktop-auth-config-e2e-cases.md#auth-07-补充关联凭据日志隔离)。
 
 2026-10-28 已使用测试账号完成以下验证：
 
@@ -500,10 +500,10 @@ Account Source 根据当前主体的关联信息投影可用套餐；设置页�
 | `cli/init(provider=zai_cn)`                               | 200／code 0                                                |
 | 中国区授权与回调                                          | 授权成功                                                   |
 | `cli/poll`                                                | 200／code 0／ready                                         |
-| 使用新 Aira JWT 查询 profile                             | 200／code 0，返回 Z.ai 与 BigModel 关联                    |
+| 使用新 Aira JWT 查询 profile                             | 200／code 0，返回 Aira 与 BigModel 关联                    |
 | 站内 session token 或 OAuth access token 直接查询 profile | 本次均为 401；站内 token 附加 `X-token-type: zai` 仍为 401 |
 
-同一样本中，ready 与 profile 的三组身份一致；profile 不返回 Aira token 或 Z.ai access token。OAuth access token 有效期为 3600 秒，ready 未返回 refresh token。Aira JWT 与 BigModel JWT 未观察到 `exp`，不能推断为永久有效。
+同一样本中，ready 与 profile 的三组身份一致；profile 不返回 Aira token 或 Aira access token。OAuth access token 有效期为 3600 秒，ready 未返回 refresh token。Aira JWT 与 BigModel JWT 未观察到 `exp`，不能推断为永久有效。
 
 该验证不覆盖旧凭据、无关联账号、真实套餐请求、刷新或多端。原始 request ID 与更完整的脱敏结构见[接入计划的实测记录](plans/2026-10-28-zai-cn-login-integration-plan.md#15-测试环境实测-2026-年-10-月-28-日)。
 
@@ -546,7 +546,7 @@ Account Source 根据当前主体的关联信息投影可用套餐；设置页�
 
 ### 购买页与奖励页的凭据交接
 
-嵌入网页通过 OAuth Host 的一次性会话快照取得主身份、会话 revision、Aira JWT 和（仅旧 Z.ai/BigModel 登录）当前渠道 OAuth token；不通过多次通用 credential.load 拼接。中国区 OAuth token 和关联 BigModel 私有 token 不返回给 Renderer。国内用户的购买页只得到 Aira JWT，由官网 profile 按当前主会话补关联；奖励页按原接口直接使用主 JWT。
+嵌入网页通过 OAuth Host 的一次性会话快照取得主身份、会话 revision、Aira JWT 和（仅旧 Aira/BigModel 登录）当前渠道 OAuth token；不通过多次通用 credential.load 拼接。中国区 OAuth token 和关联 BigModel 私有 token 不返回给 Renderer。国内用户的购买页只得到 Aira JWT，由官网 profile 按当前主会话补关联；奖励页按原接口直接使用主 JWT。
 
 购买目标 family 与登录渠道分开：URL 仍表示待购买套餐，注入的 active provider 表示真实登录渠道。两类网页在切换会话、重登、关闭和离开受信 URL 时清除旧材料；注入前复核主体/revision，并在脚本执行处校验页面 URL。奖励 bridge 识别 zai_cn，购买页仍只提供已存在的 zai/BigModel 套餐入口。
 

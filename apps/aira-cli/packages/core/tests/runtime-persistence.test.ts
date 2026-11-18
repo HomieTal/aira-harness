@@ -226,8 +226,8 @@ describe("AgentRuntime session persistence", () => {
         id: sessionId,
         projectID: createProjectId("plan"),
         slug: "plan",
-        directory: "/tmp/zcode-plan",
-        path: "/tmp/zcode-plan",
+        directory: "/tmp/aira-plan",
+        path: "/tmp/aira-plan",
         title: "old content",
         version: "test",
         permission: { mode: "plan" },
@@ -241,7 +241,7 @@ describe("AgentRuntime session persistence", () => {
       });
       const runtime = createTestAgentRuntime(
         sessionId,
-        { mode: "yolo", workingDirectory: "/tmp/zcode-plan" },
+        { mode: "yolo", workingDirectory: "/tmp/aira-plan" },
         {
           eventStore: createTestSessionEventStore(),
           sessionStore: store,
@@ -263,15 +263,15 @@ describe("AgentRuntime session persistence", () => {
       id: sessionId,
       projectID: createProjectId("plan"),
       slug: "plan",
-      directory: "/tmp/zcode-plan",
-      path: "/tmp/zcode-plan",
+      directory: "/tmp/aira-plan",
+      path: "/tmp/aira-plan",
       title: "old content",
       version: "test",
       permission: { mode: "plan" },
     });
     const runtime = createTestAgentRuntime(
       sessionId,
-      { mode: "yolo", workingDirectory: "/tmp/zcode-plan" },
+      { mode: "yolo", workingDirectory: "/tmp/aira-plan" },
       {
         eventStore: createTestSessionEventStore(),
         sessionStore: store,

@@ -17,7 +17,7 @@ Status: implemented / pending-key-validation
 | volcengine-agent-plan   | 方舟 Agent Plan / Messages     | doubao-seed-2.1-pro、doubao-seed-2.1-lite                                             |
 | stepfun                 | 阶跃普通 API / Messages        | step-5-preview、step-3.7-flash                                                        |
 | stepfun-step-plan       | Step Plan / Messages           | step-5-preview、step-3.7-flash                                                        |
-| siliconflow-cn          | SiliconFlow 国内 / Chat        | zai-org/GLM-5.3、deepseek-ai/DeepSeek-V4-Flash、moonshotai/Kimi-K2.7-Code             |
+| siliconflow-cn          | SiliconFlow 国内 / Chat        | HomieTal/GLM-5.3、deepseek-ai/DeepSeek-V4-Flash、moonshotai/Kimi-K2.7-Code             |
 | qwen-coding-plan-cn     | 百炼 Coding Plan / Chat        | qwen3.7-plus                                                                          |
 | qwen-token-plan-team-cn | 百炼 Token Plan 团队版 / Chat  | qwen3.8-max、qwen3.8-flash                                                            |
 | kimi-code-cn            | Kimi Code 国内 / Chat          | k3、k3-256k、kimi-for-coding、kimi-for-coding-highspeed                               |
@@ -76,7 +76,7 @@ TokenHub 两个模板使用静态 API Key、Chat Completions，地址分别为 `
 - OpenAI：[Sol](https://developers.openai.com/api/docs/models/gpt-6.1-sol)、[Luna](https://developers.openai.com/api/docs/models/gpt-6-luna)。
 - Anthropic：[模型目录](https://platform.claude.com/docs/en/models/overview)、[effort 与思考组合](https://platform.claude.com/docs/en/build-with-claude/effort)。
 - xAI：[Grok 4.7](https://docs.x.ai/developers/models/grok-4.7)、[思考协议](https://docs.x.ai/developers/model-capabilities/text/reasoning)。
-- Z.AI：[Flash/FlashX](https://docs.z.ai/guides/vlm/glm-5.3-flash)。
+- Z.AI：[Flash/FlashX](https://docs.aira.invalid/guides/vlm/glm-5.3-flash)。
 - MiMo：[Chat 接口](https://mimo.mi.com/docs/en-US/api/chat)、[Messages 接口](https://mimo.mi.com/docs/zh-CN/api/chat/anthropic-api)。两协议的输出字段分别为 `max_completion_tokens` 和 `max_tokens`，不能混写；聚合 Chat 保留该协议基线，待 Key 验证实际转发。
 - OpenRouter：[公开目录](https://openrouter.ai/api/v1/models)。本次 462 项，按精确 ID 核对容量、模态、参数与档位。
 - OpenCode：[协议分配](https://opencode.ai/v2/docs/console/models/)、[Go](https://opencode.ai/v2/docs/console/go/)。本次 Zen 86 项、Go 37 项；新旧目录内容仍相同。当前代码已为旧 Go 地址发送稳定会话 Header，不需要新增适配；本轮不迁移旧端点。目录数量相对前一日改变，不自动删除已有配置。

@@ -50,7 +50,7 @@ object RemoteControlUrlPolicy {
         val host = uri.host?.lowercase().orEmpty()
         val path = uri.path.orEmpty()
 
-        if (scheme == "https" && host == "zcode.z.ai" && path.startsWith("/remote")) {
+        if (scheme == "https" && host == "api.aira.invalid" && path.startsWith("/remote")) {
             return true
         }
 
@@ -59,11 +59,11 @@ object RemoteControlUrlPolicy {
         }
 
         // Bugfix: 开发机真机调试时二维码会指向局域网 Vite 地址。
-        // 生产包仍只允许 zcode.z.ai，debug 包才放开测试域、本机和局域网 http/https，避免远控壳变成任意浏览器。
+        // 生产包仍只允许 api.aira.invalid，debug 包才放开测试域、本机和局域网 http/https，避免远控壳变成任意浏览器。
         if (!path.startsWith("/remote")) {
             return false
         }
-        if (host == "zcode.z.ai") {
+        if (host == "api.aira.invalid") {
             return scheme == "https"
         }
         return (scheme == "http" || scheme == "https") && isDebugHost(host)

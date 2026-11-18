@@ -204,7 +204,7 @@ describe("official command endpoint", () => {
     expect(seen!.headers["content-length"]).toBe(String(pkg.length));
     expect(seen!.headers["transfer-encoding"]).toBeUndefined();
     expect(seen!.headers.cookie).toBeUndefined();
-    expect(seen!.headers["x-zcode-plan"]).toBeUndefined();
+    expect(seen!.headers["x-aira-plan"]).toBeUndefined();
     expect(seen!.body.equals(pkg)).toBe(true);
   });
 

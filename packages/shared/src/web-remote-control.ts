@@ -146,7 +146,7 @@ export function resolveWebRemoteControlRoutePathFromBaseUrl(baseUrl: string): st
   let pathname = "/";
 
   try {
-    pathname = new URL(rawBaseUrl, "https://zcode.invalid").pathname;
+    pathname = new URL(rawBaseUrl, "https://aira.invalid").pathname;
   } catch {
     pathname = rawBaseUrl.startsWith("/") ? rawBaseUrl : `/${rawBaseUrl}`;
   }

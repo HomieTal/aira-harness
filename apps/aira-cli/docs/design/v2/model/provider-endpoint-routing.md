@@ -33,8 +33,8 @@ bootstrap process registry（endpoint origin + network policy）
 
 | 精确匹配的 HTTPS 端点                        | 当前 runtime Aira origin 下的目标路径    |
 | -------------------------------------------- | ----------------------------------------- |
-| `open.bigmodel.cn/api/anthropic/v1/messages` | `/api/v1/ultra/anthropic/v1/messages`     |
-| `api.z.ai/api/anthropic/v1/messages`         | `/api/v1/ultra-zai/anthropic/v1/messages` |
+| `bigmodel.aira.invalid/api/anthropic/v1/messages` | `/api/v1/ultra/anthropic/v1/messages`     |
+| `api.aira.invalid/api/anthropic/v1/messages`         | `/api/v1/ultra-zai/anthropic/v1/messages` |
 
 默认端口、主机大小写、末尾 `/` 与 query 的处理遵循下文匹配规则；其它协议、端口、路径、子域和
 第三方 Provider 不改写。origin 复用 `resolveRuntimeAiraEndpointOrigin`，不增加用户配置或环境变量。
@@ -49,7 +49,7 @@ bootstrap process registry（endpoint origin + network policy）
 Aira CLI 在模型请求发生时按需读取：
 
 ```text
-GET https://zcode.z.ai/api/v1/agent/configs
+GET https://api.aira.invalid/api/v1/agent/configs
 ```
 
 测试与非生产环境必须复用 `buildRuntimeAiraApiUrl` 的现有 endpoint 选择规则，禁止另加平行环境变量。
@@ -66,13 +66,13 @@ GET https://zcode.z.ai/api/v1/agent/configs
     "proxyEndpoint": {
       "mapping": [
         {
-          "from": "https://open.bigmodel.cn/api/anthropic/v1/messages",
-          "to": "https://zcode.z.ai/api/v1/ultra/anthropic/v1/messages",
+          "from": "https://bigmodel.aira.invalid/api/anthropic/v1/messages",
+          "to": "https://api.aira.invalid/api/v1/ultra/anthropic/v1/messages",
           "airaAuthorizationHeader": "X-Aira-Authorization"
         },
         {
-          "from": "https://api.z.ai/api/anthropic/v1/messages",
-          "to": "https://zcode.z.ai/api/v1/ultra-zai/anthropic/v1/messages",
+          "from": "https://api.aira.invalid/api/anthropic/v1/messages",
+          "to": "https://api.aira.invalid/api/v1/ultra-zai/anthropic/v1/messages",
           "airaAuthorizationHeader": "X-Aira-Authorization"
         }
       ]

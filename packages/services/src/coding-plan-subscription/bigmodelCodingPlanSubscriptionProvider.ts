@@ -10,7 +10,7 @@ import {
   isRequestVerificationMessage,
   type RequestVerificationClientConfig,
 } from "@aira/shared";
-/* eslint-disable max-lines -- Coding Plan provider 需要集中维护 BigModel 支付宝与 Z.ai Stripe/PayPal 接口映射，拆分会让共享鉴权和响应解包更难追踪。 */
+/* eslint-disable max-lines -- Coding Plan provider 需要集中维护 BigModel 支付宝与 Aira Stripe/PayPal 接口映射，拆分会让共享鉴权和响应解包更难追踪。 */
 import type {
   ApiClient,
   ApiRequestInit,
@@ -279,7 +279,7 @@ export class BigModelCodingPlanSubscriptionProvider {
 
   async getManualClaimPlanPreviews(): Promise<ManualClaimPlanPreviewSnapshot> {
     const token = (await this.credentialService.load(AIRA_JWT_TOKEN_KEY))?.trim();
-    const url = new URL(buildRuntimeAiraApiUrl(process.env, "/api/v1/zcode-plan/billing/preview"));
+    const url = new URL(buildRuntimeAiraApiUrl(process.env, "/api/v1/aira-plan/billing/preview"));
     url.searchParams.set("app_version", AIRA_VERSION);
     url.searchParams.set("platform", resolveClientPlatformKey());
     const payload = await readCodingPlanApiJson<RemoteEnvelope<ManualClaimPlanPreviewPayload>>(
@@ -346,7 +346,7 @@ export class BigModelCodingPlanSubscriptionProvider {
       Omit<RemoteEnvelope<ManualClaimPlanClaimPayload>, "code"> & { code?: number | string }
     >(
       this.apiClient,
-      new URL(buildRuntimeAiraApiUrl(process.env, "/api/v1/zcode-plan/billing/claim")),
+      new URL(buildRuntimeAiraApiUrl(process.env, "/api/v1/aira-plan/billing/claim")),
       {
         method: "POST",
         headers: {
@@ -906,7 +906,7 @@ export class BigModelCodingPlanSubscriptionProvider {
     const airaJwtToken = account?.airaJwtToken;
     if (airaJwtToken && token === airaJwtToken) {
       // 旧版 BigModel OAuth callback 曾把 aira JWT 同时写进
-      // oauth:bigmodel:access_token，付费套餐预览会拿它去打 bigmodel.cn 并报令牌过期。
+      // oauth:bigmodel:access_token，付费套餐预览会拿它去打 bigmodel.aira.invalid 并报令牌过期。
       // 这里在服务边界拦截旧污染状态，避免继续向 BigModel 业务接口发送错误凭据。
       log.warn(undefined, "BigModel access token is stale aira JWT; login required");
       throw new Error("bigmodel_oauth_required");
@@ -1293,7 +1293,7 @@ export function createBigModelLoginAuthHeaders(token: string): Record<string, st
 
 export function createZaiLoginAuthHeaders(token: string): Record<string, string> {
   return {
-    // Z.ai provider connection 已把 access_token 持久化为业务 JWT。
+    // Aira provider connection 已把 access_token 持久化为业务 JWT。
     // 这里不能使用模型 API key，也不能给业务 JWT 添加 Bearer 前缀。
     Authorization: token,
     "Content-Type": "application/json",
@@ -1307,13 +1307,13 @@ function resolveCodingPlanHost(providerId: CodingPlanSubscriptionProviderId | un
 }
 
 function resolveZaiCodingPlanHost(): string {
-  // Z.ai Coding Plan 的 /api/biz 与 /api/pay 业务接口必须跟随产品环境。
-  // 业务 token 必须发送到 .env 配置的 ZAI Business origin；未覆盖时默认 api.z.ai。
+  // Aira Coding Plan 的 /api/biz 与 /api/pay 业务接口必须跟随产品环境。
+  // 业务 token 必须发送到 .env 配置的 ZAI Business origin；未覆盖时默认 api.aira.invalid。
   return resolveZaiBusinessBaseUrl(process.env);
 }
 
 function resolveBigModelEnterpriseHost(): string {
-  // 企业套餐 token 必须发送到 .env 配置的 BigModel origin；未覆盖时默认 bigmodel.cn，
+  // 企业套餐 token 必须发送到 .env 配置的 BigModel origin；未覆盖时默认 bigmodel.aira.invalid，
   // 服务端返回空响应后被归一成系统繁忙。
   return resolveBigModelApiOrigin(process.env);
 }
@@ -1588,7 +1588,7 @@ function isUnrenderableRemoteErrorMessage(message: string): boolean {
 }
 
 function resolveCodingPlanProviderName(providerId: CodingPlanSubscriptionProviderId): string {
-  return isZaiCodingPlanProviderId(providerId) ? "Z.ai" : "BigModel";
+  return isZaiCodingPlanProviderId(providerId) ? "Aira" : "BigModel";
 }
 
 function dropUndefined(value: Record<string, unknown>): Record<string, unknown> {

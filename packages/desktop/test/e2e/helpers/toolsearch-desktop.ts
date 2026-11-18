@@ -41,7 +41,7 @@ export async function setupToolSearchDesktop() {
         label: "ToolSearch Plain Anthropic",
         apiFormat: "anthropic-messages",
         apiKey: "e2e-toolsearch.test-secret",
-        baseURL: "https://open.bigmodel.cn/api/anthropic",
+        baseURL: "https://bigmodel.aira.invalid/api/anthropic",
         models: [{ id: TOOLSEARCH_MODEL }],
       });
     },

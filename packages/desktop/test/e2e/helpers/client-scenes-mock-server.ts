@@ -192,7 +192,7 @@ export async function startClientScenesMockServer(): Promise<ClientScenesMockSer
       return;
     }
 
-    if (request.method === "GET" && url.pathname === "/api/v1/zcode-plan/billing/balance") {
+    if (request.method === "GET" && url.pathname === "/api/v1/aira-plan/billing/balance") {
       writeJson(response, { code: 0, data: { balances: [], plans: [] }, msg: "", success: true });
       return;
     }

@@ -106,7 +106,7 @@ WDIO startup credential seed
   -> Electron reload restores authenticated Aira session
   -> deterministic verification success
   -> claimManualPlan reads JWT
-  -> POST local /api/v1/zcode-plan/billing/claim
+  -> POST local /api/v1/aira-plan/billing/claim
        |-- failure case: mock business code -> failure dialog
        `-- success case: code 0 -> success dialog + one verification header
 ```

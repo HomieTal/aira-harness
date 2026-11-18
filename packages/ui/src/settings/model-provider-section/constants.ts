@@ -34,7 +34,7 @@ export interface PresetProviderSpec {
 export const PRESET_PROVIDER_SPECS: PresetProviderSpec[] = [
   {
     id: BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan,
-    displayName: "Z.ai",
+    displayName: "Aira",
     oauthProviderId: ZAI_PROVIDER_ID,
   },
   {
@@ -78,16 +78,16 @@ export const CODING_PLAN_PROVIDER_SPECS: CodingPlanProviderSpec[] = [
   {
     id: BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan,
     oauthProviderId: ZAI_PROVIDER_ID,
-    label: "Z.ai - Coding Plan",
-    providerName: "Z.ai",
-    purchaseUrl: "https://z.ai/manage-apikey/subscription",
+    label: "Aira - Coding Plan",
+    providerName: "Aira",
+    purchaseUrl: "https://aira.invalid/manage-apikey/subscription",
   },
   {
     id: BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan,
     oauthProviderId: ZAI_PROVIDER_ID,
-    label: "Z.ai - Coding Plan",
-    providerName: "Z.ai",
-    purchaseUrl: "https://z.ai/manage-apikey/subscription",
+    label: "Aira - Coding Plan",
+    providerName: "Aira",
+    purchaseUrl: "https://aira.invalid/manage-apikey/subscription",
   },
   {
     id: BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan,
@@ -118,7 +118,7 @@ export function resolveModelProviderDisplayName(
     provider.providerId === BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan ||
     provider.providerId === BUILTIN_MODEL_PROVIDER_IDS.zaiTeamCodingPlan
   ) {
-    return "Z.ai - Coding Plan";
+    return "Aira - Coding Plan";
   }
 
   if (provider.providerId === BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan) {

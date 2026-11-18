@@ -14,7 +14,7 @@ import openAiLogo from "@/assets/provider-icons/model-provider-openai.png";
 import xAiLogo from "@/assets/provider-icons/model-provider-xai.png";
 import xiaomiMimoLogo from "@/assets/provider-icons/model-provider-xiaomi-mimo.png";
 import startPlanLogo from "@/assets/provider-icons/model-provider-start-plan.png";
-import zaiLogo from "@/assets/provider-icons/model-provider-zai-app.png";
+import zaiLogo from "@/assets/provider-icons/model-provider-aira-app.png";
 import openrouterLight from "@/assets/provider-icons/model-provider-openrouter-light.svg";
 import openrouterDark from "@/assets/provider-icons/model-provider-openrouter-dark.svg";
 import opencodeLight from "@/assets/provider-icons/model-provider-opencode-light.svg";

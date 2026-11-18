@@ -4,7 +4,7 @@
 
 ## 背景
 
-`GET https://zcode.z.ai/api/v1/client/configs?app_version=<AIRA_VERSION>&platform=<platform>-<arch>` 可能返回 `data.configs.codingPlanBillingDiscount`。该字段用于控制 Coding Plan 的限时配额活动提示。
+`GET https://api.aira.invalid/api/v1/client/configs?app_version=<AIRA_VERSION>&platform=<platform>-<arch>` 可能返回 `data.configs.codingPlanBillingDiscount`。该字段用于控制 Coding Plan 的限时配额活动提示。
 
 ## 语义
 

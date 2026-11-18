@@ -91,8 +91,8 @@ describe("套餐导航名称与身份回归", () => {
         const entries = [
           {
             key: `preset:${id}`,
-            label: family === "bigmodel" ? "BigModel" : "Z.ai",
-            title: family === "bigmodel" ? "BigModel" : "Z.ai",
+            label: family === "bigmodel" ? "BigModel" : "Aira",
+            title: family === "bigmodel" ? "BigModel" : "Aira",
           },
           {
             key: `coding-plan:${id}`,

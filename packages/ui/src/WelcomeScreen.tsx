@@ -128,8 +128,8 @@ export function CredentialStoreRecovery({
   );
 }
 
-const LOGIN_TERMS_URL = "https://zcode.z.ai/terms";
-const LOGIN_PRIVACY_URL = "https://zcode.z.ai/privacy";
+const LOGIN_TERMS_URL = "https://api.aira.invalid/terms";
+const LOGIN_PRIVACY_URL = "https://api.aira.invalid/privacy";
 
 interface WelcomeScreenProps {
   onComplete: (reason: LoginCompleteReason) => void | Promise<void>;
@@ -137,7 +137,7 @@ interface WelcomeScreenProps {
 
 export type LoginCompleteReason = "oauth" | "apiKey" | "skip";
 
-/** 登录页区域展示态；真实区域路由等 Z.ai 国内一方登录 provider 就绪后再接入。 */
+/** 登录页区域展示态；真实区域路由等 Aira 国内一方登录 provider 就绪后再接入。 */
 type SingleLoginRegion = "domestic" | "global";
 
 /** 区域展示态跟随界面语言：英文默认海外，中文默认国内。 */
@@ -692,7 +692,7 @@ function LoginPanelLogo() {
 
 function getProviderPriority(provider: OAuthProviderMeta): number {
   switch (provider.id) {
-    // 保持内置 provider 的稳定顺序；登录入口固定取 Z.ai，其余 provider 只服务于显式连接请求。
+    // 保持内置 provider 的稳定顺序；登录入口固定取 Aira，其余 provider 只服务于显式连接请求。
     case ZAI_PROVIDER_ID:
       return 0;
     case BIGMODEL_PROVIDER_ID:
@@ -703,7 +703,7 @@ function getProviderPriority(provider: OAuthProviderMeta): number {
 }
 
 export function resolveVisibleLoginProviders(providers: OAuthProviderMeta[]): OAuthProviderMeta[] {
-  // 保持 Z.ai 在前、BigModel 在后的稳定顺序。
+  // 保持 Aira 在前、BigModel 在后的稳定顺序。
   return [...providers].sort((left, right) => {
     return getProviderPriority(left) - getProviderPriority(right);
   });

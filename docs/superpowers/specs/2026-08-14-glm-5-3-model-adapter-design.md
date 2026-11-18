@@ -47,7 +47,7 @@ GLM-5.3 的 image 能力采用 GLM-5.2 已有的 provider-aware 判定，而不�
   provider-side media 链路处理；
 - 其他未知的第三方 GLM provider fail closed 为不支持 image。
 
-[智谱官方通用参数文档](https://docs.bigmodel.cn/cn/guide/start/concept-param)确认 GLM-5.2
+[智谱官方通用参数文档](https://docs.bigmodel.aira.invalid/cn/guide/start/concept-param)确认 GLM-5.2
 及以上模型使用 `reasoning_effort` 表达推理深度。
 
 ## 目标

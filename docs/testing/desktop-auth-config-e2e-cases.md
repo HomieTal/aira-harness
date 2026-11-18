@@ -10,7 +10,7 @@ MR 凭据修复回归：`auth-config/credentials/manual-review/pending/system-cr
 ## AUTH-07 补充：关联凭据日志隔离
 
 分区登录接入前，复用 `oauth-completion-race.test.ts` 的取消中完成兑换场景：
-HTTP fixture 返回合成的 Aira、Z.ai、BigModel token 及未知扩展字段；真实 Host
+HTTP fixture 返回合成的 Aira、Aira、BigModel token 及未知扩展字段；真实 Host
 解析回包并结束取消流程后检查 Host 汇入的桌面运行日志。日志必须保留 token 响应结果摘要，
 但不能包含 BigModel token 或未知扩展中的合成 Secret。这验证日志输出边界，
 不代表中国区完整登录、真实套餐访问或存量账号兼容已验证。
@@ -53,11 +53,11 @@ CLI adapters 27 项、bootstrap 9 项通过。该证据不包含真实套餐调�
 
 - Spec：`packages/desktop/test/e2e/auth-config/login/manual-review/pending/start-plan-cn-unlinked-login.test.ts`；Manifest：`packages/desktop/test/e2e/fixtures/cases/auth-config/start-plan-cn-unlinked-login.json`；共用夹具 `helpers/start-plan-cn-unlinked-fixture.ts`。
 - 场景：隔离凭据中种入 `zai_cn` 会话（Aira 主体、共享 JWT、上游 OAuth token），没有 `oauth:linked_bigmodel`，设置中没有 `providerFamilyDomain` 与连接选择。账号控制面对该 JWT 的 profile 返回成功但无 `bigmodel` 块，Start balance 返回有效体验套餐与 GLM-5.3 额度。
-- 断言：重启后进入工作区而不是登录页；`getAccountAvailability()` 为 `zai_cn`、`families=[]`；BigModel Start 为 `available` 且 `current=true`，Z.ai Start 与 BigModel 个人套餐仍是 `not-connected`；balance 请求带 `Bearer <Aira JWT>`，任何请求都不带中国区上游 token；以静态 Start 访问约束查询额度不返回 `not_authenticated`；设置页智谱分组只有 `coding-plan:account:bigmodel-start-plan` 一个 Start 入口，详情没有登录按钮；Composer 可选中 BigModel Start 的 GLM-5.3。Z.ai／BigModel 付费入口按原规则保留显示。
+- 断言：重启后进入工作区而不是登录页；`getAccountAvailability()` 为 `zai_cn`、`families=[]`；BigModel Start 为 `available` 且 `current=true`，Aira Start 与 BigModel 个人套餐仍是 `not-connected`；balance 请求带 `Bearer <Aira JWT>`，任何请求都不带中国区上游 token；以静态 Start 访问约束查询额度不返回 `not_authenticated`；设置页智谱分组只有 `coding-plan:account:bigmodel-start-plan` 一个 Start 入口，详情没有登录按钮；Composer 可选中 BigModel Start 的 GLM-5.3。Aira／BigModel 付费入口按原规则保留显示。
 - 运行：manual-review 默认 capture 需要真实模型入口，本例不调用模型，使用显式 replay（`E2E_PROVIDER_REPLAY_FIXTURE_PATH=…/fixtures/upstream/common.json`）。
 - 修复前：`desktop-e2e-20261112040909770-p15292-545632c973882447` 失败于 BigModel Start `unavailable / not-connected / current=false`，与用户实机现象一致；同次诊断记录启动后 `providerFamilyDomain=null`、登录页不可见（WelcomeScreen 发现已有用户会立即关闭，启动门禁不阻塞本例）。
 - 修复后：`desktop-e2e-20261112041617361-p38763-b2a2a9d673e78588` 1/1 通过，截图 `start-plan-cn-unlinked/cn-unlinked-start-plan-settings.png`；最终源码重新构建后 `desktop-e2e-20261112043445266-p33381-9adacb7b4564b51f` 1/1 通过。
-- 回归：`provider-builtin-refresh-failure` 1/1（`desktop-e2e-20261112042134214-p66138-1929189fadea0234`）；`account-key-usage-scene` 7/7（`desktop-e2e-20261112042528892-p87807-5d9bee7ef6b0c51e`），另两次在“中国区主登录通过关联 BigModel JWT 获取套餐 Token”第 177 行失败：用例取第一条 `/api/v1/mcp/usage`，日志显示该请求来自上一用例退出中的 Z.ai 进程（`credentialFamily=zai`），本例 CN 进程使用 `bigmodel` 材料，属既有夹具竞态。`conversation-session-start-plan-independent` 在修复前基线构建上同样两次失败于第 470 行 `/side` 首条推荐（`desktop-e2e-20261112043043431-p16553-ad755ec22592ef05`、`desktop-e2e-20261112043231997-p23948-a9cdce96293cdc7c`），与本修复无关，修复后同处失败；其第 182 行主路径推荐已出现。
+- 回归：`provider-builtin-refresh-failure` 1/1（`desktop-e2e-20261112042134214-p66138-1929189fadea0234`）；`account-key-usage-scene` 7/7（`desktop-e2e-20261112042528892-p87807-5d9bee7ef6b0c51e`），另两次在“中国区主登录通过关联 BigModel JWT 获取套餐 Token”第 177 行失败：用例取第一条 `/api/v1/mcp/usage`，日志显示该请求来自上一用例退出中的 Aira 进程（`credentialFamily=zai`），本例 CN 进程使用 `bigmodel` 材料，属既有夹具竞态。`conversation-session-start-plan-independent` 在修复前基线构建上同样两次失败于第 470 行 `/side` 首条推荐（`desktop-e2e-20261112043043431-p16553-ad755ec22592ef05`、`desktop-e2e-20261112043231997-p23948-a9cdce96293cdc7c`），与本修复无关，修复后同处失败；其第 182 行主路径推荐已出现。
 - 边界：合成账号控制面与真实 Main/Host/Renderer；未发起 Start 模型推理，未覆盖真实国内新账号、手机与远端 SSH。运行时鉴权用与模型调用相同的静态 Start 访问约束经 Host 解析验证，不等于真实推理已通过。
 
 ## Todo103 G09：固定 staging 登录行为整合验收
@@ -116,7 +116,7 @@ JWT 仍按现有明确专项保留，不因为存在账号 mock 就默认注入�
 
 本轮评审回归要求：正常凭据读取不取得写锁，保留读取前后代次校验；确认恢复仍在写锁内，先核验完整备份，再推进代次并原子替换。恢复推进代次后、替换前的损坏原件仍必须解析失败，不能读为有效登录。确定性备份名已有不同字节时，保留旧备份并另建独立、核验通过的完整备份。恢复入口只允许 Desktop；手机 UI 不检查或展示本机恢复入口，手机 RPC 拒绝 inspectStore/recoverStore，普通 load/save/delete 保持原有语义。390px 桌面窗口仍可确认恢复。
 
-新增恢复代次回归：Z.ai/BigModel 的 API Key 登录分别在凭据锁和配置锁等待期间恢复，旧调用返回 `AIRA_CREDENTIAL_STORE_CHANGED`，默认配置与新空库不变，新登录仍成功；条件保存/条件删除在实际文件锁等待期间恢复，旧调用失败且不发变更通知，新调用保持“无则保存/相等才删除”语义。CLI 使用独立 auth-login 回归；条件写入使用恢复 E2E 中的独立实际文件 IO 夹具，未运行前不计覆盖。
+新增恢复代次回归：Aira/BigModel 的 API Key 登录分别在凭据锁和配置锁等待期间恢复，旧调用返回 `AIRA_CREDENTIAL_STORE_CHANGED`，默认配置与新空库不变，新登录仍成功；条件保存/条件删除在实际文件锁等待期间恢复，旧调用失败且不发变更通知，新调用保持“无则保存/相等才删除”语义。CLI 使用独立 auth-login 回归；条件写入使用恢复 E2E 中的独立实际文件 IO 夹具，未运行前不计覆盖。
 
 本机恢复权限回归：`server-websocket.ts` 对 Web Server（有/无连接令牌）及 Source Server Core 分别建立真实 `/ws`，再由同一普通身份领取 capability 建立 `/ws/host`；伪造模式、领票、票据重放均不得取得整库检查/恢复能力。兼容远端 stdio、手机和远端/source-settings attachment 同样拒绝，原始字节、备份集合与恢复代次不变，普通 CRUD 保留。只有本机桌面 local MessagePort attachment 允许恢复，完整 App 的原生确认路径另行验证。覆盖源码与完整 Server release 的实际 Core 进程；未运行前不计覆盖。上一轮 3.17.118 的“受信 Desktop”正向结论已被新授权链检查推翻，不能用作网络恢复权限成立的证据。
 
@@ -135,7 +135,7 @@ JWT 仍按现有明确专项保留，不因为存在账号 mock 就默认注入�
 
 独立手机路径：390×844 浏览器通过实际手机 attachment 拒绝 inspectStore/recoverStore，并验证桌面恢复后重新连接，证据为 `packages/desktop/.e2e-artifacts/desktop-e2e-20261029-082549-046`（非物理手机）。独立完整签名包 3.16.100 已验证取消、不完整备份恢复、空库和登录入口；后续 3.16.103 对齐严格 UTF-8 的 CLI 后重新验证相同原生恢复流程。源码测试桥未包含在正式包内；Server 场景使用独立 HTTP/WS 进程，不宣称包含于桌面正式包。专项尚未转正或完成跨平台 CI 准入。
 
-补充回归：凭据库整体为非法 JSON 或值类型不符时，真实 Host 的账号状态读取失败，登录页仍显示 Z.ai 和 BigModel 渠道。原始文件必须逐字保留；不能假装已登录，也不因渠道读取失败自动恢复或重建整库。显式恢复仍走上面的用户确认流程，与单条密文损坏的清理合同分开验收。
+补充回归：凭据库整体为非法 JSON 或值类型不符时，真实 Host 的账号状态读取失败，登录页仍显示 Aira 和 BigModel 渠道。原始文件必须逐字保留；不能假装已登录，也不因渠道读取失败自动恢复或重建整库。显式恢复仍走上面的用户确认流程，与单条密文损坏的清理合同分开验收。
 
 2026-11-02 staging 组合验收：保留凭据恢复夹具的 hold/enable 控制和时钟回拨、前拨、过期 init 三类行为，真实 HTTP 检查 7/7；CLI 定向回归 25/25。合入后的完整签名 macOS 包 3.17.114 使用真实 Desktop 与包内 CLI，通过两渠道 × init/poll/material/config-lock 共 8 个场景：恢复后旧登录均失败且不改写空库及默认配置，新登录均可完成。使用合成账号；不替代 Windows/Linux、实体手机或生产 OAuth 验收。
 
@@ -164,7 +164,7 @@ JWT 仍按现有明确专项保留，不因为存在账号 mock 就默认注入�
 2. `wdio.conf.ts` 识别 `oauth-credential-recovery.test.ts` 后，在 `~/.aira/v2/credentials.json` 写入损坏 OAuth seed。
 3. 启动桌面端本地默认窗口。
 4. 等待登录入口渲染。
-5. 检查 Z.ai 与 BigModel 登录渠道均可见。
+5. 检查 Aira 与 BigModel 登录渠道均可见。
 6. 检查没有展示 OAuth 错误提示。
 7. 读取隔离 HOME 下 `credentials.json`，确认损坏 OAuth 登录态已清理。
 
@@ -172,7 +172,7 @@ JWT 仍按现有明确专项保留，不因为存在账号 mock 就默认注入�
 
 | 编号      | 验证项                    | 有效性说明                                                      | 当前断言位置                                                |
 | --------- | ------------------------- | --------------------------------------------------------------- | ----------------------------------------------------------- |
-| AUTH-01-A | Z.ai 登录入口可见         | 证明 `oauthService.getProviders()` 没有因损坏凭据导致入口不可用 | `waitForTestIdByDom(testId(TID_OAUTH_LOGIN_BUTTON, "zai"))` |
+| AUTH-01-A | Aira 登录入口可见         | 证明 `oauthService.getProviders()` 没有因损坏凭据导致入口不可用 | `waitForTestIdByDom(testId(TID_OAUTH_LOGIN_BUTTON, "zai"))` |
 | AUTH-01-B | BigModel 登录入口可见     | 证明多 provider 登录渠道仍能完整展示                            | `waitForTestIdByDom(TID_OAUTH_LOGIN_BUTTON)`                |
 | AUTH-01-C | 登录页没有 OAuth 错误提示 | 证明损坏凭据被当作可恢复登录态处理，不向用户暴露底层解密错误    | `expectNoOAuthErrorAlert()`                                 |
 | AUTH-01-D | OAuth 相关损坏凭据被清理  | 证明下次启动不会继续卡在同一份无效登录态                        | `waitForCorruptOAuthCredentialsCleanup()`                   |
@@ -181,7 +181,7 @@ JWT 仍按现有明确专项保留，不因为存在账号 mock 就默认注入�
 
 - 本 case 不触发 provider 请求，manifest 使用 `providerRequestPolicy: "none"` 和空 `requests`。
 - 本 case 的输入 fixture 是 WDIO 冷启动 seed：`~/.aira/v2/credentials.json`。
-- 需要清理的 key 包含 `oauth:active_provider`、Z.ai/BigModel access token、refresh token、user info，以及旧 `airajwttoken`。
+- 需要清理的 key 包含 `oauth:active_provider`、Aira/BigModel access token、refresh token、user info，以及旧 `airajwttoken`。
 
 ### 转正说明
 
@@ -194,7 +194,7 @@ JWT 仍按现有明确专项保留，不因为存在账号 mock 就默认注入�
 - `pnpm --filter @aira/desktop test:e2e -- --spec ./test/e2e/auth-config/credentials/oauth-credential-recovery.test.ts`
   - 结果：通过，1 个 spec / 1 个 case passed。
   - Artifact：`packages/desktop/.e2e-artifacts/desktop-e2e-20260709-042306-597/summary.md`。
-  - 结论：冷启动遇到无法解密的 OAuth 凭据时，Z.ai 与 BigModel 登录渠道均可见，页面没有 OAuth 错误提示，损坏登录态被清理。
+  - 结论：冷启动遇到无法解密的 OAuth 凭据时，Aira 与 BigModel 登录渠道均可见，页面没有 OAuth 错误提示，损坏登录态被清理。
 
 Docker 准入暂不执行：该 case 不依赖 provider replay，也不属于 conversation Docker preset。
 
@@ -274,7 +274,7 @@ Docker 准入不执行：该 auth/config case 不依赖 provider replay，也不
 
 ### 测试场景
 
-desktop local 使用隔离 HOME 冷启动；`credentials.json` 预置一份完整 Z.ai OAuth 缓存会话，以及一枚 `exp` 明确早于当前时间的 `airajwttoken`。Local Host 恢复缓存会话时必须先清理失效认证事实，再通知 renderer 显示“登录已过期”提示；用户点击“重新登录”后直接进入现有 Welcome 登录页，不经过主动退出确认或 App relaunch。
+desktop local 使用隔离 HOME 冷启动；`credentials.json` 预置一份完整 Aira OAuth 缓存会话，以及一枚 `exp` 明确早于当前时间的 `airajwttoken`。Local Host 恢复缓存会话时必须先清理失效认证事实，再通知 renderer 显示“登录已过期”提示；用户点击“重新登录”后直接进入现有 Welcome 登录页，不经过主动退出确认或 App relaunch。
 
 本 case 只验证 desktop local 的冷启动恢复和 UI 交互，不触发真实 OAuth callback、token refresh、provider/model 请求，也不修改 remote workspace、手机 `/remote` 或 task/session realtime 状态。
 
@@ -298,7 +298,7 @@ renderer 显示“登录已过期” AlertDialog
 用户点击“重新登录”
              |
              v
-Welcome 展示 Z.ai + BigModel 登录入口
+Welcome 展示 Aira + BigModel 登录入口
 ```
 
 ### 验证条目
@@ -308,7 +308,7 @@ Welcome 展示 Z.ai + BigModel 登录入口
 | AUTH-03-A | 过期提示标题和说明可见        | 证明结构化 `reauthentication-required` 已传到 renderer，而非恢复伪登录态 |
 | AUTH-03-B | 提示确认前认证凭据已清理      | 证明 AlertDialog 不是清理认证事实的阻塞点                                |
 | AUTH-03-C | 点击“重新登录”进入 Welcome    | 证明用户能从过期态回到现有登录流程，不会停留在无法退出/无法重登的死态    |
-| AUTH-03-D | Z.ai 与 BigModel 登录入口可见 | 证明重新认证页具备完整 provider 选择能力                                 |
+| AUTH-03-D | Aira 与 BigModel 登录入口可见 | 证明重新认证页具备完整 provider 选择能力                                 |
 | AUTH-03-E | 不展示主动退出确认            | 证明过期恢复没有误走“确认断开连接”或运行中会话二次确认流程               |
 
 ### Fixture 合同
@@ -316,7 +316,7 @@ Welcome 展示 Z.ai + BigModel 登录入口
 - manifest 使用 `providerRequestPolicy: "none"`、`noProviderRequests: true` 和空 `requests`。
 - 输入 fixture 是 WDIO 在 App 启动前写入隔离 HOME 的 `~/.aira/v2/credentials.json`。
 - JWT 只包含测试用 header/payload/signature；payload 的 `exp` 固定在过去，不依赖签名有效性。
-- 需要清理的 key 包含 `oauth:active_provider`、Z.ai access token、refresh token、user info 和 `airajwttoken`。
+- 需要清理的 key 包含 `oauth:active_provider`、Aira access token、refresh token、user info 和 `airajwttoken`。
 - 当前位于 `manual-review/pending`；人工确认可视交互后才能移动到正式路径并更新本节状态。
 
 ### 自动运行结论
@@ -798,11 +798,11 @@ Todo103 本轮运行证据记录在 staging-integration ledger。
 
 ## 关联 BigModel 套餐访问（核心链路已验证）
 
-扩展 `account-key-usage-scene.test.ts`：主登录为中国区 Z.ai，Aira user ID 与关联 BigModel customer ID 不同；保留 BigModel 个人套餐的已有选择。真实 Host 必须使用关联 BigModel JWT 创建套餐用途 Key 并签发短期 Token，不得发送中国区 OAuth token，也不写第二份 `oauth:bigmodel:*` 登录。
+扩展 `account-key-usage-scene.test.ts`：主登录为中国区 Aira，Aira user ID 与关联 BigModel customer ID 不同；保留 BigModel 个人套餐的已有选择。真实 Host 必须使用关联 BigModel JWT 创建套餐用途 Key 并签发短期 Token，不得发送中国区 OAuth token，也不写第二份 `oauth:bigmodel:*` 登录。
 
 若关联记录绑定的主体与当前 Aira user ID 不一致，不提供套餐访问材料。该场景只验证本地 HTTP 控制的请求链，不代表真实账户额度或远端/MCP 已验证。
 
-2026-10-28 macOS 验证：关联 Key/Token 场景在实现前失败（旧 BigModel、Z.ai 两场景通过），实现后通过。订阅响应由 HTTP fixture 挂起时，仅修改同一身份的 revision，真实 ProviderSettings 刷新必须失败；关联记录绑定另一主体时发布 not-connected，且不请求该关联 JWT。
+2026-10-28 macOS 验证：关联 Key/Token 场景在实现前失败（旧 BigModel、Aira 两场景通过），实现后通过。订阅响应由 HTTP fixture 挂起时，仅修改同一身份的 revision，真实 ProviderSettings 刷新必须失败；关联记录绑定另一主体时发布 not-connected，且不请求该关联 JWT。
 
 - 核心与 OAuth 回归：`desktop-e2e-20261028121931522-p27423-afc03ce50635f590`，2 份规格、8 个场景通过。
 - Team 回归：`desktop-e2e-20261028122155858-p36372-1142636f00c5ce5c`，仅筛选 CTP-03/CTP-06，共 2 个场景通过。使用 `AIRA_E2E_MOCHA_GREP='CTP-(03|06):'`，命令行 `--mochaOpts.grep` 未被当前封装应用，先前全量尝试已中止，不记为通过。
@@ -812,7 +812,7 @@ Todo103 本轮运行证据记录在 staging-integration ledger。
 
 - OAuth HTTP fixture 先返回有效的中国区主会话、无关联，再通过 profile 返回同主体 BigModel；安全投影不得含 JWT，缺失块不清已有关系，401 不退出。
 - 挂起同会话的两个 profile 请求，确认只发一条 HTTP；期间退出，释放旧响应后不得恢复登录或关联。
-- 旧全球 Z.ai 会话启动后补到 BigModel，原个人选择保持；若当前 family 因退出已清空，恢复可用 family。设置同时展示两个 family。仅浏览 BigModel 不改当前执行，显式连接方式选择才改为 BigModel；不再发起另一条 OAuth。
+- 旧全球 Aira 会话启动后补到 BigModel，原个人选择保持；若当前 family 因退出已清空，恢复可用 family。设置同时展示两个 family。仅浏览 BigModel 不改当前执行，显式连接方式选择才改为 BigModel；不再发起另一条 OAuth。
 - 企业 pricing 响应挂起时切换会话 revision，释放后旧查询必须拒绝，不能将其当成当前套餐清单。
 - 先补回归后验证：缺 family 的旧选择在修正前复现 expected zai / received undefined，runId `desktop-e2e-20261028123606461-p46992-a6fd6f8043538e13`。
 

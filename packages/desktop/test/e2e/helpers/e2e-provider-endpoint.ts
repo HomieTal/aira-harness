@@ -2,7 +2,7 @@ import { requestSecurityEndpointEnv } from "./request-security-edition/index.js"
 
 const LIVE_TEAM_SPEC = "conversation-session-r3-live-bigmodel-team.test.ts";
 const LIVE_SHARE_SPEC = "conversation-session-share-ssh-artifact.test.ts";
-const PRODUCTION_E2E_PROVIDER_CONFIG_ORIGIN = "https://zcode.z.ai";
+const PRODUCTION_E2E_PROVIDER_CONFIG_ORIGIN = "https://api.aira.invalid";
 
 export function getE2EProviderEndpointEnv(
   specs: readonly string[],
@@ -16,9 +16,9 @@ export function getE2EProviderEndpointEnv(
     AIRA_BASE_URL: PRODUCTION_E2E_PROVIDER_CONFIG_ORIGIN,
     AIRA_ENDPOINT_ORIGIN: PRODUCTION_E2E_PROVIDER_CONFIG_ORIGIN,
     // 账号校验独立于 Aira 控制面。SSH 透传 AIRA_ENV，但不透传 BigModel 地址覆盖；
-    // 仅覆盖本机地址会造成模型已可选、远端却向 bigmodel.cn 重试的半通状态。
+    // 仅覆盖本机地址会造成模型已可选、远端却向 bigmodel.aira.invalid 重试的半通状态。
     AIRA_ENV: "production",
-    BIGMODEL_API_BASE_URL: "https://bigmodel.cn",
+    BIGMODEL_API_BASE_URL: "https://bigmodel.aira.invalid",
   };
 }
 

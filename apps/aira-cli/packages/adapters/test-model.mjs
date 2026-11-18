@@ -3,7 +3,7 @@ import { generateText } from "ai";
 
 const client = createAnthropic({
   apiKey: process.env.AIRA_API_KEY,
-  baseURL: "https://open.bigmodel.cn/api/coding/paas/v4",
+  baseURL: "https://bigmodel.aira.invalid/api/coding/paas/v4",
 });
 
 const result = await generateText({

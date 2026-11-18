@@ -1374,7 +1374,7 @@ MR !2618 CR-01：MP-UI-06 使用真实模型保存成功反馈，分别注入长
 ### 剪枝
 
 - provider 请求、聊天首发与持久化由 P0-02 覆盖，本 case 不重复发请求。
-- Z.ai/BigModel、Start/Coding 的等价 resolver 分支由单元测试做 pairwise 覆盖；Coding Plan 列表由服务端
+- Aira/BigModel、Start/Coding 的等价 resolver 分支由单元测试做 pairwise 覆盖；Coding Plan 列表由服务端
   同步且只读，不把自定义供应商的删除操作错误套到套餐页。
 - theme、locale 与 mobile 不改变连接判定；语义 token、双语言文案和响应式 class 由单元测试覆盖。
 

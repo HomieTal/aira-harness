@@ -5,7 +5,7 @@ import shareCardDarkBackgroundUrl from "@/assets/highspeed/share-card.svg";
 import shareCardLightBackgroundUrl from "@/assets/highspeed/share-card-light.svg";
 import shareDialogNoiseUrl from "@/assets/highspeed/share-dialog-noise.png";
 import shareDialogNoiseLightUrl from "@/assets/highspeed/share-dialog-noise-light.png";
-import zaiLogoUrl from "@/assets/highspeed/zai-logo.png";
+import zaiLogoUrl from "@/assets/highspeed/aira-logo.png";
 import { Button } from "@/components/ui/button.js";
 import { AiraWordmarkLogo } from "@/components/ui/AiraAboutLogo.js";
 import {

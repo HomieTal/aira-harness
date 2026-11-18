@@ -59,7 +59,7 @@ describe("Aira CLI login", () => {
         data: {
           flow_id: "flow-failed",
           poll_token: "poll-token",
-          authorize_url: "https://chat.z.ai/oauth/authorize?state=failed",
+          authorize_url: "https://chat.aira.invalid/oauth/authorize?state=failed",
           expires_at: 9999999999,
           poll_interval_sec: 2,
         },
@@ -89,7 +89,7 @@ describe("Aira CLI login", () => {
         code: "auth_failed",
       });
 
-      expect(httpClient.requests[0]?.url).toBe("https://zcode.z.ai/api/v1/oauth/cli/init");
+      expect(httpClient.requests[0]?.url).toBe("https://api.aira.invalid/api/v1/oauth/cli/init");
       // 登录失败前也会读取并迁移凭据，必须确实使用此测试的临时文件。
       const persisted = JSON.parse(await readFile(filePath, "utf8"));
       expect(persisted.fixture).toMatch(/^enc:v2:env:/);
@@ -114,7 +114,7 @@ describe("Aira CLI login", () => {
         data: {
           flow_id: "flow-1",
           poll_token: "poll-token",
-          authorize_url: "https://chat.z.ai/oauth/authorize?state=state",
+          authorize_url: "https://chat.aira.invalid/oauth/authorize?state=state",
           expires_at: 9999999999,
           poll_interval_sec: 2,
         },
@@ -212,7 +212,7 @@ describe("Aira CLI login", () => {
         providerId: BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan,
         accountIdentity: "u_1",
       });
-      expect(authorizeUrl).toBe("https://chat.z.ai/oauth/authorize?state=state");
+      expect(authorizeUrl).toBe("https://chat.aira.invalid/oauth/authorize?state=state");
       expect(statuses).toEqual(["pending", "ready"]);
       expect(result).toMatchObject({
         configPath: personalProviderConfigPath,
@@ -636,7 +636,7 @@ describe("Aira CLI login", () => {
         data: {
           flow_id: "flow-failed",
           poll_token: "poll-token",
-          authorize_url: "https://chat.z.ai/oauth/authorize?state=failed",
+          authorize_url: "https://chat.aira.invalid/oauth/authorize?state=failed",
           expires_at: 9999999999,
           poll_interval_sec: 2,
         },
@@ -672,7 +672,7 @@ describe("Aira CLI login", () => {
           data: {
             flow_id: "flow-expired",
             poll_token: "poll-token",
-            authorize_url: "https://chat.z.ai/oauth/authorize?state=expired",
+            authorize_url: "https://chat.aira.invalid/oauth/authorize?state=expired",
             expires_at: 1,
             poll_interval_sec: 2,
           },
@@ -728,7 +728,7 @@ describe("Aira CLI login", () => {
         data: {
           flow_id: "flow-store-unavailable",
           poll_token: "poll-token",
-          authorize_url: "https://chat.z.ai/oauth/authorize?state=store-unavailable",
+          authorize_url: "https://chat.aira.invalid/oauth/authorize?state=store-unavailable",
           expires_at: 9999999999,
           poll_interval_sec: 2,
         },
@@ -796,7 +796,7 @@ describe("Aira CLI login", () => {
         data: {
           flow_id: "flow-abort",
           poll_token: "poll-token",
-          authorize_url: "https://chat.z.ai/oauth/authorize?state=abort",
+          authorize_url: "https://chat.aira.invalid/oauth/authorize?state=abort",
           expires_at: 9999999999,
           poll_interval_sec: 2,
         },

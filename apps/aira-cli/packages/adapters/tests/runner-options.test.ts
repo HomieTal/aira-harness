@@ -17,12 +17,12 @@ describe("shouldIncludeStreamResponseBody", () => {
     vi.resetModules();
   });
 
-  it("enables responseBody capture for zcode-plan openai-compatible providers", () => {
+  it("enables responseBody capture for aira-plan openai-compatible providers", () => {
     expect(
       shouldIncludeStreamResponseBody(
         resolved({
           providerKind: "openai-compatible",
-          baseURL: "https://zcode.z.ai/api/v1/zcode-plan",
+          baseURL: "https://api.aira.invalid/api/v1/aira-plan",
           accountAccess: { mode: "start-plan" } as ResolvedAiSdkModel["accountAccess"],
         }),
       ),
@@ -302,7 +302,7 @@ describe("createStreamTextOptions", () => {
     },
   );
 
-  it("passes experimental_include.responseBody for zcode-plan streams", () => {
+  it("passes experimental_include.responseBody for aira-plan streams", () => {
     const options = createStreamTextOptions({
       includeModelIO: false,
       request: {
@@ -313,7 +313,7 @@ describe("createStreamTextOptions", () => {
         providerId: "builtin:zai-coding-plan",
         modelId: "glm-5.1",
         providerKind: "openai-compatible",
-        baseURL: "https://zcode.z.ai/api/v1/zcode-plan",
+        baseURL: "https://api.aira.invalid/api/v1/aira-plan",
         accountAccess: { mode: "start-plan" } as ResolvedAiSdkModel["accountAccess"],
       }),
       statusContext: {

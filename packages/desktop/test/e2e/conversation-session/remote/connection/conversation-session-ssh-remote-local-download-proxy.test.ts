@@ -31,10 +31,10 @@ const PROXY_NO_PROXY = [
   "127.0.0.1",
   "::1",
   ".aminer.cn",
-  ".bigmodel.cn",
-  ".z.ai",
+  ".bigmodel.aira.invalid",
+  ".aira.invalid",
   ".codegeex.cn",
-  ".z.ai",
+  ".aira.invalid",
   ".aira-ai.com",
   "js.stripe.com",
 ].join(",");

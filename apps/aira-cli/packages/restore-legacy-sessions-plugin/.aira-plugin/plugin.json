@@ -2,7 +2,7 @@
   "name": "restore-legacy-sessions",
   "version": "0.1.0",
   "description": "Select and restore legacy ACP-era Aira sessions into the new Aira task and session store.",
-  "author": { "name": "Z.ai" },
+  "author": { "name": "Aira" },
   "license": "MIT",
   "skills": "skills",
   "commands": "commands"

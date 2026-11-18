@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { createStaticProviderEndpointRoutingPort } from "../src/model/official-coding-plan-gateway.js";
 import { createProviderEndpointRoutingFetch } from "../src/model/provider-endpoint-routing-fetch.js";
 
-const SOURCE = "https://open.bigmodel.cn/api/anthropic/v1/messages";
+const SOURCE = "https://bigmodel.aira.invalid/api/anthropic/v1/messages";
 const ORIGIN = "https://gateway.example.test";
 const TARGET_PATH = "/api/v1/ultra/anthropic/v1/messages";
 
@@ -14,7 +14,7 @@ describe("static provider endpoint routing", () => {
   it.each([
     [SOURCE, TARGET_PATH],
     ["https://OPEN.BIGMODEL.CN:443/api/anthropic/v1/messages/", TARGET_PATH],
-    ["https://api.z.ai/api/anthropic/v1/messages", "/api/v1/ultra-zai/anthropic/v1/messages"],
+    ["https://api.aira.invalid/api/anthropic/v1/messages", "/api/v1/ultra-zai/anthropic/v1/messages"],
   ])("routes %s with query preserved and no configuration IO", async (source, target) => {
     const network = vi.fn(() => {
       throw new Error("unexpected configuration request");
@@ -29,11 +29,11 @@ describe("static provider endpoint routing", () => {
   });
 
   it.each([
-    "http://open.bigmodel.cn/api/anthropic/v1/messages",
-    "https://open.bigmodel.cn:444/api/anthropic/v1/messages",
-    "https://open.bigmodel.cn/api/anthropic/v1/messages/count_tokens",
-    "https://open.bigmodel.cn/api/anthropic/v1/complete",
-    "https://sub.open.bigmodel.cn/api/anthropic/v1/messages",
+    "http://bigmodel.aira.invalid/api/anthropic/v1/messages",
+    "https://bigmodel.aira.invalid:444/api/anthropic/v1/messages",
+    "https://bigmodel.aira.invalid/api/anthropic/v1/messages/count_tokens",
+    "https://bigmodel.aira.invalid/api/anthropic/v1/complete",
+    "https://sub.bigmodel.aira.invalid/api/anthropic/v1/messages",
     "https://provider.example.test/api/anthropic/v1/messages",
     "not a URL",
   ])("leaves unmatched endpoint %s unchanged", async (url) => {
@@ -51,7 +51,7 @@ describe("static provider endpoint routing", () => {
       body,
       signal: controller.signal,
       headers: {
-        Host: "open.bigmodel.cn",
+        Host: "bigmodel.aira.invalid",
         Authorization: "Bearer example",
         "x-api-key": "example-key",
       },
@@ -108,7 +108,7 @@ describe("static provider endpoint routing", () => {
       const response = await fetch(`${SOURCE}?stream=true`, {
         method: "POST",
         body: "request-body",
-        headers: { Host: "open.bigmodel.cn", Authorization: "Bearer example" },
+        headers: { Host: "bigmodel.aira.invalid", Authorization: "Bearer example" },
       });
       expect(await response.text()).toBe("data: complete\n\n");
       expect(received).toEqual([

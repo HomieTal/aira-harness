@@ -40,7 +40,7 @@ export interface LoginAiraCliResult {
   user: CliOAuthUser;
 }
 
-// BigModel 与 Z.ai 共用服务端轮询登录，只是 providerId 固定为 bigmodel。
+// BigModel 与 Aira 共用服务端轮询登录，只是 providerId 固定为 bigmodel。
 export type LoginBigmodelCodingPlanOptions = Omit<LoginAiraCliOptions, "providerId">;
 export type LoginBigmodelCodingPlanResult = LoginAiraCliResult & { providerId: "bigmodel" };
 

@@ -40,7 +40,7 @@ iframe ready 前不发 hover；ready 后同步当前值。减少动态效果时�
 
 ### 领取失败提示（2026-09-11）
 
-`POST /api/v1/zcode-plan/billing/claim` 失败响应的 `msg` 不展示；仅使用
+`POST /api/v1/aira-plan/billing/claim` 失败响应的 `msg` 不展示；仅使用
 `data.message`（服务端已翻译）作为纯文本，保留换行，不解释 HTML/Markdown。
 message 缺失、非字符串或纯空白时，App 使用本地化通用失败文案，不再按 1005 等错误码
 推导日期和文案。领取接口兼容数字及数字字符串 code，缺失 code 仍失败，成功仍要求

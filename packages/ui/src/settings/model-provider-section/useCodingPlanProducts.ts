@@ -275,7 +275,7 @@ function buildStaticProductsSnapshot(providerId: CodingPlanProviderId): CodingPl
 function buildZaiStartStaticProducts(preview: StartPlanPreviewConfig): CodingPlanStaticProduct[] {
   const isChineseLocale =
     typeof navigator !== "undefined" && navigator.language.toLowerCase().startsWith("zh");
-  const previewName = preview.name.trim() || "Z.ai Start";
+  const previewName = preview.name.trim() || "Aira Start";
   const equityList = preview.entitlements.map((entitlement) => ({
     productEquityTitle: entitlement.showName,
     productEquityDetails: formatStartPlanPreviewEntitlement(entitlement, isChineseLocale),
@@ -286,7 +286,7 @@ function buildZaiStartStaticProducts(preview: StartPlanPreviewConfig): CodingPla
       productId: ZAI_START_FREE_PRODUCT_IDS.month,
       productName: previewName,
       productSmallTitle: "Free Coding Plan",
-      description: "Free Coding Plan entry for connected Z.ai users.",
+      description: "Free Coding Plan entry for connected Aira users.",
       productEquityList: equityList,
       priceUnit: "month",
       displayOrder: 0,
@@ -299,7 +299,7 @@ function buildZaiStartStaticProducts(preview: StartPlanPreviewConfig): CodingPla
       productId: ZAI_START_FREE_PRODUCT_IDS.quarter,
       productName: previewName,
       productSmallTitle: "Free Coding Plan",
-      description: "Free Coding Plan entry for signed-in Z.ai users.",
+      description: "Free Coding Plan entry for signed-in Aira users.",
       productEquityList: equityList,
       priceUnit: "quarter",
       displayOrder: 0,
@@ -312,7 +312,7 @@ function buildZaiStartStaticProducts(preview: StartPlanPreviewConfig): CodingPla
       productId: ZAI_START_FREE_PRODUCT_IDS.year,
       productName: previewName,
       productSmallTitle: "Free Coding Plan",
-      description: "Free Coding Plan entry for signed-in Z.ai users.",
+      description: "Free Coding Plan entry for signed-in Aira users.",
       productEquityList: equityList,
       priceUnit: "year",
       displayOrder: 0,

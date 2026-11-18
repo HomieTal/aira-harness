@@ -643,10 +643,10 @@ export default {
   extraMetadata: {
     version: buildMetadata.appVersion,
     airaProductFlavor: desktopProductIdentity.flavor,
-    homepage: "https://zcode.z.ai",
+    homepage: "https://api.aira.invalid",
     author: {
       name: "Aira",
-      email: "dev@zcode.z.ai",
+      email: "dev@api.aira.invalid",
     },
   },
   // macOS 签名阶段会对 Electron Framework 下每个语言包逐个 codesign。
@@ -1015,7 +1015,7 @@ export default {
     // 与 /usr/share/icons/hicolor/*/apps/aira.png 保持一致。
     executableName: desktopProductIdentity.linuxExecutableName,
     category: "Development",
-    maintainer: "Aira <dev@zcode.z.ai>",
+    maintainer: "Aira <dev@api.aira.invalid>",
   },
   deb: {
     // 生产版与 Preview 必须是两个 dpkg package；只改可执行名仍会让安装器把另一版本当成升级替换。

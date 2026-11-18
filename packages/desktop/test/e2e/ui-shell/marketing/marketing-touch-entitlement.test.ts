@@ -39,7 +39,7 @@ describe("Marketing Touch 领取后的权益与模型连接", () => {
       body: JSON.stringify({ popup: true }),
     });
     await fetch(base + "/__e2e/marketing/release", { method: "POST" });
-    await fetch(base + "/api/v1/zcode-plan/billing/claim", {
+    await fetch(base + "/api/v1/aira-plan/billing/claim", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ plan_id: "weekend-plan-e2e" }),
@@ -63,7 +63,7 @@ describe("Marketing Touch 领取后的权益与模型连接", () => {
     await waitForPlanRefreshAction("Aira V3 Start Plan", false);
     const balanceRequestCountBeforeRefresh = countMockRequestsEndingWith(
       await readMockRequests(),
-      "/api/v1/zcode-plan/billing/balance",
+      "/api/v1/aira-plan/billing/balance",
     );
     await markManualClaimBucketReady();
     await clickPlanRefreshAction("Aira Weekend Build");
@@ -72,7 +72,7 @@ describe("Marketing Touch 领取后的权益与模型连接", () => {
       async () =>
         countMockRequestsEndingWith(
           await readMockRequests(),
-          "/api/v1/zcode-plan/billing/balance",
+          "/api/v1/aira-plan/billing/balance",
         ) > balanceRequestCountBeforeRefresh,
       {
         timeout: 30_000,

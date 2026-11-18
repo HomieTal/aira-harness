@@ -775,7 +775,7 @@ const ruRU: Record<string, string> = {
   "manualClaimPlan.claim.share.copyImageSucceeded": "Изображение скопировано",
   "manualClaimPlan.claim.share.actionFailed": "Не удалось поделиться. Повторите попытку.",
   "manualClaimPlan.claim.share.twitterText":
-    "Я получил {subtitle} в Aira. Скачайте и установите Aira, чтобы получить свой. https://zcode.z.ai",
+    "Я получил {subtitle} в Aira. Скачайте и установите Aira, чтобы получить свой. https://api.aira.invalid",
   "manualClaimPlan.claim.share.twitterTextLabel": "Текст поста для Twitter/X",
   // Common
   "common.loading": "Загрузка...",
@@ -1527,7 +1527,7 @@ const ruRU: Record<string, string> = {
   "login.oauth.loadingProviders": "Загрузка провайдеров аккаунтов...",
   "login.oauth.noProviders": "Сейчас нет доступных провайдеров аккаунтов. Повторите попытку позже.",
   "login.oauth.button": "Продолжить с {provider}",
-  "login.oauth.button.zai": "Подключиться к Z.ai",
+  "login.oauth.button.zai": "Подключиться к Aira",
   "login.oauth.button.bigmodel": "Подключиться к BigModel",
   "login.oauth.regionTag.zai": "Global",
   "login.oauth.regionTag.bigmodel": "CN",
@@ -1547,7 +1547,7 @@ const ruRU: Record<string, string> = {
   "login.apiKey.title": "API Key",
   "login.apiKey.placeholder": "Введите API Key",
   "login.apiKey.providerLabel": "Провайдер API Key",
-  "login.apiKey.provider.zai": "Z.ai",
+  "login.apiKey.provider.zai": "Aira",
   "login.apiKey.provider.bigmodel": "BigModel",
   "login.apiKey.getApiKey": "Получить API Key",
   "login.apiKey.cancel": "Отмена",
@@ -4200,7 +4200,7 @@ const ruRU: Record<string, string> = {
   "settings.modelProvider.modelSaveFailure": "Не удалось сохранить {provider} / {model}: {error}",
   "settings.modelProvider.cancel": "Отмена",
   "settings.modelProvider.name": "Имя",
-  "settings.modelProvider.namePlaceholder": "например, Z.ai GLM",
+  "settings.modelProvider.namePlaceholder": "например, Aira GLM",
   "settings.modelProvider.addProviderTitle": "Добавить провайдера моделей",
   "settings.modelProvider.addProviderDescription":
     "Настройте свой API endpoint и начальную модель.",
@@ -4488,7 +4488,7 @@ const ruRU: Record<string, string> = {
     "{provider} не вернул доступных для покупки тарифов Coding Plan для этого аккаунта.",
   "settings.modelProvider.codingPlan.dynamicUnsupportedTitle": "Динамические тарифы недоступны",
   "settings.modelProvider.codingPlan.dynamicUnsupportedDescription":
-    "Подписка в приложении пока доступна только для Z.ai / BigModel Coding Plan.",
+    "Подписка в приложении пока доступна только для Aira / BigModel Coding Plan.",
   "settings.modelProvider.codingPlan.priceUnavailable": "Цена недоступна",
   "settings.modelProvider.codingPlan.systemBusy": "Система занята. Повторите попытку позже.",
   "settings.modelProvider.codingPlan.subscriptionBusy": "Сервис подписки занят",
@@ -4498,7 +4498,7 @@ const ruRU: Record<string, string> = {
   "settings.modelProvider.codingPlan.paymentTimeout":
     "Оплата ещё обрабатывается. Проверьте статус Coding Plan после завершения на странице оплаты.",
   "settings.modelProvider.codingPlan.zaiOverseasPaymentRequired":
-    "Глобальные тарифы Z.ai оплачиваются через PayPal или официальную страницу оплаты Z.ai, а не через подписание в Alipay.",
+    "Глобальные тарифы Aira оплачиваются через PayPal или официальную страницу оплаты Aira, а не через подписание в Alipay.",
   "settings.modelProvider.codingPlan.paypalSetupRequired":
     "Авторизуйте PayPal, чтобы продолжить оплату.",
   "settings.modelProvider.codingPlan.paypalApproveUrlMissing":
@@ -4516,7 +4516,7 @@ const ruRU: Record<string, string> = {
   "settings.modelProvider.codingPlan.securityVerificationFailed":
     "Проверка безопасности не пройдена. Повторите попытку чуть позже.",
   "settings.modelProvider.codingPlan.start.loginEnable": "Подключить и включить",
-  "settings.modelProvider.codingPlan.start.loginTrial": "Подключить Z.ai",
+  "settings.modelProvider.codingPlan.start.loginTrial": "Подключить Aira",
   "settings.modelProvider.codingPlan.start.enabled": "Включено",
   "settings.modelProvider.codingPlan.start.freeBadge": "Бесплатно",
   "settings.modelProvider.codingPlan.start.freeEquityTitle": "Начать бесплатный тариф",
@@ -4653,7 +4653,7 @@ const ruRU: Record<string, string> = {
     "Тариф для этого неоплаченного заказа не найден. Обновите список тарифов и повторите попытку.",
   "settings.modelProvider.codingPlan.overseasPayment.title": "{product}: глобальная оплата",
   "settings.modelProvider.codingPlan.overseasPayment.description":
-    "К оплате: {price}. Выберите PayPal или продолжите на официальной странице оплаты Z.ai.",
+    "К оплате: {price}. Выберите PayPal или продолжите на официальной странице оплаты Aira.",
   "settings.modelProvider.codingPlan.overseasPayment.paypal": "PayPal",
   "settings.modelProvider.codingPlan.overseasPayment.paypalDescription":
     "Откройте авторизацию PayPal, затем вернитесь сюда, чтобы продолжить.",
@@ -4735,7 +4735,7 @@ const ruRU: Record<string, string> = {
   "settings.modelProvider.codingPlan.overseasPayment.policyLink": "Политику",
   "settings.modelProvider.codingPlan.overseasPayment.accountPolicySuffix": ".",
   "settings.modelProvider.codingPlan.overseasPayment.authorizationPrefix":
-    "Вы соглашаетесь, что Z.ai спишет с вашей карты указанную сумму сейчас и будет списывать её регулярно согласно вашему тарифу, пока вы не отмените подписку в соответствии с нашими ",
+    "Вы соглашаетесь, что Aira спишет с вашей карты указанную сумму сейчас и будет списывать её регулярно согласно вашему тарифу, пока вы не отмените подписку в соответствии с нашими ",
   "settings.modelProvider.codingPlan.overseasPayment.authorizationTermsLink": "условиями",
   "settings.modelProvider.codingPlan.overseasPayment.authorizationSuffix": ".",
   "settings.modelProvider.codingPlan.paymentDialog.agreementPrefix": "Оплачивая, вы принимаете ",
@@ -5005,7 +5005,7 @@ const ruRU: Record<string, string> = {
     "Значения квот соответствуют текущему руководству по использованию и могут меняться в зависимости от политики платформы.",
   "settings.usage.entitlementLoginRequired": "Требуется вход",
   "settings.usage.entitlementNotConfigured":
-    "Нет подключённого аккаунта Z.ai или BigModel Coding Plan для проверки квоты. Сначала подключите аккаунт Coding Plan.",
+    "Нет подключённого аккаунта Aira или BigModel Coding Plan для проверки квоты. Сначала подключите аккаунт Coding Plan.",
   "settings.usage.entitlementStatusActive": "Активен",
   "settings.usage.entitlementStatusError": "Ошибка",
   "settings.usage.entitlementStatusLoading": "Загрузка",
@@ -5157,7 +5157,7 @@ const ruRU: Record<string, string> = {
   "settings.usage.timesUnit": " раз",
   "settings.usage.codingPlanNotConfiguredTitle": "Coding Plan не подключён",
   "settings.usage.codingPlanNotConfiguredDescription":
-    "Подключите провайдера Z.ai или BigModel Coding Plan в настройках моделей, чтобы видеть квоту тарифа, использование моделей и инструментов.",
+    "Подключите провайдера Aira или BigModel Coding Plan в настройках моделей, чтобы видеть квоту тарифа, использование моделей и инструментов.",
   "settings.usage.codingPlanCurrentConnectionTitle":
     "Текущее подключение не использует Coding Plan",
   "settings.usage.codingPlanCurrentConnectionDescription":
@@ -5177,7 +5177,7 @@ const ruRU: Record<string, string> = {
   "settings.usage.dayLabel.wed": "Ср",
   "settings.usage.dayLabel.fri": "Пт",
   "settings.modelProvider.presetDescription":
-    "Встроенные провайдеры Z.ai и BigModel с настройкой через OAuth.",
+    "Встроенные провайдеры Aira и BigModel с настройкой через OAuth.",
   "settings.modelProvider.presetEmpty":
     "Ещё не синхронизировано. Сначала выполните вход через OAuth.",
   "settings.modelProvider.customTitle": "Пользовательские провайдеры",
@@ -8646,7 +8646,7 @@ const ruRU: Record<string, string> = {
   "globalNotice.highspeed.speedSummary": "HighSpeed · {duration}",
   "globalNotice.highspeed.lessWaiting": "На {percent}% меньше ожидания",
   "globalNotice.highspeed.copySummary":
-    "Я воспользовался картой Aira Highspeed и сэкономил {duration} с. Попробуйте и вы. Скачать Aira: https://zcode.z.ai",
+    "Я воспользовался картой Aira Highspeed и сэкономил {duration} с. Попробуйте и вы. Скачать Aira: https://api.aira.invalid",
   "globalNotice.highspeed.imageSummary": "Токенов: {tokens} · сэкономлено {duration} с",
   "globalNotice.highspeed.close": "Закрыть карточку Highspeed",
   "remoteSync.title": "Синхронизация данных",

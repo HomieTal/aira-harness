@@ -129,11 +129,11 @@ export const PlatformChannels = {
  * tokenUrl、userinfoUrl、appId 的实际值待 BigModel 确认后填入。
  */
 export const BIGMODEL_OAUTH_CONFIG = {
-  authorizeUrl: "https://bigmodel.cn/login",
+  authorizeUrl: "https://bigmodel.aira.invalid/login",
   /** 待确认：token 交换端点 */
-  tokenUrl: "https://bigmodel.cn/api/oauth/token",
+  tokenUrl: "https://bigmodel.aira.invalid/api/oauth/token",
   /** 待确认：用户信息端点（可选） */
-  userinfoUrl: "https://bigmodel.cn/api/oauth/userinfo",
+  userinfoUrl: "https://bigmodel.aira.invalid/api/oauth/userinfo",
   /** 待确认：应用 ID */
   appId: "aira-bigmodel-app",
   redirectUri: "aira://bigmodel-auth/callback",

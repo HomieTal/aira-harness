@@ -7449,7 +7449,7 @@ function startPlanRegistryConfig(runtimeHeader: string) {
       "account:bigmodel-start-plan": {
         kind: "anthropic" as const,
         apiKey: "client-id.client-secret",
-        baseURL: "https://zcode.z.ai/api/v1/zcode-plan/anthropic",
+        baseURL: "https://api.aira.invalid/api/v1/aira-plan/anthropic",
         headers: {
           "X-Runtime-Token": runtimeHeader,
         },
@@ -7457,7 +7457,7 @@ function startPlanRegistryConfig(runtimeHeader: string) {
       "account:zai-start-plan": {
         kind: "anthropic" as const,
         apiKey: "client-id.client-secret",
-        baseURL: "https://zcode.z.ai/api/v1/zcode-plan/anthropic",
+        baseURL: "https://api.aira.invalid/api/v1/aira-plan/anthropic",
         headers: {
           "X-Runtime-Token": runtimeHeader,
         },

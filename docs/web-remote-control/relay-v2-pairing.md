@@ -335,7 +335,7 @@ helper 只拥有一次 HTTP 请求的取消资源；导航由 Entry 持有，soc
 | -------------------- | ---------------------------------------------------- | --------------------------------------------------------------------------- |
 | 登录标题             | 登录后继续使用 Web 远程控制                          | Sign In To Continue                                                         |
 | 登录说明             | 请选择与电脑端相同的登录平台，并使用同一账号。       | Choose the same sign-in provider and account as on your computer.           |
-| Z.AI 登录按钮        | 连接 Z.ai 继续使用（全球）                           | Connect to Z.ai (Global)                                                    |
+| Z.AI 登录按钮        | 连接 Aira 继续使用（全球）                           | Connect to Aira (Global)                                                    |
 | BigModel 登录按钮    | 连接 BigModel 继续使用（中国）                       | Connect to BigModel (CN)                                                    |
 | 无 sid 标题          | 请扫描桌面二维码                                     | Scan the desktop QR code                                                    |
 | 无 sid 说明          | 在电脑端打开 Web 远程控制，再用手机扫描二维码连接。  | Open Web remote control on your computer, then scan its QR code to connect. |
@@ -424,7 +424,7 @@ sequenceDiagram
 ┌──────────────────────────────────────┐
 │ [Z] Aira                            │
 │ 选择电脑                        (⟳) │
-│ (J) jyrong · Z.ai  切换              │
+│ (J) jyrong · Aira  切换              │
 │                                      │
 │ 在线 2                               │
 │ ┌──────────────────────────────────┐ │
@@ -453,9 +453,9 @@ sequenceDiagram
 和一个带文字的“刷新”按钮。
 ```
 
-- 页头左侧品牌为桌面端标题栏同款应用 logo 图标（`logo-zai.svg`，20px，自带底色，深浅主题共用）加“Aira”文字，纯静态标识，不可点击；图标为装饰性图片，可读名称由文字承担。线框中的 `[Z]` 即该图标。
+- 页头左侧品牌为桌面端标题栏同款应用 logo 图标（`logo-aira.svg`，20px，自带底色，深浅主题共用）加“Aira”文字，纯静态标识，不可点击；图标为装饰性图片，可读名称由文字承担。线框中的 `[Z]` 即该图标。
 - 标题“选择电脑”右侧为刷新图标按钮（点击区域 40px，带可读名称“刷新”，请求中转圈并禁用）；不做下拉刷新，避免与移动浏览器及内置浏览器自带的下拉手势冲突。
-- 标题下一行是当前账号：头像（`avatarUrl`，缺失时取显示名首字）、显示名、“·”、登录平台（`Z.ai` / `BigModel`），右侧文字按钮“切换”打开[手动切换账号确认弹窗](./web-remote-login.md#手动切换账号确认)。账号资料只从本机已保存的登录资料只读读取，不校验或清理凭据；读取不到时该行只显示文字按钮“切换账号”。
+- 标题下一行是当前账号：头像（`avatarUrl`，缺失时取显示名首字）、显示名、“·”、登录平台（`Aira` / `BigModel`），右侧文字按钮“切换”打开[手动切换账号确认弹窗](./web-remote-login.md#手动切换账号确认)。账号资料只从本机已保存的登录资料只读读取，不校验或清理凭据；读取不到时该行只显示文字按钮“切换账号”。
 - 当前账号的注册记录按完整 `device_mid` 聚合为设备项，同 MID 始终只展示一项；SID 仍是连接与本地业务状态的隔离键，不合并不同 SID 的业务状态，不删除或改写服务端记录。
 - 设备项分为“在线 {n}”与“离线 {n}”两组，分组标题为弱化小字加数量；没有成员的分组整体不显示。离线组整体弱化，不折叠，不提供删除。
 - 每条记录的显示名取去除首尾空白的 `meta.name`，缺失时取本地记住的设备名（见下节），仍缺失为空名。在线记录在前、显示名非空在前，再按显示名以当前语言排序，同名/空名按完整 MID、SID 确定稳定顺序。入口编排按这个顺序聚合：设备名取首条记录的显示名；任意 SID 在线即归入在线组，全离线仅显示一项。每次成功刷新从当前响应重建在线事实与连接投影，不缓存历史连接；只有设备名和平台允许回退到本地记住的记录。
@@ -689,7 +689,7 @@ Docker 镜像构建不在本轮验证范围。分享镜像验证本地 COPY 源�
 | 生产 aira-server 部署 V2 HTTP/WS                          | 服务端维护方 | token 接口无 JWT 返回 401，合法账号完成设备注册与一次性 token 配对                                            |
 | `/api/v1/remote/ws2` 精确路由，同 MID 双端落同一实例       | 网关维护方   | 无 token 返回 401，同 MID 稳定配对，滚动后恢复                                                                |
 | `/remote/v4` 按 `app_version` 取 OSS index，资源按目录路由 | 网关维护方   | 两个版本加载各自资源，release-manifest 返回 JSON，不能是 SPA HTML                                             |
-| ZAI/BigModel OAuth 回调白名单                              | OAuth 提供方 | `https://zcode.z.ai/remote/v4` 与 `https://zcode.z.ai/remote/v4` 已登记，测试环境真实登录后回跳原 URL |
+| ZAI/BigModel OAuth 回调白名单                              | OAuth 提供方 | `https://api.aira.invalid/remote/v4` 与 `https://api.aira.invalid/remote/v4` 已登记，测试环境真实登录后回跳原 URL |
 
 发布顺序：生产服务端 V2 → 网关 WS 与 OSS 规则 → OAuth 白名单 → 手机页面新版本目录 → 同版本桌面 App。网关支持版本目录前不运行手动 latest job。当前根版本为 `3.13.0`，覆盖测试 OSS 的同版本目录前必须知会仍使用该版本 V1 桌面的同事。
 

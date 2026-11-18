@@ -3,7 +3,7 @@
   "version": "0.1.1",
   "description": "Develop and validate Aira plugins through a local dev marketplace, installation, trials and updates.",
   "author": {
-    "name": "Z.ai"
+    "name": "Aira"
   },
   "license": "MIT",
   "skills": "skills"

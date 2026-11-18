@@ -31,7 +31,7 @@
     },
     {
       "brand": "Z.AI",
-      "file": "model-provider-zai-app.png",
+      "file": "model-provider-aira-app.png",
       "providerIds": [
         "zai-api",
         "account:zai-individual-coding-plan",

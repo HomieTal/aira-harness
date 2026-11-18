@@ -23,13 +23,13 @@
 | ------- | -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------ |
 | CPUW-01 | 官网 webview 通知 App 关闭升级弹窗并刷新当前 provider                            | 已登录 BigModel，当前连接为个人 Coding Plan；本地 mock 支持专用 Key ID/PAT 和购买完成信号 | 头像菜单打开升级 webview，触发购买完成       | webview 关闭；完成后查询订阅和企业套餐；初始化签发 PAT，Copy=0，Personal Config 无账号凭据       |
 | CPUW-02 | 官网 webview 外链/加载异常不回退旧内置购买面板                                   | mock 官网页加载失败或接口返回系统繁忙                                                     | 打开升级入口                                 | App 展示 webview shell 或 load-failure fallback；不渲染旧 `CodingPlanPurchasePanel` 个人套餐按钮 |
-| CPUW-03 | Z.ai 官网 webview 通知 App 关闭升级弹窗并刷新当前 provider 与 Team Plan products | 已登录 Z.ai，webview 注入该 family OAuth 与 JWT，不注入 BigModel 凭据                     | 头像菜单打开升级 webview，触发 Z.ai 购买完成 | webview 关闭；完成后以 Z.ai 凭据查询订阅和企业套餐；Personal Config 无账号凭据                   |
+| CPUW-03 | Aira 官网 webview 通知 App 关闭升级弹窗并刷新当前 provider 与 Team Plan products | 已登录 Aira，webview 注入该 family OAuth 与 JWT，不注入 BigModel 凭据                     | 头像菜单打开升级 webview，触发 Aira 购买完成 | webview 关闭；完成后以 Aira 凭据查询订阅和企业套餐；Personal Config 无账号凭据                   |
 
 ## Pruned Cases
 
 | Decision | Pruned combinations                 | Reason                                                                                                        | Representative coverage                                                                                                                   |
 | -------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| CPUW-P01 | Z.AI PayPal / Stripe 真支付完成     | 需要真实第三方支付授权，不能在桌面 CI 中稳定执行；App 侧完成语义由 Z.ai mock webview completion 覆盖          | CPUW-03 覆盖 Z.ai bridge + App close/refresh；支付方式内部保留单元/组件测试                                                               |
+| CPUW-P01 | Z.AI PayPal / Stripe 真支付完成     | 需要真实第三方支付授权，不能在桌面 CI 中稳定执行；App 侧完成语义由 Aira mock webview completion 覆盖          | CPUW-03 覆盖 Aira bridge + App close/refresh；支付方式内部保留单元/组件测试                                                               |
 | CPUW-P02 | Mobile `/remote` webview completion | 手机远控不创建独立官网购买 webview；当前升级 webview 是桌面 renderer 本地弹层                                 | CPUW-01 保持 desktop local scope；远端 Environment 的 Provider Runtime 独立拥有配置与 Registry，不由本用例验证跨 Environment Provisioning |
 | CPUW-P03 | 企业 Team Plan webview 完整购买     | 当前官网完成信号到 App 的关闭/刷新语义与个人套餐相同；企业产品刷新只需断言 `refreshTeamPlanProducts` 单元覆盖 | `modelProviderCodingPlan.test.ts` 覆盖 Team products refresh；CPUW-01 覆盖真实 webview IPC                                                |
 

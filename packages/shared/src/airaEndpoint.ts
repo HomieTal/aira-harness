@@ -1,17 +1,17 @@
 import type { AiraEnv } from "./env.js";
 
-export const DEFAULT_AIRA_ENDPOINT_ORIGIN = "https://zcode.z.ai";
-export const TEST_AIRA_ENDPOINT_ORIGIN = "https://zcode.z.ai";
+export const DEFAULT_AIRA_ENDPOINT_ORIGIN = "https://api.aira.invalid";
+export const TEST_AIRA_ENDPOINT_ORIGIN = "https://api.aira.invalid";
 export const CODING_PLAN_LOCAL_WEBVIEW_ORIGIN = "http://localhost:3000";
-export const DEFAULT_BIGMODEL_API_ORIGIN = "https://bigmodel.cn";
-export const TEST_BIGMODEL_API_ORIGIN = "https://bigmodel.cn";
-export const DEFAULT_ZAI_OAUTH_ORIGIN = "https://chat.z.ai";
-export const TEST_ZAI_OAUTH_ORIGIN = "https://chat.z.ai";
-export const DEFAULT_ZAI_BUSINESS_BASE_URL = "https://api.z.ai";
-export const TEST_ZAI_BUSINESS_BASE_URL = "https://api.z.ai";
+export const DEFAULT_BIGMODEL_API_ORIGIN = "https://bigmodel.aira.invalid";
+export const TEST_BIGMODEL_API_ORIGIN = "https://bigmodel.aira.invalid";
+export const DEFAULT_ZAI_OAUTH_ORIGIN = "https://chat.aira.invalid";
+export const TEST_ZAI_OAUTH_ORIGIN = "https://chat.aira.invalid";
+export const DEFAULT_ZAI_BUSINESS_BASE_URL = "https://api.aira.invalid";
+export const TEST_ZAI_BUSINESS_BASE_URL = "https://api.aira.invalid";
 export const DEFAULT_ZAI_OAUTH_CLIENT_ID = "client_P8X5CMWmlaRO9gyO-KSqtg";
 export const TEST_ZAI_OAUTH_CLIENT_ID = "client_P8X5CMWmlaRO9gyO-KSqtg";
-export const DEFAULT_WEB_REMOTE_CONTROL_RELAY_WS_URL = "wss://zcode.z.ai/api/v1/remote/ws2";
+export const DEFAULT_WEB_REMOTE_CONTROL_RELAY_WS_URL = "wss://api.aira.invalid/api/v1/remote/ws2";
 export const WEB_REMOTE_CONTROL_V4_MIN_APP_VERSION = "3.4.0";
 
 export interface BuildAiraEndpointUrlsOptions {
@@ -270,7 +270,7 @@ export function buildBigModelApiUrl(env: RuntimeBigModelApiEnv = {}, path: strin
 
 export function buildBigModelCodingPlanPersonalManageUrl(env: RuntimeBigModelApiEnv = {}): string {
   // 修复原因：BigModel Coding Plan 管理页要跟随 AIRA_ENV；
-  // 测试环境如果继续写死 bigmodel.cn，会把测试账号带到生产套餐页。
+  // 测试环境如果继续写死 bigmodel.aira.invalid，会把测试账号带到生产套餐页。
   return buildBigModelApiUrl(env, "/coding-plan/personal/overview");
 }
 
@@ -378,10 +378,10 @@ export function buildAiraEndpointUrls(
     webRemoteCallbackUrl: `${normalizedOrigin}/remote/v4`,
     webShareCallbackUrl: `${normalizedOrigin}/cn/share/callback`,
     relayWsUrl: `${wsOrigin}/api/v1/remote/ws2`,
-    airaPlanOpenAiBaseUrl: `${normalizedOrigin}/api/v1/zcode-plan`,
-    airaPlanAnthropicBaseUrl: `${normalizedOrigin}/api/v1/zcode-plan/anthropic`,
-    airaPlanBillingCurrentUrl: `${normalizedOrigin}/api/v1/zcode-plan/billing/current`,
-    airaPlanBillingBalanceUrl: `${normalizedOrigin}/api/v1/zcode-plan/billing/balance`,
+    airaPlanOpenAiBaseUrl: `${normalizedOrigin}/api/v1/aira-plan`,
+    airaPlanAnthropicBaseUrl: `${normalizedOrigin}/api/v1/aira-plan/anthropic`,
+    airaPlanBillingCurrentUrl: `${normalizedOrigin}/api/v1/aira-plan/billing/current`,
+    airaPlanBillingBalanceUrl: `${normalizedOrigin}/api/v1/aira-plan/billing/balance`,
   };
 }
 

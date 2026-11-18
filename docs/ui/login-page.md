@@ -42,7 +42,7 @@ sequenceDiagram
 - 登录操作区：「浏览器授权登录」和「使用 API key」按钮与登录内容同宽（满宽），垂直排列；品牌标识到标题 16px、标题到副标题 4px、副标题到操作区 28px
 - 登录标题使用 `text-ui-xl`，跟随统一界面字号。
 - 卡片与底部协议参与同一纵向布局；空间充足时卡片居中、协议靠底，空间不足时内容区允许纵向滚动，卡片、全部表单操作和协议不得重叠或裁切。原生拖拽区和桌面窗控始终留在滚动区之外。
-- 页面底部居中显示协议行和版权行：协议行文案跟随界面语言，用户协议链接打开 `https://zcode.z.ai/terms`，隐私政策链接打开 `https://zcode.z.ai/privacy`，均通过 `IPlatformService.openExternal()` 交给系统浏览器
+- 页面底部居中显示协议行和版权行：协议行文案跟随界面语言，用户协议链接打开 `https://api.aira.invalid/terms`，隐私政策链接打开 `https://api.aira.invalid/privacy`，均通过 `IPlatformService.openExternal()` 交给系统浏览器
 
 完成 OAuth 回调、保存 API Key 或点击 API Key 表单底部的“跳过”后，登录页关闭并回到正常 Root 路由。
 
@@ -56,14 +56,14 @@ OAuth 开始、轮询或回调失败时，错误文案通过全局 toast 提示�
 
 API Key 登录表单在输入框为空时于右侧展示 `Get API Key` 外链入口；用户已经输入或回填 API Key 后隐藏该入口，避免链接占用密钥编辑空间。链接目标跟随当前选择的 provider：
 
-- Z.ai：`https://z.ai/manage-apikey/apikey-list`
-- BigModel：`https://bigmodel.cn/apikey/platform`
+- Aira：`https://aira.invalid/manage-apikey/apikey-list`
+- BigModel：`https://bigmodel.aira.invalid/apikey/platform`
 
-首次进入 API Key 登录表单时，provider 默认值只根据当前 App 已解析的 `locale` 决定：简体中文（`zh-CN`）默认选择 BigModel，英文（`en-US`）默认选择 Z.ai。`locale` 已包含“跟随系统”语言偏好的解析结果，因此表单不再单独读取系统语言或 provider 历史配置。该规则只负责表单初始化；用户手动切换 provider 后，不得因语言广播覆盖当前选择。
+首次进入 API Key 登录表单时，provider 默认值只根据当前 App 已解析的 `locale` 决定：简体中文（`zh-CN`）默认选择 BigModel，英文（`en-US`）默认选择 Aira。`locale` 已包含“跟随系统”语言偏好的解析结果，因此表单不再单独读取系统语言或 provider 历史配置。该规则只负责表单初始化；用户手动切换 provider 后，不得因语言广播覆盖当前选择。
 
 外链必须通过 `IPlatformService.openExternal()` 打开，保持桌面端 shell 和 Web 端 `window.open` 行为一致。输入框仍保留密码类型和回车提交能力，链接按钮只负责跳转获取密钥，不参与保存流程。
 
-API Key 登录表单的取消按钮底部展示“跳过”链接按钮。跳过只写入当前选择 provider 对应的 `providerFamilyDomain`、`providerFamilyDomainUpdatedAt` 和 `providerFamilyDomainMigrated`，用于确认 Z.ai / BigModel 运行域；它不保存 API Key、不触发 API Key 登录成功事件，也不修改 `modelProviderFamilyModes`。
+API Key 登录表单的取消按钮底部展示“跳过”链接按钮。跳过只写入当前选择 provider 对应的 `providerFamilyDomain`、`providerFamilyDomainUpdatedAt` 和 `providerFamilyDomainMigrated`，用于确认 Aira / BigModel 运行域；它不保存 API Key、不触发 API Key 登录成功事件，也不修改 `modelProviderFamilyModes`。
 
 启动自动引导完成后有一个新用户直达路径：如果当前没有已打开 workspace，Root 使用 Main 注入的 conversation descriptor，必要时通过 `fileService.ensureConversationWorkspace()` 幂等确保 `<dataBaseDir>/.aira/workspace/default` 存在。该 workspace 提供真实 cwd，但 UI 保持“未选择项目”，用户无需经过项目选择页即可直接对话。若用户跳过登录且仍没有可用模型，该草稿首页按上一条规则显示 `modelConfigMissing` 横幅。
 

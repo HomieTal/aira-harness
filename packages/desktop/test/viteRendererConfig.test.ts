@@ -52,8 +52,8 @@ describe("desktop renderer Vite dependency aliases", () => {
       );
 
       expect(result?.config.define).toMatchObject({
-        "import.meta.env.VITE_AIRA_BASE_URL": JSON.stringify("https://zcode.z.ai"),
-        "import.meta.env.VITE_AIRA_ENDPOINT_ORIGIN": JSON.stringify("https://zcode.z.ai"),
+        "import.meta.env.VITE_AIRA_BASE_URL": JSON.stringify("https://api.aira.invalid"),
+        "import.meta.env.VITE_AIRA_ENDPOINT_ORIGIN": JSON.stringify("https://api.aira.invalid"),
         __AIRA_LOCAL_DEVELOPMENT_RUNTIME__: JSON.stringify(false),
       });
     },

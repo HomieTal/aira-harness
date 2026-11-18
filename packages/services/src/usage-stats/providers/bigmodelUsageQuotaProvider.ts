@@ -1693,7 +1693,7 @@ function resolveAccountProviderQuotaUrl(providerId: string, env: NodeJS.ProcessE
 function resolveAccountProviderLabel(providerId: string): string {
   return providerId === BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan ||
     providerId === BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan
-    ? "Z.ai - Coding Plan"
+    ? "Aira - Coding Plan"
     : "BigModel - Coding Plan";
 }
 
@@ -1703,6 +1703,6 @@ function buildBigModelQuotaUrl(env: NodeJS.ProcessEnv = process.env): string {
 
 function buildZaiQuotaUrl(env: NodeJS.ProcessEnv = process.env): string {
   // ZAI usage/quota 与 business login 共用业务域名。
-  // 测试环境必须请求 配置的 ZAI Business origin，不能把测试 token 发送到生产 api.z.ai。
+  // 测试环境必须请求 配置的 ZAI Business origin，不能把测试 token 发送到生产 api.aira.invalid。
   return buildRuntimeZaiBusinessUrl(env, "/api/monitor/usage/quota/limit");
 }

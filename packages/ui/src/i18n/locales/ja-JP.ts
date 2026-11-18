@@ -786,7 +786,7 @@ const jaJP: Record<string, string> = {
   "manualClaimPlan.claim.share.copyImageSucceeded": "画像をコピーしました",
   "manualClaimPlan.claim.share.actionFailed": "共有操作に失敗しました。もう一度お試しください。",
   "manualClaimPlan.claim.share.twitterText":
-    "Aira で {subtitle}を受け取りました。Aira をダウンロード・インストールして、あなたも受け取りましょう。https://zcode.z.ai",
+    "Aira で {subtitle}を受け取りました。Aira をダウンロード・インストールして、あなたも受け取りましょう。https://api.aira.invalid",
   "manualClaimPlan.claim.share.twitterTextLabel": "Twitter/X 投稿テキスト",
   // Common
   "common.loading": "読み込み中...",
@@ -1549,7 +1549,7 @@ const jaJP: Record<string, string> = {
   "login.oauth.noProviders":
     "現在利用できるアカウントプロバイダーはありません。しばらくしてからもう一度お試しください。",
   "login.oauth.button": "{provider}で続行",
-  "login.oauth.button.zai": "Z.ai に接続",
+  "login.oauth.button.zai": "Aira に接続",
   "login.oauth.button.bigmodel": "BigModel に接続",
   "login.oauth.regionTag.zai": "Global",
   "login.oauth.regionTag.bigmodel": "CN",
@@ -1570,7 +1570,7 @@ const jaJP: Record<string, string> = {
   "login.apiKey.title": "API Key",
   "login.apiKey.placeholder": "API Key を入力",
   "login.apiKey.providerLabel": "API Key のプロバイダー",
-  "login.apiKey.provider.zai": "Z.ai",
+  "login.apiKey.provider.zai": "Aira",
   "login.apiKey.provider.bigmodel": "BigModel",
   "login.apiKey.getApiKey": "API Key を取得",
   "login.apiKey.cancel": "キャンセル",
@@ -4226,7 +4226,7 @@ const jaJP: Record<string, string> = {
   "settings.modelProvider.modelSaveFailure": "{provider} / {model}を保存できませんでした: {error}",
   "settings.modelProvider.cancel": "キャンセル",
   "settings.modelProvider.name": "名前",
-  "settings.modelProvider.namePlaceholder": "例: Z.ai GLM",
+  "settings.modelProvider.namePlaceholder": "例: Aira GLM",
   "settings.modelProvider.addProviderTitle": "モデルプロバイダーを追加",
   "settings.modelProvider.addProviderDescription":
     "カスタム API エンドポイントと初期モデルを構成します。",
@@ -4516,7 +4516,7 @@ const jaJP: Record<string, string> = {
     "{provider}から、このアカウントで購入可能な Coding Plan 製品が返されませんでした。",
   "settings.modelProvider.codingPlan.dynamicUnsupportedTitle": "動的プランは利用できません",
   "settings.modelProvider.codingPlan.dynamicUnsupportedDescription":
-    "アプリ内サブスクリプションは現在、Z.ai / BigModel の Coding Plan のみに対応しています。",
+    "アプリ内サブスクリプションは現在、Aira / BigModel の Coding Plan のみに対応しています。",
   "settings.modelProvider.codingPlan.priceUnavailable": "料金を取得できません",
   "settings.modelProvider.codingPlan.systemBusy":
     "システムが混雑しています。しばらくしてからもう一度お試しください。",
@@ -4527,7 +4527,7 @@ const jaJP: Record<string, string> = {
   "settings.modelProvider.codingPlan.paymentTimeout":
     "お支払いはまだ保留中です。支払いページでの手続きが完了したら、Coding Plan のステータスを再確認してください。",
   "settings.modelProvider.codingPlan.zaiOverseasPaymentRequired":
-    "Z.ai のグローバルプランは、Alipay の契約フローではなく、PayPal または Z.ai 公式の支払いページでお支払いいただく必要があります。",
+    "Aira のグローバルプランは、Alipay の契約フローではなく、PayPal または Aira 公式の支払いページでお支払いいただく必要があります。",
   "settings.modelProvider.codingPlan.paypalSetupRequired":
     "お支払いを続ける前に PayPal を承認してください。",
   "settings.modelProvider.codingPlan.paypalApproveUrlMissing":
@@ -4545,7 +4545,7 @@ const jaJP: Record<string, string> = {
   "settings.modelProvider.codingPlan.securityVerificationFailed":
     "セキュリティ認証に失敗しました。しばらくしてからもう一度お試しください。",
   "settings.modelProvider.codingPlan.start.loginEnable": "接続して有効化",
-  "settings.modelProvider.codingPlan.start.loginTrial": "Z.ai に接続",
+  "settings.modelProvider.codingPlan.start.loginTrial": "Aira に接続",
   "settings.modelProvider.codingPlan.start.enabled": "有効",
   "settings.modelProvider.codingPlan.start.freeBadge": "無料",
   "settings.modelProvider.codingPlan.start.freeEquityTitle": "無料プランを開始",
@@ -4674,7 +4674,7 @@ const jaJP: Record<string, string> = {
     "この未払い注文のプランが見つかりませんでした。プランを更新してから、もう一度お試しください。",
   "settings.modelProvider.codingPlan.overseasPayment.title": "{product} グローバルお支払い",
   "settings.modelProvider.codingPlan.overseasPayment.description":
-    "お支払い金額: {price}。PayPal を選択するか、Z.ai 公式の支払いページで続行してください。",
+    "お支払い金額: {price}。PayPal を選択するか、Aira 公式の支払いページで続行してください。",
   "settings.modelProvider.codingPlan.overseasPayment.paypal": "PayPal",
   "settings.modelProvider.codingPlan.overseasPayment.paypalDescription":
     "PayPal の承認画面を開き、完了したらここに戻って続行してください。",
@@ -4759,7 +4759,7 @@ const jaJP: Record<string, string> = {
   "settings.modelProvider.codingPlan.overseasPayment.policyLink": "ポリシー",
   "settings.modelProvider.codingPlan.overseasPayment.accountPolicySuffix": "。",
   "settings.modelProvider.codingPlan.overseasPayment.authorizationPrefix":
-    "お客様は、Z.ai が上記金額を現在およびサブスクリプションプランに従って継続的にカードへ請求することに同意します。この請求は、次の規定に従って解約するまで続きます:",
+    "お客様は、Aira が上記金額を現在およびサブスクリプションプランに従って継続的にカードへ請求することに同意します。この請求は、次の規定に従って解約するまで続きます:",
   "settings.modelProvider.codingPlan.overseasPayment.authorizationTermsLink": "規約",
   "settings.modelProvider.codingPlan.overseasPayment.authorizationSuffix": "。",
   "settings.modelProvider.codingPlan.paymentDialog.agreementPrefix":
@@ -5019,7 +5019,7 @@ const jaJP: Record<string, string> = {
     "クォータの値は現在の利用ガイドに基づいており、プラットフォームのポリシーにより変更される場合があります。",
   "settings.usage.entitlementLoginRequired": "サインインが必要です",
   "settings.usage.entitlementNotConfigured":
-    "クォータを照会できる Z.ai または BigModel の Coding Plan アカウントが接続されていません。先に Coding Plan アカウントを接続してください。",
+    "クォータを照会できる Aira または BigModel の Coding Plan アカウントが接続されていません。先に Coding Plan アカウントを接続してください。",
   "settings.usage.entitlementStatusActive": "有効",
   "settings.usage.entitlementStatusError": "エラー",
   "settings.usage.entitlementStatusLoading": "読み込み中",
@@ -5172,7 +5172,7 @@ const jaJP: Record<string, string> = {
   "settings.usage.timesUnit": " 回",
   "settings.usage.codingPlanNotConfiguredTitle": "Coding Plan が接続されていません",
   "settings.usage.codingPlanNotConfiguredDescription":
-    "モデル設定で Z.ai または BigModel の Coding Plan プロバイダーを接続すると、プランのクォータ、モデルの使用状況、ツールの使用状況を表示できます。",
+    "モデル設定で Aira または BigModel の Coding Plan プロバイダーを接続すると、プランのクォータ、モデルの使用状況、ツールの使用状況を表示できます。",
   "settings.usage.codingPlanCurrentConnectionTitle": "現在の接続は Coding Plan を使用していません",
   "settings.usage.codingPlanCurrentConnectionDescription":
     "ワークスペースのモデル接続を個人プランまたはチームプランに切り替えると、ここにクォータと使用状況が表示されます。",
@@ -5191,7 +5191,7 @@ const jaJP: Record<string, string> = {
   "settings.usage.dayLabel.wed": "水",
   "settings.usage.dayLabel.fri": "金",
   "settings.modelProvider.presetDescription":
-    "Z.ai と BigModel の組み込みプロバイダー。OAuth による構成支援付きです。",
+    "Aira と BigModel の組み込みプロバイダー。OAuth による構成支援付きです。",
   "settings.modelProvider.presetEmpty":
     "まだ同期されていません。先に OAuth サインインを完了してください。",
   "settings.modelProvider.customTitle": "カスタムプロバイダー",
@@ -8691,7 +8691,7 @@ const jaJP: Record<string, string> = {
   "globalNotice.highspeed.speedSummary": "HighSpeed · {duration}",
   "globalNotice.highspeed.lessWaiting": "待ち時間を {percent}% 短縮",
   "globalNotice.highspeed.copySummary":
-    "Aira の Highspeed カードを使って {duration} 秒短縮しました。ぜひ試してみてください。Aira のダウンロード: https://zcode.z.ai",
+    "Aira の Highspeed カードを使って {duration} 秒短縮しました。ぜひ試してみてください。Aira のダウンロード: https://api.aira.invalid",
   "globalNotice.highspeed.imageSummary": "{tokens} トークン · {duration}秒 短縮",
   "globalNotice.highspeed.close": "Highspeed の共有カードを閉じる",
   "remoteSync.title": "データ同期",

@@ -39,7 +39,7 @@ flowchart LR
 
 | 项 | 要求 |
 |---|---|
-| Docker | 20.10+，启用 BuildKit（默认）；能拉 `node:24-bookworm-slim` 并访问 GitLab、npm registry、`cdn-zcode.z.ai` |
+| Docker | 20.10+，启用 BuildKit（默认）；能拉 `node:24-bookworm-slim` 并访问 GitLab、npm registry、`cdn.aira.invalid` |
 | 主机工具 | bash、jq、node ≥ 20（运行 `prepare-auth.mjs`）、python3（汇总报告） |
 | GitLab 访问 | 私有仓库需要一个只读 PAT（`read_repository`）；未给 `--token-file` 时脚本依次尝试 `GITLAB_TOKEN` 环境变量 → `glab` 已登录的 PAT → `git credential fill` 取本机已保存的凭据 |
 | Aira 登录态 | 本机 Aira 已登录且选好可用 provider/模型；评测容器复用这份凭据 |
@@ -63,7 +63,7 @@ docker/plugin-eval/bin/build-image.sh --ref feat-cli-plugins-parity \
 2. `builder` 阶段 `pnpm install --frozen-lockfile --filter "@aira/cli..." --filter aira`，然后按仓库脚本
    `scripts/build-desktop-agent-cli.mjs` 的顺序构建 shared-types → contracts → core → adapters → i18n → telemetry → bootstrap → cli。
 3. `runtime` 阶段只带 `node + aira.cjs + jq/python3/git/ripgrep`，以 uid 10001 的 `aira` 用户运行；
-   `HOME=/data`、`AIRA_DATA_BASE_DIR=/data`、`AIRA_STORAGE_DIR=/data/.aira`、`AIRA_BASE_URL=https://zcode.z.ai`。
+   `HOME=/data`、`AIRA_DATA_BASE_DIR=/data`、`AIRA_STORAGE_DIR=/data/.aira`、`AIRA_BASE_URL=https://api.aira.invalid`。
    内置插件不在 `aira.cjs` 里，CLI 在入口文件同级的 `packages/<name>-plugin` 找根目录，所以 builder 阶段把
    document-skills、aira-guide、skill-creator、restore-legacy-sessions 四个纯内容型内置插件 stage 到 `/opt/aira/packages/`；
    同理 CLI 启动必读的内置 provider 目录 `config/provider/aira-builtin.json` 放到 `/opt/aira/provider/`。

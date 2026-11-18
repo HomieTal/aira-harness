@@ -7,17 +7,17 @@
         {
           "templateId": "zai-api",
           "templateNameMap": {
-            "zh-CN": "Z.ai Coding Plan",
-            "en-US": "Z.ai Coding Plan"
+            "zh-CN": "Aira Coding Plan",
+            "en-US": "Aira Coding Plan"
           },
           "config": {
             "access": {
               "type": "zhipu-coding-plan-api-key",
-              "apiKeyManagementUrl": "https://z.ai/manage-apikey/apikey-list"
+              "apiKeyManagementUrl": "https://aira.invalid/manage-apikey/apikey-list"
             },
             "api": {
               "type": "anthropic-messages",
-              "baseUrl": "https://api.z.ai/api/anthropic"
+              "baseUrl": "https://api.aira.invalid/api/anthropic"
             },
             "builtinModelIds": ["GLM-5.3", "GLM-5.3-Flash"],
             "logo": {
@@ -29,17 +29,17 @@
         {
           "templateId": "zai-standard-api",
           "templateNameMap": {
-            "zh-CN": "Z.ai API",
-            "en-US": "Z.ai API"
+            "zh-CN": "Aira API",
+            "en-US": "Aira API"
           },
           "config": {
             "access": {
               "type": "api-key",
-              "apiKeyManagementUrl": "https://z.ai/manage-apikey/apikey-list"
+              "apiKeyManagementUrl": "https://aira.invalid/manage-apikey/apikey-list"
             },
             "api": {
               "type": "openai-chat-completions",
-              "baseUrl": "https://api.z.ai/api/paas/v4"
+              "baseUrl": "https://api.aira.invalid/api/paas/v4"
             },
             "builtinModelIds": [
               "GLM-5.3",
@@ -83,11 +83,11 @@
           "config": {
             "access": {
               "type": "zhipu-coding-plan-api-key",
-              "apiKeyManagementUrl": "https://bigmodel.cn/coding-plan/personal/overview"
+              "apiKeyManagementUrl": "https://bigmodel.aira.invalid/coding-plan/personal/overview"
             },
             "api": {
               "type": "anthropic-messages",
-              "baseUrl": "https://open.bigmodel.cn/api/anthropic"
+              "baseUrl": "https://bigmodel.aira.invalid/api/anthropic"
             },
             "builtinModelIds": ["GLM-5.3", "GLM-5.3-Flash"],
             "logo": {
@@ -105,11 +105,11 @@
           "config": {
             "access": {
               "type": "api-key",
-              "apiKeyManagementUrl": "https://bigmodel.cn/usercenter/proj-mgmt/apikeys"
+              "apiKeyManagementUrl": "https://bigmodel.aira.invalid/usercenter/proj-mgmt/apikeys"
             },
             "api": {
               "type": "openai-chat-completions",
-              "baseUrl": "https://open.bigmodel.cn/api/paas/v4"
+              "baseUrl": "https://bigmodel.aira.invalid/api/paas/v4"
             },
             "builtinModelIds": [
               "GLM-5.3",
@@ -730,7 +730,7 @@
               "baseUrl": "https://api.siliconflow.cn/v1"
             },
             "builtinModelIds": [
-              "zai-org/GLM-5.3",
+              "HomieTal/GLM-5.3",
               "deepseek-ai/DeepSeek-V4-Flash",
               "moonshotai/Kimi-K2.7-Code"
             ],
@@ -1063,7 +1063,7 @@
             },
             "api": {
               "type": "anthropic-messages",
-              "baseUrl": "https://api.z.ai/api/anthropic"
+              "baseUrl": "https://api.aira.invalid/api/anthropic"
             },
             "logo": {
               "type": "builtin",
@@ -1084,7 +1084,7 @@
             },
             "api": {
               "type": "anthropic-messages",
-              "baseUrl": "https://api.z.ai/api/anthropic"
+              "baseUrl": "https://api.aira.invalid/api/anthropic"
             },
             "logo": {
               "type": "builtin",
@@ -1105,7 +1105,7 @@
             },
             "api": {
               "type": "anthropic-messages",
-              "baseUrl": "https://zcode.z.ai/api/v1/zcode-plan/anthropic"
+              "baseUrl": "https://api.aira.invalid/api/v1/aira-plan/anthropic"
             },
             "logo": {
               "type": "builtin",
@@ -1126,7 +1126,7 @@
             },
             "api": {
               "type": "anthropic-messages",
-              "baseUrl": "https://open.bigmodel.cn/api/anthropic"
+              "baseUrl": "https://bigmodel.aira.invalid/api/anthropic"
             },
             "logo": {
               "type": "builtin",
@@ -1147,7 +1147,7 @@
             },
             "api": {
               "type": "anthropic-messages",
-              "baseUrl": "https://open.bigmodel.cn/api/anthropic"
+              "baseUrl": "https://bigmodel.aira.invalid/api/anthropic"
             },
             "logo": {
               "type": "builtin",
@@ -1168,7 +1168,7 @@
             },
             "api": {
               "type": "anthropic-messages",
-              "baseUrl": "https://zcode.z.ai/api/v1/zcode-plan/anthropic"
+              "baseUrl": "https://api.aira.invalid/api/v1/aira-plan/anthropic"
             },
             "logo": {
               "type": "builtin",
@@ -1190,7 +1190,7 @@
             },
             "api": {
               "type": "anthropic-messages",
-              "baseUrl": "https://zcode.z.ai/api/v1/off-peak/anthropic"
+              "baseUrl": "https://api.aira.invalid/api/v1/off-peak/anthropic"
             },
             "logo": {
               "type": "builtin",
@@ -1212,7 +1212,7 @@
             },
             "api": {
               "type": "anthropic-messages",
-              "baseUrl": "https://zcode.z.ai/api/v1/off-peak/anthropic"
+              "baseUrl": "https://api.aira.invalid/api/v1/off-peak/anthropic"
             },
             "logo": {
               "type": "builtin",
@@ -1234,7 +1234,7 @@
             },
             "api": {
               "type": "anthropic-messages",
-              "baseUrl": "https://zcode.z.ai/api/v1/highspeed/anthropic"
+              "baseUrl": "https://api.aira.invalid/api/v1/highspeed/anthropic"
             },
             "logo": {
               "type": "builtin",
@@ -1256,7 +1256,7 @@
             },
             "api": {
               "type": "anthropic-messages",
-              "baseUrl": "https://zcode.z.ai/api/v1/highspeed/anthropic"
+              "baseUrl": "https://api.aira.invalid/api/v1/highspeed/anthropic"
             },
             "logo": {
               "type": "builtin",
@@ -4415,7 +4415,7 @@
         },
         {
           "modelMatch": ".*",
-          "baseUrlMatch": "https://zcode\\.z\\.ai/api/v1/zcode-plan/anthropic/?",
+          "baseUrlMatch": "https://api\\.aira\\.invalid/api/v1/aira-plan/anthropic/?",
           "config": {
             "properties": {
               "inputFormat": {
@@ -4427,7 +4427,7 @@
         },
         {
           "modelMatch": ".*",
-          "baseUrlMatch": "https://zcode\\.z\\.ai/api/v1/zcode-plan/anthropic/?",
+          "baseUrlMatch": "https://api\\.aira\\.invalid/api/v1/aira-plan/anthropic/?",
           "config": {
             "properties": {
               "inputFormat": {
@@ -4439,7 +4439,7 @@
         },
         {
           "modelMatch": ".*",
-          "baseUrlMatch": "https://zcode\\.z\\.ai/api/v1/highspeed/anthropic/?",
+          "baseUrlMatch": "https://api\\.aira\\.invalid/api/v1/highspeed/anthropic/?",
           "config": {
             "properties": {
               "inputFormat": {
@@ -4451,7 +4451,7 @@
         },
         {
           "modelMatch": ".*",
-          "baseUrlMatch": "https://zcode\\.z\\.ai/api/v1/highspeed/anthropic/?",
+          "baseUrlMatch": "https://api\\.aira\\.invalid/api/v1/highspeed/anthropic/?",
           "config": {
             "properties": {
               "inputFormat": {
@@ -4512,7 +4512,7 @@
         {
           "modelMatch": "glm-5\\.3",
           "apiTypeMatch": "anthropic-messages",
-          "baseUrlMatch": "https://zcode\\.z\\.ai/api/v1/highspeed/anthropic/?",
+          "baseUrlMatch": "https://api\\.aira\\.invalid/api/v1/highspeed/anthropic/?",
           "config": {
             "properties": {
               "inputFormat": {
@@ -4524,7 +4524,7 @@
         {
           "modelMatch": "glm-5\\.3",
           "apiTypeMatch": "anthropic-messages",
-          "baseUrlMatch": "https://zcode\\.z\\.ai/api/v1/highspeed/anthropic/?",
+          "baseUrlMatch": "https://api\\.aira\\.invalid/api/v1/highspeed/anthropic/?",
           "config": {
             "properties": {
               "inputFormat": {
@@ -4623,7 +4623,7 @@
         {
           "modelMatch": ".*",
           "apiTypeMatch": "anthropic-messages",
-          "baseUrlMatch": "https://zcode\\.z\\.ai/api/v1/zcode-plan/anthropic/?",
+          "baseUrlMatch": "https://api\\.aira\\.invalid/api/v1/aira-plan/anthropic/?",
           "config": {
             "properties": {
               "supportsNativeWebSearch": true,
@@ -4634,7 +4634,7 @@
         {
           "modelMatch": ".*",
           "apiTypeMatch": "anthropic-messages",
-          "baseUrlMatch": "https://zcode\\.z\\.ai/api/v1/zcode-plan/anthropic/?",
+          "baseUrlMatch": "https://api\\.aira\\.invalid/api/v1/aira-plan/anthropic/?",
           "config": {
             "properties": {
               "supportsNativeWebSearch": true,
@@ -4645,7 +4645,7 @@
         {
           "modelMatch": ".*",
           "apiTypeMatch": "anthropic-messages",
-          "baseUrlMatch": "https://zcode\\.z\\.ai/api/v1/off-peak/anthropic/?",
+          "baseUrlMatch": "https://api\\.aira\\.invalid/api/v1/off-peak/anthropic/?",
           "config": {
             "properties": {
               "supportsNativeWebSearch": false,
@@ -4656,7 +4656,7 @@
         {
           "modelMatch": ".*",
           "apiTypeMatch": "anthropic-messages",
-          "baseUrlMatch": "https://zcode\\.z\\.ai/api/v1/off-peak/anthropic/?",
+          "baseUrlMatch": "https://api\\.aira\\.invalid/api/v1/off-peak/anthropic/?",
           "config": {
             "properties": {
               "supportsNativeWebSearch": false,
@@ -4667,7 +4667,7 @@
         {
           "modelMatch": ".*",
           "apiTypeMatch": "anthropic-messages",
-          "baseUrlMatch": "https://zcode\\.z\\.ai/api/v1/highspeed/anthropic/?",
+          "baseUrlMatch": "https://api\\.aira\\.invalid/api/v1/highspeed/anthropic/?",
           "config": {
             "properties": {
               "supportsNativeWebSearch": true,
@@ -4678,7 +4678,7 @@
         {
           "modelMatch": ".*",
           "apiTypeMatch": "anthropic-messages",
-          "baseUrlMatch": "https://zcode\\.z\\.ai/api/v1/highspeed/anthropic/?",
+          "baseUrlMatch": "https://api\\.aira\\.invalid/api/v1/highspeed/anthropic/?",
           "config": {
             "properties": {
               "supportsNativeWebSearch": true,
@@ -7609,7 +7609,7 @@
         },
         {
           "templateId": "siliconflow-cn",
-          "modelId": "zai-org/GLM-5.3",
+          "modelId": "HomieTal/GLM-5.3",
           "config": {
             "enabled": true,
             "properties": {

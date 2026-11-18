@@ -31,18 +31,18 @@ export interface ModelProviderFamilySpec {
 export const MODEL_PROVIDER_FAMILY_SPECS = [
   {
     id: "zai",
-    label: "Z.ai",
-    rootDomain: "z.ai",
+    label: "Aira",
+    rootDomain: "aira.invalid",
     oauthProviderId: ZAI_PROVIDER_ID,
     startPlanProviderId: BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan,
     individualCodingPlanProviderId: BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan,
     teamCodingPlanProviderId: BUILTIN_MODEL_PROVIDER_IDS.zaiTeamCodingPlan,
-    teamCodingPlanManageUrl: "https://z.ai/manage-apikey/subscription",
+    teamCodingPlanManageUrl: "https://aira.invalid/manage-apikey/subscription",
   },
   {
     id: "bigmodel",
     label: "BigModel",
-    rootDomain: "bigmodel.cn",
+    rootDomain: "bigmodel.aira.invalid",
     oauthProviderId: BIGMODEL_PROVIDER_ID,
     startPlanProviderId: BUILTIN_MODEL_PROVIDER_IDS.bigmodelStartPlan,
     individualCodingPlanProviderId: BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan,

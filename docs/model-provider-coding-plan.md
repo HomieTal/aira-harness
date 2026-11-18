@@ -74,13 +74,13 @@ and For Teams entries both show the compact 150% quota badge next to the title.
 Logged-in not-subscribed entries and logged-in enterprise team group entries do
 not show this badge.
 
-When Z.ai account-based access is disconnected and no Start/Coding entitlement
+When Aira account-based access is disconnected and no Start/Coding entitlement
 is available yet, the same signed-out surface is still shown, but only the Start
 entry (when `startPlanPreview` exists) and For Individuals entry are visible.
-For Teams is hidden for Z.ai.
+For Teams is hidden for Aira.
 
 The purchase panel follows the same product boundary. When the selected provider
-does not support For Teams, such as Z.ai, the panel renders the Individuals plan
+does not support For Teams, such as Aira, the panel renders the Individuals plan
 content directly and does not show Individuals/Teams audience tabs.
 This no-tabs branch must still fill the available panel body height so the plan
 cards keep the same stretched layout as the tabbed BigModel view.

@@ -867,7 +867,7 @@ const zhCN: Record<string, string> = {
   "manualClaimPlan.claim.share.copyImageSucceeded": "图片已复制",
   "manualClaimPlan.claim.share.actionFailed": "操作失败，请重试",
   "manualClaimPlan.claim.share.twitterText":
-    "我在 Aira 领取了 {subtitle}。邀请你也来下载安装即可领取。\nhttps://zcode.z.ai",
+    "我在 Aira 领取了 {subtitle}。邀请你也来下载安装即可领取。\nhttps://api.aira.invalid",
   "manualClaimPlan.claim.share.twitterTextLabel": "Twitter/X 分享文案",
   // 通用
   "common.loading": "加载中...",
@@ -1668,7 +1668,7 @@ const zhCN: Record<string, string> = {
   "login.oauth.loadingProviders": "正在加载登录提供方...",
   "login.oauth.noProviders": "当前没有可用的登录提供方，请稍后重试。",
   "login.oauth.button": "继续使用 {provider}",
-  "login.oauth.button.zai": "连接 Z.ai 继续使用",
+  "login.oauth.button.zai": "连接 Aira 继续使用",
   "login.oauth.button.bigmodel": "连接 BigModel 继续使用",
   "login.oauth.regionTag.zai": "全球",
   "login.oauth.regionTag.bigmodel": "中国",
@@ -1688,7 +1688,7 @@ const zhCN: Record<string, string> = {
   "login.apiKey.title": "API Key",
   "login.apiKey.placeholder": "输入 API key",
   "login.apiKey.providerLabel": "API key 提供方",
-  "login.apiKey.provider.zai": "Z.ai",
+  "login.apiKey.provider.zai": "Aira",
   "login.apiKey.provider.bigmodel": "BigModel",
   "login.apiKey.getApiKey": "获取 API Key",
   "login.apiKey.cancel": "取消",
@@ -4203,7 +4203,7 @@ const zhCN: Record<string, string> = {
   "settings.modelProvider.apiFormat.title.anthropicMessages": "Anthropic Messages",
   "settings.modelProvider.anthropicEndpoint": "Anthropic 接口地址",
   "settings.modelProvider.anthropicEndpointPlaceholder":
-    "如：https://open.bigmodel.cn/api/anthropic",
+    "如：https://bigmodel.aira.invalid/api/anthropic",
   "settings.modelProvider.openaiEndpoint": "OpenAI 接口地址",
   "settings.modelProvider.openaiEndpointPlaceholder": "如：https://api.openai.com/v1",
   "settings.modelProvider.geminiEndpoint": "Gemini 接口地址",
@@ -4448,7 +4448,7 @@ const zhCN: Record<string, string> = {
     "{provider} 当前没有返回可购买的编程套餐。",
   "settings.modelProvider.codingPlan.dynamicUnsupportedTitle": "暂未接入动态套餐",
   "settings.modelProvider.codingPlan.dynamicUnsupportedDescription":
-    "应用内订阅目前只接入 Z.ai / BigModel 编程套餐。",
+    "应用内订阅目前只接入 Aira / BigModel 编程套餐。",
   "settings.modelProvider.codingPlan.priceUnavailable": "价格暂不可用",
   "settings.modelProvider.codingPlan.systemBusy": "系统繁忙，请稍后再试。",
   "settings.modelProvider.codingPlan.subscriptionBusy": "订阅繁忙",
@@ -4458,7 +4458,7 @@ const zhCN: Record<string, string> = {
   "settings.modelProvider.codingPlan.paymentTimeout":
     "支付仍在处理中，请完成支付后重新检查编程套餐状态。",
   "settings.modelProvider.codingPlan.zaiOverseasPaymentRequired":
-    "Z.ai 全球套餐需要通过 PayPal 或 Z.ai 官方支付页完成，不能使用支付宝签约流程。",
+    "Aira 全球套餐需要通过 PayPal 或 Aira 官方支付页完成，不能使用支付宝签约流程。",
   "settings.modelProvider.codingPlan.paypalSetupRequired": "请先完成 PayPal 授权后再继续支付。",
   "settings.modelProvider.codingPlan.paypalApproveUrlMissing": "PayPal 授权链接为空，请稍后重试。",
   "settings.modelProvider.codingPlan.paypalUnsupported": "当前账号或地区暂不支持 PayPal 支付。",
@@ -4471,7 +4471,7 @@ const zhCN: Record<string, string> = {
   "settings.modelProvider.codingPlan.securityVerificationCancelled": "已取消安全验证。",
   "settings.modelProvider.codingPlan.securityVerificationFailed": "安全验证失败，请稍后重试。",
   "settings.modelProvider.codingPlan.start.loginEnable": "连接后启用",
-  "settings.modelProvider.codingPlan.start.loginTrial": "连接 Z.ai",
+  "settings.modelProvider.codingPlan.start.loginTrial": "连接 Aira",
   "settings.modelProvider.codingPlan.start.enabled": "已启用",
   "settings.modelProvider.codingPlan.start.freeBadge": "Free",
   "settings.modelProvider.codingPlan.start.freeEquityTitle": "体验计划",
@@ -4590,7 +4590,7 @@ const zhCN: Record<string, string> = {
     "未找到待支付订单对应的套餐，请刷新套餐后重试。",
   "settings.modelProvider.codingPlan.overseasPayment.title": "{product} 全球套餐支付",
   "settings.modelProvider.codingPlan.overseasPayment.description":
-    "应付金额：{price}。可选择 PayPal，或前往 Z.ai 官方支付页继续支付。",
+    "应付金额：{price}。可选择 PayPal，或前往 Aira 官方支付页继续支付。",
   "settings.modelProvider.codingPlan.overseasPayment.paypal": "PayPal",
   "settings.modelProvider.codingPlan.overseasPayment.paypalDescription":
     "Open PayPal authorization, then return here to continue.",
@@ -4672,7 +4672,7 @@ const zhCN: Record<string, string> = {
   "settings.modelProvider.codingPlan.overseasPayment.policyLink": "Policy",
   "settings.modelProvider.codingPlan.overseasPayment.accountPolicySuffix": ".",
   "settings.modelProvider.codingPlan.overseasPayment.authorizationPrefix":
-    "You agree that Z.ai will charge your card the above amount now and on a recurring basis according to your subscription plan until you cancel in accordance with our ",
+    "You agree that Aira will charge your card the above amount now and on a recurring basis according to your subscription plan until you cancel in accordance with our ",
   "settings.modelProvider.codingPlan.overseasPayment.authorizationTermsLink": "terms",
   "settings.modelProvider.codingPlan.overseasPayment.authorizationSuffix": ".",
   "settings.modelProvider.codingPlan.paymentDialog.agreementPrefix": "同意",
@@ -4820,7 +4820,7 @@ const zhCN: Record<string, string> = {
   "settings.modelProvider.mappingNotSet": "未设置",
   "settings.modelProvider.presetTitle": "智谱",
   "settings.modelProvider.presetDescription":
-    "内置 Z.ai 与 BigModel 供应商，支持通过 OAuth 辅助完成配置。",
+    "内置 Aira 与 BigModel 供应商，支持通过 OAuth 辅助完成配置。",
   "settings.modelProvider.presetEmpty": "尚未同步，请先完成 OAuth 登录。",
   "settings.modelProvider.customTitle": "自定义供应商",
   "settings.modelProvider.refresh": "刷新",
@@ -4934,7 +4934,7 @@ const zhCN: Record<string, string> = {
     "套餐额度为当前说明口径，平台策略可能调整，最新数值以用量说明页面为准。",
   "settings.usage.entitlementLoginRequired": "需要先登录",
   "settings.usage.entitlementNotConfigured":
-    "未找到可查询额度的 Z.ai / BigModel 编程套餐账号。请先连接编程套餐账号。",
+    "未找到可查询额度的 Aira / BigModel 编程套餐账号。请先连接编程套餐账号。",
   "settings.usage.entitlementStatusActive": "已开通",
   "settings.usage.entitlementStatusError": "异常",
   "settings.usage.entitlementStatusLoading": "加载中",
@@ -5078,7 +5078,7 @@ const zhCN: Record<string, string> = {
   "settings.usage.timesUnit": "次",
   "settings.usage.codingPlanNotConfiguredTitle": "尚未连接编程套餐",
   "settings.usage.codingPlanNotConfiguredDescription":
-    "请先在模型设置中连接 Z.ai 或 BigModel 编程套餐，即可查看套餐额度、模型用量和工具用量。",
+    "请先在模型设置中连接 Aira 或 BigModel 编程套餐，即可查看套餐额度、模型用量和工具用量。",
   "settings.usage.codingPlanCurrentConnectionTitle": "当前连接方式未使用编程套餐",
   "settings.usage.codingPlanCurrentConnectionDescription":
     "将当前工作区模型连接方式切换为个人套餐或团队套餐后，即可在这里查看对应额度和用量。",
@@ -8441,7 +8441,7 @@ const zhCN: Record<string, string> = {
   "globalNotice.highspeed.speedSummary": "HighSpeed · {duration}",
   "globalNotice.highspeed.lessWaiting": "减少等待 {percent}%",
   "globalNotice.highspeed.copySummary":
-    "我用 Aira 高速卡节省了 {duration} 秒的时间，你也来试试吧。下载 Aira https://zcode.z.ai",
+    "我用 Aira 高速卡节省了 {duration} 秒的时间，你也来试试吧。下载 Aira https://api.aira.invalid",
   "globalNotice.highspeed.imageSummary": "{tokens} tokens · 节省 {duration} 秒",
   "globalNotice.highspeed.close": "关闭加速分享卡片",
   "remoteSync.title": "数据同步",

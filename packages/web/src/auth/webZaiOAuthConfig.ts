@@ -27,13 +27,13 @@ function normalizeZaiOAuthOrigin(value: string): string {
 }
 
 function buildZaiOAuthAuthorizeUrl(origin: string | undefined): string {
-  return `${normalizeZaiOAuthOrigin(origin?.trim() || "https://chat.z.ai")}/api/oauth/authorize`;
+  return `${normalizeZaiOAuthOrigin(origin?.trim() || "https://chat.aira.invalid")}/api/oauth/authorize`;
 }
 
 /**
  * BigModel 的授权入口。
  *
- * 必须跟随环境：测试环境写死 bigmodel.cn 会把测试账号带到生产授权页。构建期由
+ * 必须跟随环境：测试环境写死 bigmodel.aira.invalid 会把测试账号带到生产授权页。构建期由
  * vite.config 用 resolveBigModelApiOrigin 注入 VITE_BIGMODEL_OAUTH_ORIGIN；这里的
  * resolveBigModelApiOrigin({}) 只是最后兜底（等价于生产 origin）。
  */

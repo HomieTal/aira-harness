@@ -4,9 +4,9 @@
 
 ## 规范与边界
 
-- 用户指定的是 Dock 黑底白 Z 应用图标，不是旧 `logo-zai.svg` 的灰色描边版本。
+- 用户指定的是 Dock 黑底白 Z 应用图标，不是旧 `logo-aira.svg` 的灰色描边版本。
 - 原样复制现有 `packages/desktop/build/icons/128x128.png` 到 UI 静态资源
-  `model-provider-zai-app.png`；该尺寸版本无 Dock 大图的额外外围留白，不重画、不裁切、不反色。
+  `model-provider-aira-app.png`；该尺寸版本无 Dock 大图的额外外围留白，不重画、不裁切、不反色。
   UI 不跨层引用 Desktop 路径；单测验证打包副本与应用源文件字节相同。
 - 通过 `ProviderLogo` 的 `zai` 资源映射统一覆盖供应商列表、详情标题、添加模板等现有调用点；
   不新增按 Provider ID 判断，不修改 Built-in JSON、Schema、个人配置或模型行为。

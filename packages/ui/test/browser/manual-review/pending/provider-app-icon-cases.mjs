@@ -38,7 +38,7 @@ export function registerProviderAppIconCases(getContext) {
         await page.goto(`${origin}fixture?${new URLSearchParams({ locale, theme })}`);
         for (const id of ["zai-api", "zai-standard-api"]) {
           const card = page.getByTestId(`model-provider-template-item-${id}`);
-          const name = id === "zai-api" ? "Z.ai Coding Plan" : "Z.ai API";
+          const name = id === "zai-api" ? "Aira Coding Plan" : "Aira API";
           await assertAppIcon(card.locator("img"));
           assert.equal((await card.innerText()).trim(), name);
           await card.hover();
@@ -51,7 +51,7 @@ export function registerProviderAppIconCases(getContext) {
         assert.equal(mutations.length, 0);
         await page.getByTestId("model-provider-template-item-zai-api").click();
         await assertAppIcon(page.getByTestId("model-provider-header").locator("img"));
-        assert.ok((await page.locator('img[src*="model-provider-zai-app.png"]').count()) >= 2);
+        assert.ok((await page.locator('img[src*="model-provider-aira-app.png"]').count()) >= 2);
         await page.screenshot({ path: join(artifacts, `zai-app-detail-${width}.png`) });
         assert.deepEqual(mutations, [{ action: "create", payload: "zai-api" }]);
         assert.deepEqual(errors, []);

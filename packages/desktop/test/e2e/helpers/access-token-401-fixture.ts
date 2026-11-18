@@ -166,7 +166,7 @@ export async function prepareAccessToken401Fixture(options: {
             },
           ],
         };
-      else if (path === "/api/v1/zcode-plan/billing/balance") data = { plans: [], balances: [] };
+      else if (path === "/api/v1/aira-plan/billing/balance") data = { plans: [], balances: [] };
       if (data !== undefined) {
         response.end(JSON.stringify({ code: 0, data }));
         return;
@@ -201,7 +201,7 @@ export async function prepareAccessToken401Fixture(options: {
       return;
     }
     if (
-      (sharedJwt && path === "/api/v1/zcode-plan/billing/balance") ||
+      (sharedJwt && path === "/api/v1/aira-plan/billing/balance") ||
       (!sharedJwt && path === "/api/biz/customer/getCustomerInfo")
     ) {
       // 只记录是否匹配合成登录凭据，避免 token 原文进入测试产物。

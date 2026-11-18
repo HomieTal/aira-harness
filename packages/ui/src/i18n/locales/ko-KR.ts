@@ -754,7 +754,7 @@ const koKR: Record<string, string> = {
   "manualClaimPlan.claim.share.copyImageSucceeded": "이미지가 복사되었습니다",
   "manualClaimPlan.claim.share.actionFailed": "공유 작업에 실패했습니다. 다시 시도하세요.",
   "manualClaimPlan.claim.share.twitterText":
-    "Aira에서 {subtitle}을(를) 받았어요. Aira를 다운로드하고 설치해서 받아 보세요. https://zcode.z.ai",
+    "Aira에서 {subtitle}을(를) 받았어요. Aira를 다운로드하고 설치해서 받아 보세요. https://api.aira.invalid",
   "manualClaimPlan.claim.share.twitterTextLabel": "Twitter/X 게시물 텍스트",
   // Common
   "common.loading": "로드 중...",
@@ -1496,7 +1496,7 @@ const koKR: Record<string, string> = {
   "login.oauth.loadingProviders": "계정 공급자 로드 중...",
   "login.oauth.noProviders": "현재 사용 가능한 계정 공급자가 없습니다. 잠시 후 다시 시도하세요.",
   "login.oauth.button": "{provider}(으)로 계속",
-  "login.oauth.button.zai": "Z.ai에 연결",
+  "login.oauth.button.zai": "Aira에 연결",
   "login.oauth.button.bigmodel": "BigModel에 연결",
   "login.oauth.regionTag.zai": "글로벌",
   "login.oauth.regionTag.bigmodel": "CN",
@@ -1516,7 +1516,7 @@ const koKR: Record<string, string> = {
   "login.apiKey.title": "API Key",
   "login.apiKey.placeholder": "API Key 입력",
   "login.apiKey.providerLabel": "API Key 공급자",
-  "login.apiKey.provider.zai": "Z.ai",
+  "login.apiKey.provider.zai": "Aira",
   "login.apiKey.provider.bigmodel": "BigModel",
   "login.apiKey.getApiKey": "API Key 받기",
   "login.apiKey.cancel": "취소",
@@ -4124,7 +4124,7 @@ const koKR: Record<string, string> = {
     "{provider} / {model}을(를) 저장하지 못했습니다: {error}",
   "settings.modelProvider.cancel": "취소",
   "settings.modelProvider.name": "이름",
-  "settings.modelProvider.namePlaceholder": "예: Z.ai GLM",
+  "settings.modelProvider.namePlaceholder": "예: Aira GLM",
   "settings.modelProvider.addProviderTitle": "모델 공급자 추가",
   "settings.modelProvider.addProviderDescription":
     "사용자 지정 API 엔드포인트와 초기 모델을 구성합니다.",
@@ -4411,7 +4411,7 @@ const koKR: Record<string, string> = {
     "{provider}에서 이 계정에 대해 구매 가능한 Coding Plan 상품을 반환하지 않았습니다.",
   "settings.modelProvider.codingPlan.dynamicUnsupportedTitle": "동적 요금제를 사용할 수 없습니다",
   "settings.modelProvider.codingPlan.dynamicUnsupportedDescription":
-    "앱 내 구독은 현재 Z.ai / BigModel Coding Plan에만 연결되어 있습니다.",
+    "앱 내 구독은 현재 Aira / BigModel Coding Plan에만 연결되어 있습니다.",
   "settings.modelProvider.codingPlan.priceUnavailable": "가격 정보 없음",
   "settings.modelProvider.codingPlan.systemBusy": "시스템이 혼잡합니다. 잠시 후 다시 시도하세요.",
   "settings.modelProvider.codingPlan.subscriptionBusy": "구독 혼잡",
@@ -4421,7 +4421,7 @@ const koKR: Record<string, string> = {
   "settings.modelProvider.codingPlan.paymentTimeout":
     "결제가 아직 진행 중입니다. 결제 페이지가 완료되면 Coding Plan 상태를 다시 확인하세요.",
   "settings.modelProvider.codingPlan.zaiOverseasPaymentRequired":
-    "Z.ai 글로벌 요금제는 Alipay 서명 절차가 아닌 PayPal 또는 Z.ai 공식 결제 페이지를 통해 결제해야 합니다.",
+    "Aira 글로벌 요금제는 Alipay 서명 절차가 아닌 PayPal 또는 Aira 공식 결제 페이지를 통해 결제해야 합니다.",
   "settings.modelProvider.codingPlan.paypalSetupRequired":
     "결제를 계속하기 전에 PayPal을 승인하세요.",
   "settings.modelProvider.codingPlan.paypalApproveUrlMissing":
@@ -4438,7 +4438,7 @@ const koKR: Record<string, string> = {
   "settings.modelProvider.codingPlan.securityVerificationFailed":
     "보안 인증에 실패했습니다. 잠시 후 다시 시도하세요.",
   "settings.modelProvider.codingPlan.start.loginEnable": "연결하여 사용",
-  "settings.modelProvider.codingPlan.start.loginTrial": "Z.ai 연결",
+  "settings.modelProvider.codingPlan.start.loginTrial": "Aira 연결",
   "settings.modelProvider.codingPlan.start.enabled": "사용 중",
   "settings.modelProvider.codingPlan.start.freeBadge": "무료",
   "settings.modelProvider.codingPlan.start.freeEquityTitle": "무료 플랜 시작",
@@ -4564,7 +4564,7 @@ const koKR: Record<string, string> = {
     "이 미결제 주문의 요금제를 찾을 수 없습니다. 요금제를 새로고침한 후 다시 시도하세요.",
   "settings.modelProvider.codingPlan.overseasPayment.title": "{product} 글로벌 결제",
   "settings.modelProvider.codingPlan.overseasPayment.description":
-    "결제 금액: {price}. PayPal을 선택하거나 Z.ai 공식 결제 페이지에서 계속하세요.",
+    "결제 금액: {price}. PayPal을 선택하거나 Aira 공식 결제 페이지에서 계속하세요.",
   "settings.modelProvider.codingPlan.overseasPayment.paypal": "PayPal",
   "settings.modelProvider.codingPlan.overseasPayment.paypalDescription":
     "PayPal 승인을 연 다음 이곳으로 돌아와 계속하세요.",
@@ -4643,7 +4643,7 @@ const koKR: Record<string, string> = {
   "settings.modelProvider.codingPlan.overseasPayment.policyLink": "정책",
   "settings.modelProvider.codingPlan.overseasPayment.accountPolicySuffix": ".",
   "settings.modelProvider.codingPlan.overseasPayment.authorizationPrefix":
-    "귀하는 다음에 따라 취소할 때까지 Z.ai가 위 금액을 지금 그리고 구독 요금제에 따라 반복적으로 카드에 청구하는 데 동의합니다: ",
+    "귀하는 다음에 따라 취소할 때까지 Aira가 위 금액을 지금 그리고 구독 요금제에 따라 반복적으로 카드에 청구하는 데 동의합니다: ",
   "settings.modelProvider.codingPlan.overseasPayment.authorizationTermsLink": "약관",
   "settings.modelProvider.codingPlan.overseasPayment.authorizationSuffix": ".",
   "settings.modelProvider.codingPlan.paymentDialog.agreementPrefix":
@@ -4899,7 +4899,7 @@ const koKR: Record<string, string> = {
     "할당량 값은 현재 사용 가이드를 따르며 플랫폼 정책에 따라 변경될 수 있습니다.",
   "settings.usage.entitlementLoginRequired": "로그인 필요",
   "settings.usage.entitlementNotConfigured":
-    "할당량 조회에 사용할 수 있는 Z.ai 또는 BigModel Coding Plan 계정이 연결되어 있지 않습니다. 먼저 Coding Plan 계정을 연결하세요.",
+    "할당량 조회에 사용할 수 있는 Aira 또는 BigModel Coding Plan 계정이 연결되어 있지 않습니다. 먼저 Coding Plan 계정을 연결하세요.",
   "settings.usage.entitlementStatusActive": "활성",
   "settings.usage.entitlementStatusError": "오류",
   "settings.usage.entitlementStatusLoading": "불러오는 중",
@@ -5049,7 +5049,7 @@ const koKR: Record<string, string> = {
   "settings.usage.timesUnit": "회",
   "settings.usage.codingPlanNotConfiguredTitle": "Coding Plan이 연결되어 있지 않습니다",
   "settings.usage.codingPlanNotConfiguredDescription":
-    "플랜 할당량, 모델 사용량, 도구 사용량을 보려면 모델 설정에서 Z.ai 또는 BigModel Coding Plan 공급자를 연결하세요.",
+    "플랜 할당량, 모델 사용량, 도구 사용량을 보려면 모델 설정에서 Aira 또는 BigModel Coding Plan 공급자를 연결하세요.",
   "settings.usage.codingPlanCurrentConnectionTitle": "현재 연결은 Coding Plan을 사용하지 않습니다",
   "settings.usage.codingPlanCurrentConnectionDescription":
     "할당량과 사용량을 여기서 보려면 워크스페이스 모델 연결을 개인 플랜 또는 팀 플랜으로 전환하세요.",
@@ -5068,7 +5068,7 @@ const koKR: Record<string, string> = {
   "settings.usage.dayLabel.wed": "수",
   "settings.usage.dayLabel.fri": "금",
   "settings.modelProvider.presetDescription":
-    "OAuth 지원 구성을 제공하는 Z.ai 및 BigModel 내장 공급자입니다.",
+    "OAuth 지원 구성을 제공하는 Aira 및 BigModel 내장 공급자입니다.",
   "settings.modelProvider.presetEmpty":
     "아직 동기화되지 않았습니다. 먼저 OAuth 로그인을 완료하세요.",
   "settings.modelProvider.customTitle": "사용자 지정 공급자",
@@ -8488,7 +8488,7 @@ const koKR: Record<string, string> = {
   "globalNotice.highspeed.speedSummary": "HighSpeed · {duration}",
   "globalNotice.highspeed.lessWaiting": "대기 시간 {percent}% 단축",
   "globalNotice.highspeed.copySummary":
-    "Aira Highspeed 카드로 {duration}초를 절약했습니다. 한번 사용해 보세요. Aira 다운로드 https://zcode.z.ai",
+    "Aira Highspeed 카드로 {duration}초를 절약했습니다. 한번 사용해 보세요. Aira 다운로드 https://api.aira.invalid",
   "globalNotice.highspeed.imageSummary": "{tokens} 토큰 · {duration}초 절약",
   "globalNotice.highspeed.close": "Highspeed 공유 카드 닫기",
   "remoteSync.title": "데이터 동기화",

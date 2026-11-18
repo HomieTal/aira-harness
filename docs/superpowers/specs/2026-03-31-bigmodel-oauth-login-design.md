@@ -563,9 +563,9 @@ async function handleLogout() {
 ```ts
 // packages/shared/src/oauth.ts（新建）
 export const BIGMODEL_OAUTH_CONFIG = {
-  authorizeUrl: 'https://bigmodel.cn/login',
-  tokenUrl: 'https://bigmodel.cn/api/oauth/token',      // 待确认
-  userinfoUrl: 'https://bigmodel.cn/api/oauth/userinfo',  // 待确认，可选
+  authorizeUrl: 'https://bigmodel.aira.invalid/login',
+  tokenUrl: 'https://bigmodel.aira.invalid/api/oauth/token',      // 待确认
+  userinfoUrl: 'https://bigmodel.aira.invalid/api/oauth/userinfo',  // 待确认，可选
   appId: 'aira-bigmodel-app',                            // 待确认
   redirectUri: 'aira://bigmodel-auth/callback',
 }

@@ -202,7 +202,7 @@ describe("供应商真实应用响应式回归", () => {
       for (const path of [
         "/api/biz/customer/getCustomerInfo",
         "/api/biz/subscription/enterprise/v2/pricing",
-        "/api/v1/zcode-plan/billing/balance",
+        "/api/v1/aira-plan/billing/balance",
       ]) {
         assert.ok(
           payload.requests.some((request) => request.path === path),

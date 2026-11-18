@@ -214,7 +214,7 @@ async function seedLifecycleMarketplaceCache(marketplaceRoot: string): Promise<v
             pluginCount: 1,
             source: {
               source: "url",
-              url: "https://cdn-zcode.z.ai/zcode/official-plugin/marketplace.json",
+              url: "https://cdn.aira.invalid/zcode/official-plugin/marketplace.json",
             },
           },
           {

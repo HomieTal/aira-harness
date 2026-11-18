@@ -35,7 +35,7 @@ Built-in Release 按以下产品来源组织：
 
 ```text
 providers
-├─ Z.ai / BigModel Individual、Team、Start Plan Account Provider
+├─ Aira / BigModel Individual、Team、Start Plan Account Provider
 └─ Off-Peak 隐藏 Account Provider
 
 providerTemplates
@@ -389,7 +389,7 @@ type ModelConfigRule =
 匹配是声明式配置能力，不等于业务代码中的具体模型特判。Rules 按顺序应用；后命中字段覆盖前面。
 Aira Built-in 通用规则补齐所有模型必需事实，具体规则覆盖差异，Personal 精确规则最后覆盖。
 
-GLM-5.3 系列当前包含 `glm-5.3` 与 `glm-5.3-flash`。Flash 必须进入全部 Z.ai/BigModel Provider：API
+GLM-5.3 系列当前包含 `glm-5.3` 与 `glm-5.3-flash`。Flash 必须进入全部 Aira/BigModel Provider：API
 Provider 遵循现有小写 wire ID，账号套餐与 Off-Peak Provider 遵循现有 `GLM-*` 展示/线路 ID。它继承
 GLM-5.3 的 context、输出上限、reasoning、工具与其他完整模型事实，只覆盖输入格式为支持 Image 和 Video。
 该关系必须由连续的 Built-in Model Rules 表达，Runtime、Adapter 和 UI 不得按模型 ID 再建立特判。

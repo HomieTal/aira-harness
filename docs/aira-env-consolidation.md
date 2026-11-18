@@ -32,9 +32,9 @@
 - `ZAI_PRODUCTION_OAUTH_CLIENT_ID`
 
 构建配置根据 `AIRA_ENV` 选择对应链接，并向 renderer 注入公开的 `VITE_*` 值。
-renderer、host/service 和 agent 里的 Aira API、远控链接、zcode-plan OpenAI/Anthropic
+renderer、host/service 和 agent 里的 Aira API、远控链接、aira-plan OpenAI/Anthropic
 入口都通过 `@aira/shared` 的 endpoint resolver 派生，业务代码不要再手写
-`zcode.z.ai` / `zcode.z.ai` 的 zcode-plan URL。
+`api.aira.invalid` / `api.aira.invalid` 的 aira-plan URL。
 
 ## Endpoint resolver
 
@@ -45,8 +45,8 @@ renderer、host/service 和 agent 里的 Aira API、远控链接、zcode-plan Op
 
 | 产品环境 | Aira API | ZAI OAuth | ZAI Business API | BigModel API |
 | --- | --- | --- | --- | --- |
-| `test` | `https://zcode.z.ai` | `https://chat.z.ai` | `https://api.z.ai` | `https://bigmodel.cn` |
-| `production` | `https://zcode.z.ai` | `https://chat.z.ai` | `https://api.z.ai` | `https://bigmodel.cn` |
+| `test` | `https://api.aira.invalid` | `https://chat.aira.invalid` | `https://api.aira.invalid` | `https://bigmodel.aira.invalid` |
+| `production` | `https://api.aira.invalid` | `https://chat.aira.invalid` | `https://api.aira.invalid` | `https://bigmodel.aira.invalid` |
 
 覆盖优先级：
 

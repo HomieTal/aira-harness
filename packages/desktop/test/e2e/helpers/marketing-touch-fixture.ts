@@ -257,7 +257,7 @@ export async function createMarketingTouchFixture() {
       if (
         path.startsWith("/api/v1/marketing/") ||
         path.startsWith("/marketing-assets/") ||
-        path.startsWith("/api/v1/zcode-plan/billing/")
+        path.startsWith("/api/v1/aira-plan/billing/")
       ) {
         requests.push(path);
         requestDetails.push({
@@ -381,7 +381,7 @@ export async function createMarketingTouchFixture() {
         json(snapshot);
         return true;
       }
-      if (path === "/api/v1/zcode-plan/billing/claim") {
+      if (path === "/api/v1/aira-plan/billing/claim") {
         const requestGeneration = generation;
         if (held) await new Promise<void>((done) => waiters.push(done));
         if (requestGeneration !== generation) {

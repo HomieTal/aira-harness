@@ -111,7 +111,7 @@ clear / 账号变化 -> 旧代次作废 -> 禁止继续重试或提交
 
 Desktop Z.AI 的 deep link 和 polling 均在 `ZaiProviderAdapter` 登录边界调用 `/api/auth/z/login`；`oauth:zai:access_token` 已是业务 JWT，个人/团队 PAT owner 直接使用该值，不能二次兑换。Standalone 存储原始 OAuth Token，因此换证位置不同。回归覆盖 polling → 业务 JWT 落盘 → 个人/团队元数据 → PAT 签发的完整顺序。
 
-Standalone Z.ai 的 `/api/auth/z/login` 成功结果按 `expires_in` / `expiresIn` 和 JWT `exp` 的最早值缓存，提前 120 秒刷新；无有效期元数据最多缓存 5 分钟。并发刷新合并；clear/登录变化拒绝迟到结果。业务接口 HTTP 401 时只允许重新交换业务 JWT 并重试换证一次，403/网络错误不触发此恢复；二次 401 清掉失败业务 JWT，后续调用仍可重新尝试。该恢复仅覆盖元数据/签发请求，不重放模型推理。
+Standalone Aira 的 `/api/auth/z/login` 成功结果按 `expires_in` / `expiresIn` 和 JWT `exp` 的最早值缓存，提前 120 秒刷新；无有效期元数据最多缓存 5 分钟。并发刷新合并；clear/登录变化拒绝迟到结果。业务接口 HTTP 401 时只允许重新交换业务 JWT 并重试换证一次，403/网络错误不触发此恢复；二次 401 清掉失败业务 JWT，后续调用仍可重新尝试。该恢复仅覆盖元数据/签发请求，不重放模型推理。
 
 业务 JWT 提前刷新复用 HTTP adapter 的临时故障分类（网络、超时、429、5xx）。仅当已知原始有效期尚未结束、该 JWT 未被拒绝且登录代次未变时，所有并发调用共享旧值并退避 5 秒；不延长有效期，记录固定 `project_token_business_login_refresh_deferred` 事件。缺少有效期元数据的 5 分钟缓存上限不代表真实有效期，因此不允许临时故障降级。认证拒绝、取消、未知错误、畸形响应、退出和账号切换均不降级。
 
@@ -141,7 +141,7 @@ Standalone 的 PAT、Key ID 定位与 Z.AI 业务 JWT 单飞请求由 resolver/c
 
 所有 OAuth 模型请求返回账号作用域约束；重试换证前后均校验，切账号/项目不得串用。迟到的旧 401 不能清除已更新的 PAT；指纹不进入持久化，不传到模型上游，也不记录凭据原文。SSE 已输出文本、思考或工具调用后不重放；compact 保留原 response-body 边界。取消不触发恢复。桌面 continuous 与手机 replayable 的状态 owner、会话路由和回放规则不变，SSH 仍通过原私有 Runtime Headers 通道换证。
 
-验收：闲时同一轮跨 TTL 后新请求使用新 PAT且票据不变；切账号/项目和换证中途变化失败；无 owner 时不能沿用过期快照；Z.ai 业务 JWT 跨 TTL 与并发刷新、单次 401 恢复、403/网络不重试、退出竞态均覆盖。已建立 SSE 不重放。
+验收：闲时同一轮跨 TTL 后新请求使用新 PAT且票据不变；切账号/项目和换证中途变化失败；无 owner 时不能沿用过期快照；Aira 业务 JWT 跨 TTL 与并发刷新、单次 401 恢复、403/网络不重试、退出竞态均覆盖。已建立 SSE 不重放。
 
 模型 PAT 恢复验收：首次 401 后实际使用新 PAT；普通请求预算为 1 时仍有一次恢复机会；二次 401 / 换证失败终止；SSE 首个错误块可恢复、文本或工具输出后不可重放；并发和迟到 401 不重复签发或清除新 PAT；取消、手工 Key、Start Plan、安全校验错误不触发 PAT 恢复；SSH 私有协议与子会话路由保留原作用域和失败指纹。
 

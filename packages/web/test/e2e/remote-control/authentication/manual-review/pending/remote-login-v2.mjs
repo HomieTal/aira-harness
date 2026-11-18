@@ -52,8 +52,8 @@ try {
               assert.deepEqual(
                 await h.page.getByRole("button").allTextContents(),
                 locale === "zh-CN"
-                  ? ["连接 Z.ai 继续使用全球", "连接 BigModel 继续使用中国"]
-                  : ["Connect to Z.aiGlobal", "Connect to BigModelCN"],
+                  ? ["连接 Aira 继续使用全球", "连接 BigModel 继续使用中国"]
+                  : ["Connect to AiraGlobal", "Connect to BigModelCN"],
               );
             }
             if (isList) {
@@ -191,7 +191,7 @@ try {
     assert.equal(await other.page.evaluate(() => localStorage.getItem("airajwttoken")), "e2e-jwt");
     await other.page.getByRole("button", { name: "切换", exact: true }).click();
     await other.page.getByRole("button", { name: "退出并切换", exact: true }).click();
-    await other.page.getByRole("button", { name: /连接 Z.ai 继续使用/ }).waitFor();
+    await other.page.getByRole("button", { name: /连接 Aira 继续使用/ }).waitFor();
     assert.equal(await other.page.evaluate(() => localStorage.getItem("airajwttoken")), null);
     assert.deepEqual(other.errors, []);
     results.push({ case: "MD04 失败页换设备跳过最近直连；MD05 列表切换账号", result: "passed" });
@@ -303,7 +303,7 @@ try {
               );
             }
             await login.page.goto(`${origin}${loginQrPath}`);
-            await login.page.getByRole("button", { name: /连接 Z.ai 继续使用/ }).waitFor();
+            await login.page.getByRole("button", { name: /连接 Aira 继续使用/ }).waitFor();
             assert.equal(await login.page.getByRole("dialog").count(), 0);
             assert.equal(login.page.url(), `${origin}${loginQrPath}`);
             assert.equal(
@@ -314,7 +314,7 @@ try {
             assert.equal(login.traffic.sockets, 0);
             await login.page
               .getByRole("button", {
-                name: provider === "zai" ? /连接 Z.ai 继续使用/ : /连接 BigModel 继续使用/,
+                name: provider === "zai" ? /连接 Aira 继续使用/ : /连接 BigModel 继续使用/,
               })
               .click();
             await assertEventually(() => !!login.traffic.authorize);
@@ -328,7 +328,7 @@ try {
             if (provider === "bigmodel") {
               assert.equal(
                 login.traffic.authorize.origin,
-                process.env.REMOTE_LOGIN_E2E_BIGMODEL_ORIGIN || "https://bigmodel.cn",
+                process.env.REMOTE_LOGIN_E2E_BIGMODEL_ORIGIN || "https://bigmodel.aira.invalid",
               );
               assert.equal(login.traffic.authorize.pathname, "/login");
               assert.equal(login.traffic.authorize.searchParams.get("appId"), "aira");
@@ -392,7 +392,7 @@ try {
       await login.page.goto(`${origin}${qrPath}`);
       await login.page
         .getByRole("button", {
-          name: provider === "zai" ? /连接 Z.ai 继续使用/ : /连接 BigModel 继续使用/,
+          name: provider === "zai" ? /连接 Aira 继续使用/ : /连接 BigModel 继续使用/,
         })
         .click();
       await assertEventually(() => !!login.traffic.authorize);
@@ -430,7 +430,7 @@ try {
         await h.page.goto(`${origin}${qrPath}`);
         if (tokenStatus === 200) await assertEventually(() => h.traffic.bootstraps === 1);
         else {
-          await h.page.getByRole("button", { name: /连接 Z.ai 继续使用/ }).waitFor();
+          await h.page.getByRole("button", { name: /连接 Aira 继续使用/ }).waitFor();
           assert.equal(await h.page.evaluate(() => localStorage.getItem("airajwttoken")), null);
           assert.equal(h.page.url(), `${origin}${qrPath}`);
           assert.equal(h.traffic.sockets, 0);
@@ -479,7 +479,7 @@ try {
       await assertEventually(() => h.traffic.bootstraps === 1);
       assert.deepEqual(authorizations, ["Bearer e2e-jwt", "Bearer e2e-jwt-2"]);
       assert.equal(await h.page.evaluate(() => localStorage.getItem("airajwttoken")), "e2e-jwt-2");
-      assert.equal(await h.page.getByRole("button", { name: /连接 Z.ai 继续使用/ }).count(), 0);
+      assert.equal(await h.page.getByRole("button", { name: /连接 Aira 继续使用/ }).count(), 0);
       assert.equal(h.traffic.sockets, 1);
       assert.equal(h.page.url(), `${origin}${qrPath}`);
       assert.deepEqual(h.errors, []);

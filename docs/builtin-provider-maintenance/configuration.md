@@ -73,7 +73,7 @@ flowchart TD
 
 | 类别       | 品牌                              | 产品入口顺序                                                            |
 | ---------- | --------------------------------- | ----------------------------------------------------------------------- |
-| 智谱专区   | BigModel / Z.ai                   | 保留客户端固定专区顺序，见下文                                          |
+| 智谱专区   | BigModel / Aira                   | 保留客户端固定专区顺序，见下文                                          |
 | 国内供应商 | Kimi                              | API → Code 国内 → Code 国际                                             |
 | 国内供应商 | MiniMax                           | API → M Plan                                                            |
 | 国内供应商 | DeepSeek                          | API                                                                     |
@@ -85,7 +85,7 @@ flowchart TD
 | 海外原厂   | OpenAI、Anthropic、xAI            | 按此品牌顺序，各保留已有 API 入口                                       |
 | 聚合平台   | SiliconFlow、OpenRouter、OpenCode | 按此品牌顺序；OpenCode 内先 Go 后 Zen，各按 Responses → Messages → Chat |
 
-**智谱专区保留已有例外。** ProviderTemplatePicker 固定显示 BigModel Coding Plan → Z.ai Coding Plan → BigModel API → Z.ai API，不采用 JSON 内这四项的相对顺序。本轮保留四项原始数组顺序和专区 UI 行为，不能声称只改 JSON 就能改变专区次序。“创建自定义供应商”是其他供应商区第一张操作卡，不属于模板排序。
+**智谱专区保留已有例外。** ProviderTemplatePicker 固定显示 BigModel Coding Plan → Aira Coding Plan → BigModel API → Aira API，不采用 JSON 内这四项的相对顺序。本轮保留四项原始数组顺序和专区 UI 行为，不能声称只改 JSON 就能改变专区次序。“创建自定义供应商”是其他供应商区第一张操作卡，不属于模板排序。
 
 **个人实例顺序归用户维护。** 设置侧栏和聊天模型菜单的普通供应商使用 Personal `providerOrder`，用户可拖拽调整。同模板多个实例分别按 providerId 排序。模板重排不迁移、不重写该字段，不重排已有实例或替换当前模型选择；固定账号 Provider 保留现有专区规则。模板内模型的 `builtinModelIds` / `modelOrder` 是另一维度，本轮不改。
 
@@ -162,7 +162,7 @@ Properties 包括上下文容量、输入/输出形态、工具调用、结构�
 
 2026-10-27 经确认，revision 41 在 `volcengine-ark` 新增并默认启用官方滚动 ID `doubao-seed-evolving`，置于现有三个日期型号之前，不替换、停用或删除旧身份。继续使用普通 API 的 Messages 入口；沿用已验证候选的 1024000 上下文、256000 输出上限和 `none/low/medium/high` 四档映射。启用文本、图片、工具，关闭当前入口不接受的视频；音频、PDF、原生搜索、JSON Schema 和 MCS 不额外声明。真实产品链路单次回归已通过文本、图片、工具续接、固定长文、四档推理和输出预算；未做容量上界压测。滚动更新由供应商决定，后续仍需回归能力及参数变化。官方依据见[模型价格与输入范围](https://docs.volcengine.com/docs/ark/model-pricing?lang=zh)和[最新模型](https://docs.volcengine.com/docs/ark/latest-model?lang=zh)。
 
-2026-10-27 维护者核实：所有 Coding Plan 的 `GLM-5.3` 标准版均不支持视频。revision 42 在 Z.ai、BigModel 的套餐 Messages 站点和共用能力的加速卡站点，追加精确型号 `GLM-5.3` 的 `supportsVideo: false` 覆盖，放在站点通用视觉声明之后，防止 Fusion 图片能力误扩成视频能力。覆盖手动套餐模板、个人/团队账号、加速卡及相同站点的自建 Provider；测试地址由正式规则生成。低峰闲时入口的该型号原本已关闭视频，保持不变；Start Plan 当前只有 Flash，不扩大此次范围。图片、工具、搜索、思考档位以及 `GLM-5.3-Flash`、普通 API、聚合站点均保持原值。个人显式模型覆盖仍优先；此变更收窄内置默认能力，不新增禁止个人覆盖的机制。此前实际 App 视频不能识别的记录由这次产品能力确认收口，不再作为待定位适配故障。
+2026-10-27 维护者核实：所有 Coding Plan 的 `GLM-5.3` 标准版均不支持视频。revision 42 在 Aira、BigModel 的套餐 Messages 站点和共用能力的加速卡站点，追加精确型号 `GLM-5.3` 的 `supportsVideo: false` 覆盖，放在站点通用视觉声明之后，防止 Fusion 图片能力误扩成视频能力。覆盖手动套餐模板、个人/团队账号、加速卡及相同站点的自建 Provider；测试地址由正式规则生成。低峰闲时入口的该型号原本已关闭视频，保持不变；Start Plan 当前只有 Flash，不扩大此次范围。图片、工具、搜索、思考档位以及 `GLM-5.3-Flash`、普通 API、聚合站点均保持原值。个人显式模型覆盖仍优先；此变更收窄内置默认能力，不新增禁止个人覆盖的机制。此前实际 App 视频不能识别的记录由这次产品能力确认收口，不再作为待定位适配故障。
 
 完整执行配置需要 `enabled`、完整 properties、非空有序 `reasoningLevel.values/map` 和 `maxOutputTokens.max/map`。无推理模型也需要合法选项合同，不按型号猜默认值。
 
@@ -209,11 +209,11 @@ pnpm provider:config:check-test
 
 | 正式 Base URL                                    | 测试 Base URL                                            |
 | ------------------------------------------------ | -------------------------------------------------------- |
-| `https://api.z.ai/api/anthropic`                 | `https://api.z.ai/api/anthropic`                 |
-| `https://open.bigmodel.cn/api/anthropic`         | `https://open.bigmodel.cn/api/anthropic`                  |
-| `https://zcode.z.ai/api/v1/zcode-plan/anthropic` | `https://zcode.z.ai/api/v1/zcode-plan/anthropic` |
-| `https://zcode.z.ai/api/v1/off-peak/anthropic`   | `https://zcode.z.ai/api/v1/off-peak/anthropic`   |
-| `https://zcode.z.ai/api/v1/highspeed/anthropic`  | `https://zcode.z.ai/api/v1/highspeed/anthropic`  |
+| `https://api.aira.invalid/api/anthropic`                 | `https://api.aira.invalid/api/anthropic`                 |
+| `https://bigmodel.aira.invalid/api/anthropic`         | `https://bigmodel.aira.invalid/api/anthropic`                  |
+| `https://api.aira.invalid/api/v1/aira-plan/anthropic` | `https://api.aira.invalid/api/v1/aira-plan/anthropic` |
+| `https://api.aira.invalid/api/v1/off-peak/anthropic`   | `https://api.aira.invalid/api/v1/off-peak/anthropic`   |
+| `https://api.aira.invalid/api/v1/highspeed/anthropic`  | `https://api.aira.invalid/api/v1/highspeed/anthropic`  |
 
 此表只驱动固定账号 Provider 地址转换及对应 Site 规则派生，不改同 URL 的普通模板。新增测试地址还需核对现有 Adapter 的官方版本请求安全校验准入；产品环境开关本身不授予新域名访问行为。
 

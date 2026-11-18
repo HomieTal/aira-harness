@@ -14,7 +14,7 @@ export {
   REQUEST_VERIFICATION_REJECTED_MESSAGE,
 } from "@/request-security-edition/errors.js";
 /**
- * zcode-plan / Coding Plan 业务错误码与前端处理约定。
+ * aira-plan / Coding Plan 业务错误码与前端处理约定。
  *
  * | 场景           | code | HTTP | 前端处理 |
  * |----------------|------|------|----------|

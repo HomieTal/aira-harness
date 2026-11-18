@@ -19,7 +19,7 @@ export const BUILTIN_AIRA_SLASH_COMMAND_HELP_ENTRIES: readonly BuiltinAiraSlashC
   {
     details: [
       "Opens a Coding Plan setup picker when called without arguments.",
-      "Z.ai and BigModel browser login poll for authorization, then securely save credentials and refresh available models.",
+      "Aira and BigModel browser login poll for authorization, then securely save credentials and refresh available models.",
       "Manual API key variants accept the API key as an argument.",
     ],
     name: "login",
@@ -28,9 +28,9 @@ export const BUILTIN_AIRA_SLASH_COMMAND_HELP_ENTRIES: readonly BuiltinAiraSlashC
       "/login [zai-coding-plan|bigmodel-coding-plan|zai-coding-plan-api-key <api-key>|bigmodel-coding-plan-api-key <api-key>]",
   },
   {
-    details: ["Deletes Z.ai OAuth credentials from the shared Aira credential store."],
+    details: ["Deletes Aira OAuth credentials from the shared Aira credential store."],
     name: "logout",
-    summary: "Remove the shared Z.ai login credentials.",
+    summary: "Remove the shared Aira login credentials.",
     usage: "/logout",
   },
   {

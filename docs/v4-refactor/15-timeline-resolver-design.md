@@ -639,7 +639,7 @@ UI v4 virtual projection
        - part(id, message_id, session_id, time_created, time_updated, data JSON, sequence)
        - session_entry(...)
 
-App metadata store: ~/Library/Application Support/ai.z.aira/aira.db
+App metadata store: ~/Library/Application Support/ai.aira.invalidra/aira.db
   - sessions / workspaces / follow_up_queue / session_notifications
   - 不存完整 transcript
 

@@ -2,7 +2,7 @@
 
 ## 背景
 
-App 层访问 Aira endpoint（默认 `https://zcode.z.ai`，或当前 `AIRA_BASE_URL` / `AIRA_PRODUCTION_BASE_URL` 派生 endpoint）时，需要统一携带设备标识 header，便于后端把 OAuth、client configs、billing、snapshot 等请求和既有 telemetry/ARMS 设备维度对齐。
+App 层访问 Aira endpoint（默认 `https://api.aira.invalid`，或当前 `AIRA_BASE_URL` / `AIRA_PRODUCTION_BASE_URL` 派生 endpoint）时，需要统一携带设备标识 header，便于后端把 OAuth、client configs、billing、snapshot 等请求和既有 telemetry/ARMS 设备维度对齐。
 
 ## 设计
 
@@ -10,7 +10,7 @@ App 层访问 Aira endpoint（默认 `https://zcode.z.ai`，或当前 `AIRA_BASE
 - `buildAiraSourceHeadersFromContext()` 是跨 App/Agent 的纯来源 header 组装规则；
   app 服务层 `buildAiraSourceHeaders()` 继续负责读取已有 `deviceMid` 后调用该共享规则。
 - 只读取已存在且可作为 HTTP header 输出的 `deviceMid`；读取失败或字段缺失时不在该函数里生成新设备 ID，避免改变设备 ID 生命周期。
-- 通用规则里 `X-Device-Mid` 是“有值才带”，但 `/api/v1/zcode-plan/billing/balance` 服务端把它当必填（缺失返回 `400 code 3001 parameter error`）。因此任何会发起 Start Plan 权益查询的运行环境都必须在首次请求前确保 `deviceMid` 已落盘，不能依赖“可选头缺失也能成功”。
+- 通用规则里 `X-Device-Mid` 是“有值才带”，但 `/api/v1/aira-plan/billing/balance` 服务端把它当必填（缺失返回 `400 code 3001 parameter error`）。因此任何会发起 Start Plan 权益查询的运行环境都必须在首次请求前确保 `deviceMid` 已落盘，不能依赖“可选头缺失也能成功”。
 - 设备 ID 的生成由各运行环境的生命周期所有者负责：Desktop main 在窗口创建前同步确保；独立 Server（SSH/WSL/Docker 的 Source Server Core、Aira Lite HTTP 入口）由共用装配 `createServerHostServices()` 在创建 services 前调用 `ensureTelemetryDeviceMid()` 异步确保；旧 stdio entry 在握手完成、services 创建前自行确保；独立 CLI 在首次模型请求时自行确保。各方读写同一个 `telemetry-state.json` 的 `deviceMid` 字段，并用同名 `telemetry-state.lock` 互斥。
 - `NodeApiClient` 仍只负责在命中当前 Aira endpoint 时注入 `buildAiraSourceHeaders()` 返回的 headers，并保留调用方显式传入的同名 header。
 - Aira CLI 的 provider endpoint routing 配置 GET 通过独立 bootstrap source-header provider

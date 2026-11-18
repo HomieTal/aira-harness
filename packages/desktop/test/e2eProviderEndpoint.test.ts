@@ -25,11 +25,11 @@ describe("E2E provider endpoint ownership", () => {
       AIRA_ENV: "test",
       ...getE2EProviderEndpointEnv([spec], "deepseek", "replay"),
     };
-    expect(resolveRuntimeAiraEndpointOrigin(env)).toBe("https://zcode.z.ai");
-    expect(resolveBigModelApiOrigin(env)).toBe("https://bigmodel.cn");
+    expect(resolveRuntimeAiraEndpointOrigin(env)).toBe("https://api.aira.invalid");
+    expect(resolveBigModelApiOrigin(env)).toBe("https://bigmodel.aira.invalid");
     // SSH 只透传环境档位，不透传 BIGMODEL_API_BASE_URL；远端仍必须解析到生产域。
     expect(env.AIRA_ENV).toBe("production");
-    expect(resolveBigModelApiOrigin({ AIRA_ENV: env.AIRA_ENV })).toBe("https://bigmodel.cn");
+    expect(resolveBigModelApiOrigin({ AIRA_ENV: env.AIRA_ENV })).toBe("https://bigmodel.aira.invalid");
   });
 
   it("普通用例的控制面覆盖原样来自请求安全实现，不获得真实 Team 的 BigModel 接口覆盖", () => {

@@ -110,11 +110,11 @@ describe("desktop tsup chunk isolation", () => {
   it("remote runtime CDN 根应可由 CI 的 CDN_DOMAIN/OSS_PATH_PREFIX 多值注入", () => {
     expect(
       resolveBuildRemoteCdnReleaseRoots({
-        CDN_DOMAIN: "cdn-zcode.z.ai,cdn.aira-ai.com",
+        CDN_DOMAIN: "cdn.aira.invalid,cdn.aira-ai.com",
         OSS_PATH_PREFIX: "aira/electron/releases",
       }),
     ).toEqual([
-      "https://cdn-zcode.z.ai/zcode/electron/releases",
+      "https://cdn.aira.invalid/zcode/electron/releases",
       "https://cdn.aira-ai.com/aira/electron/releases",
     ]);
   });
@@ -122,7 +122,7 @@ describe("desktop tsup chunk isolation", () => {
   it("remote runtime CDN 根的路径前缀数量不匹配时应失败", () => {
     expect(() =>
       resolveBuildRemoteCdnReleaseRoots({
-        CDN_DOMAIN: "cdn-zcode.z.ai,cdn.aira-ai.com",
+        CDN_DOMAIN: "cdn.aira.invalid,cdn.aira-ai.com",
         OSS_PATH_PREFIX: "new-prefix,old-prefix,extra-prefix",
       }),
     ).toThrow("OSS_PATH_PREFIX must contain one value or match CDN_DOMAIN count");

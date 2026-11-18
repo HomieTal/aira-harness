@@ -5,7 +5,7 @@
 `listing.icon` 使用官方插件资源 CDN：
 
 ```
-https://cdn-zcode.z.ai/zcode/official-plugin/assets/<plugin-name>/icon.png
+https://cdn.aira.invalid/zcode/official-plugin/assets/<plugin-name>/icon.png
 ```
 
 例外：部分官方插件的图标随客户端打包，不走 CDN——`packages/ui/src/lib/pluginIconSource.ts` 的

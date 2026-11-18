@@ -5,7 +5,7 @@ declare const __AIRA_REMOTE_CDN_RELEASE_ROOTS__: readonly string[] | undefined;
 const REMOTE_CDN_RELEASE_ROOTS = {
   domestic: "https://cdn.codegeex.cn/aira/electron/releases",
   // 开发构建未注入 CDN_DOMAIN 时也须使用当前发布域名，避免仍请求旧域名。
-  overseas: "https://cdn-zcode.z.ai/zcode/electron/releases",
+  overseas: "https://cdn.aira.invalid/zcode/electron/releases",
 } as const;
 const TEST_REMOTE_CDN_RELEASE_ROOT = "http://intranet.example.invalid:12345/ssh-remote-assets";
 

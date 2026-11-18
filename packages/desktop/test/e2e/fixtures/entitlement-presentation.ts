@@ -120,7 +120,7 @@ export function presentationResponse(path: string, state: EntitlementPresentatio
             },
     };
   }
-  if (path === "/api/v1/zcode-plan/billing/balance") {
+  if (path === "/api/v1/aira-plan/billing/balance") {
     const result = buildProviderResponsiveStartBalance("GLM-5.3");
     if (state.start === "none")
       return { ...result, data: { ...result.data, plans: [], balances: [] } };

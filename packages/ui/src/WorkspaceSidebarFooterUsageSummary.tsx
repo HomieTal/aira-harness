@@ -120,7 +120,7 @@ export function useWorkspaceSidebarFooterUsageSummaryState({
             label:
               access.label ||
               (providerId === BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan
-                ? "Z.ai - Coding Plan"
+                ? "Aira - Coding Plan"
                 : "BigModel - Coding Plan"),
           },
         ];
@@ -155,7 +155,7 @@ export function useWorkspaceSidebarFooterUsageSummaryState({
     ? resolveModelProviderFamilyIdByProviderId(selectedProviderIdFromSupplierKey)
     : null;
   // providerFamilyDomain 是当前登录/运行 family 边界；BigModel Team selectedKey
-  // 会在切换到 Z.ai 后保留，footer 若不按当前 domain 过滤会把头像旁徽标误显示成 Team。
+  // 会在切换到 Aira 后保留，footer 若不按当前 domain 过滤会把头像旁徽标误显示成 Team。
   const scopedSelectedProviderId =
     selectedProviderFamilyId &&
     providerFamilyDomain &&

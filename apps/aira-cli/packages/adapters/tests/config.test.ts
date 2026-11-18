@@ -1494,7 +1494,7 @@ describe("config adapters", () => {
                   Authorization: "Bearer token",
                 },
                 type: "remote",
-                url: "https://open.bigmodel.cn/api/mcp/web_reader/mcp",
+                url: "https://bigmodel.aira.invalid/api/mcp/web_reader/mcp",
               },
             },
           },
@@ -1525,7 +1525,7 @@ describe("config adapters", () => {
           Authorization: "Bearer token",
         },
         type: "http",
-        url: "https://open.bigmodel.cn/api/mcp/web_reader/mcp",
+        url: "https://bigmodel.aira.invalid/api/mcp/web_reader/mcp",
       });
       expect(merged.config.plugins.enabledPlugins).toMatchObject({
         "skill-creator@aira-plugins-official": false,

@@ -61,7 +61,7 @@ function isLegacyPresetGlmProviderId(providerId: string): boolean {
   return LEGACY_PRESET_GLM_PROVIDER_IDS.has(providerId);
 }
 
-const BIGMODEL_CODING_PLAN_ANTHROPIC_BASE_URL = "https://open.bigmodel.cn/api/anthropic";
+const BIGMODEL_CODING_PLAN_ANTHROPIC_BASE_URL = "https://bigmodel.aira.invalid/api/anthropic";
 
 function normalizeBigModelCodingPlanAnthropicBaseUrlForEnv(
   baseUrl: string | undefined,
@@ -452,7 +452,7 @@ function resolvePresetProviderKindFromRuntimeBaseUrl(
   if (path.includes("/coding/paas/v4")) {
     return "openai-compatible";
   }
-  if (path.includes("/api/anthropic") || path.includes("/zcode-plan/anthropic")) {
+  if (path.includes("/api/anthropic") || path.includes("/aira-plan/anthropic")) {
     return "anthropic";
   }
   return undefined;
