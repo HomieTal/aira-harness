@@ -1793,7 +1793,7 @@ const enUS: Record<string, string> = {
   "welcome.loggingIn": "Logging in...",
   "welcome.loginFailed": "Login failed",
   "login.title": "Welcome to Aira",
-  "login.description": "Log in to Z.AI to start using Aira",
+  "login.description": "Log in to Aira to start using Aira",
   "login.copyright": "© 2026 Aira All rights reserved.",
   "login.agreement.prefix": "By signing in, you agree to our",
   "login.agreement.conjunction": "and",

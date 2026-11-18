@@ -85,7 +85,7 @@ export class BigModelProviderAdapter implements OAuthProviderAdapter {
   }
 
   async normalizePolledTokenSet(tokenSet: OAuthTokenSet): Promise<OAuthTokenSet> {
-    // polling ready 已返回 BigModel 业务 token；不走 Z.AI 的二次业务 token 兑换。
+    // polling ready 已返回 BigModel 业务 token；不走 Aira 的二次业务 token 兑换。
     return tokenSet;
   }
 

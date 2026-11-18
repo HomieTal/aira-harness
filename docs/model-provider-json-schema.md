@@ -319,7 +319,7 @@ interface FieldUnsetPatch {
   "providers": [
     {
       "id": "zai",
-      "name": "Z.AI",
+      "name": "Aira",
       "endpoints": {
         "baseURL": "https://api.aira.invalid",
         "paths": {

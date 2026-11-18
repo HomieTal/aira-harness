@@ -48,7 +48,7 @@ Google 原生 Gemini API 暂缓；官方 Chat 兼容入口和聚合入口若能�
 | 持续观察   | 主流供应商新型号、已有入口缺项、潜在新供应商 | 收集证据、验证并单独提交配置 MR                      |
 | 待能力设计 | 新协议、云凭据、部署身份等超出现有合同       | 本轮暂缓并记录缺口；后续单独确认，不用伪兼容配置绕过 |
 
-已有覆盖包括 Z.AI、BigModel、Kimi、MiniMax、DeepSeek、Qwen、MiMo、OpenAI、Anthropic、xAI，以及 OpenRouter、OpenCode Go/Zen。具体入口与型号以当前状态和 JSON 为准。
+已有覆盖包括 Aira、BigModel、Kimi、MiniMax、DeepSeek、Qwen、MiMo、OpenAI、Anthropic、xAI，以及 OpenRouter、OpenCode Go/Zen。具体入口与型号以当前状态和 JSON 为准。
 
 扩展观察范围包括 Google Gemini、Mistral、腾讯 TokenHub、Volcano Ark、StepFun、SiliconFlow，以及 Azure、AWS Bedrock 等云入口；这不是所有候选均已满足接入条件的清单；符合上述新增原则的项无需逐个重新批准。当前证据、具体型号、优先级和未验证条件见[扩展计划](./expansion-plan.md)。Google 原生协议与 Vertex、云平台凭据/部署名等分别评估；兼容 API、原生协议与云身份认证不能混为一个结论。
 

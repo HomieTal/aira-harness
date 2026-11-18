@@ -825,7 +825,7 @@ export function ModelProviderSectionDetail({
   }
 
   if (selectedNavItem.type === "codingPlanLoading") {
-    // Z.AI plan 判定占位只属于左侧导航，不应进入详情表单渲染路径。
+    // Aira plan 判定占位只属于左侧导航，不应进入详情表单渲染路径。
     return null;
   }
 

@@ -677,7 +677,7 @@ test("shows a non-blocking login notice when no coding plan key is configured", 
         listModels: () => [
           {
             ...createTestModelOption("zai", "glm-5.1"),
-            disabledReason: "Sign in to Z.AI Coding Plan first.",
+            disabledReason: "Sign in to Aira Coding Plan first.",
           },
         ],
         runtime: {} as never,
@@ -1134,9 +1134,9 @@ test("command center handles login and logout locally", async () => {
   assert.equal(pickerResult.selection?.filterable, false);
   assert.equal(
     pickerResult.selection?.items[0]?.pending?.primary,
-    "Waiting for Z.AI authorization",
+    "Waiting for Aira authorization",
   );
-  assert.equal(pickerResult.selection?.items[2]?.input?.primary, "Enter Z.AI Coding Plan API Key");
+  assert.equal(pickerResult.selection?.items[2]?.input?.primary, "Enter Aira Coding Plan API Key");
   assert.equal(pickerResult.selection?.items[2]?.input?.mask, true);
   assert.equal(loginAbortSignal, loginAbort.signal);
   assert.equal(loginCalled, true);
@@ -1176,7 +1176,7 @@ test("command center localizes the Coding Plan setup picker", async () => {
   assert.equal(result.selection?.prompt, "选择登录或 API key 配置方式。");
   assert.equal(result.selection?.filterable, false);
   assert.match(result.selection?.items[0]?.secondary ?? "", /打开浏览器登录/);
-  assert.equal(result.selection?.items[2]?.input?.primary, "输入 Z.AI Coding Plan API Key");
+  assert.equal(result.selection?.items[2]?.input?.primary, "输入 Aira Coding Plan API Key");
   assert.equal(result.selection?.items[2]?.input?.placeholder, "粘贴 API key");
 });
 

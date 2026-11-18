@@ -103,7 +103,7 @@ CR-01 修复边界：基于 Reviewer 的 5cad9f6028 快照，仅调整 SectionLa
   - 选中：`border-primary + text-foreground`
   - 未选中：`border-transparent + hover:border-border-hover/60`
 - 节点左侧补充供应商图标：
-  - 预置供应商：使用 OAuth provider logo（`Z.AI` / `BigModel`）
+  - 预置供应商：使用 OAuth provider logo（`Aira` / `BigModel`）
   - 自定义供应商：使用通用 `Package` 图标
   - 添加供应商：沿用 `Plus` 图标并使用 `text-primary` 强化可发现性
 - 节点右侧状态点改为 `CircleIcon`，按是否可用区分蓝色（`text-sky-500`）与灰色（`text-gray-400`）。

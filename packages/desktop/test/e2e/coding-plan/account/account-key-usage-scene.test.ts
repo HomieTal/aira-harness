@@ -47,7 +47,7 @@ describe("PAT-KEY-E2E: 账号就绪时创建 Coding Plan Key", () => {
     ).toBe("");
   });
 
-  it("Z.AI 旧 Key 损坏但 OAuth 有效，重启直接换 Token 不要求重登", async function () {
+  it("Aira 旧 Key 损坏但 OAuth 有效，重启直接换 Token 不要求重登", async function () {
     this.timeout(90000);
     // 旧 Host 存活时写 seed 会与异步迁移/账号刷新竞争；退出屏障后再写本例数据。
     await reloadElectronSessionPreservingBrowserProfile(browser, {

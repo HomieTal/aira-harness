@@ -137,7 +137,7 @@ CLI 还导出 `loadSharedAiraCredentialSync`：同步读取中发生任何错误
 
 ## OAuth / Aira 平台登录凭据：代码事实
 
-本章的“平台”指 Z.AI / BigModel 身份域，不指 macOS / Windows / Linux。
+本章的“平台”指 Aira / BigModel 身份域，不指 macOS / Windows / Linux。
 
 ### 已确认的单平台约束与现有实现
 
@@ -156,7 +156,7 @@ CLI 还导出 `loadSharedAiraCredentialSync`：同步读取中发生任何错误
     -> P 登录完成：只保存 P 的平台业务 token + 当前 Aira JWT
     -> oauth:active_provider = P
 
-  任一时刻：Z.AI 身份 XOR BigModel 身份
+  任一时刻：Aira 身份 XOR BigModel 身份
   禁止：P 的 active provider + 另一平台的业务 JWT + 上一代 Aira JWT
 
 当前代码的成功路径
@@ -181,7 +181,7 @@ CLI 还导出 `loadSharedAiraCredentialSync`：同步读取中发生任何错误
 | ------------------------------ | -------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `oauth:active_provider`        | 当前 App 平台身份，内置值为 `zai` / `bigmodel`；不是 token                                   | 登录最后一步写入；由 `saveActiveProvider` 管理                          | 决定缓存恢复、模型/官方 MCP/空闲套餐使用哪个平台；active logout、all logout、损坏恢复删除                                                                                                                 |
 | `airajwttoken`                | Aira 后端 `data.token`；当前平台登录身份的共享 JWT，key 不按平台拆分                        | ZAI / BigModel adapter 交换后随 `OAuthTokenSet.airaJwtToken` 保存      | Aira 业务、Start Plan、官方 MCP、反馈等；任一内置平台的 `clearProvider` 都会删除                                                                                                                         |
-| `oauth:zai:access_token`       | **Z.AI 业务 token / MaaS 登录 JWT**：原始 Z.AI OAuth access token 经业务登录接口转换后的结果 | Desktop ZAI adapter 在 deep link 和 polling 两条路径都先转换再保存      | `/api/biz/*`、`/api/pay/*`、套餐项目和业务 API key 获取、官方 MCP 套餐身份、reset；退出或切换删除                                                                                                         |
+| `oauth:zai:access_token`       | **Aira 业务 token / MaaS 登录 JWT**：原始 Aira OAuth access token 经业务登录接口转换后的结果 | Desktop ZAI adapter 在 deep link 和 polling 两条路径都先转换再保存      | `/api/biz/*`、`/api/pay/*`、套餐项目和业务 API key 获取、官方 MCP 套餐身份、reset；退出或切换删除                                                                                                         |
 | `oauth:bigmodel:access_token`  | **BigModel 业务 token / MaaS 登录 JWT**：后端响应的 BigModel 业务 access token               | Desktop BigModel adapter / polling 归一化后保存                         | BigModel customer、套餐、项目 API key 获取、官方 MCP 套餐身份、reset；退出或切换删除                                                                                                                      |
 | `oauth:bigmodel:refresh_token` | BigModel 可选 refresh token，来源 `data.bigmodel.refresh_token` / `refreshToken`             | deep link / polling 有值则保存，无值则删除旧值                          | generic refresh 接口会读取，但内置 BigModel adapter 当前没有 refresh 实现；随平台清理删除                                                                                                                 |
 | `oauth:zai:refresh_token`      | 通用 Repo 支持的同名字段；**当前 ZAI adapter 没有产出 refresh token**                        | 通用 `saveTokenSet` 可接收；正常 ZAI 登录会因缺少 refreshToken 删除旧值 | 当前无内置续期用途；随平台清理删除                                                                                                                                                                        |

@@ -39,7 +39,7 @@ providers
 └─ Off-Peak 隐藏 Account Provider
 
 providerTemplates
-├─ Z.AI API / BigModel API
+├─ Aira API / BigModel API
 ├─ Moonshot / MiniMax / DeepSeek
 ├─ Alibaba Model Studio CN / International / Xiaomi MiMo
 └─ OpenAI / Anthropic / xAI
@@ -307,7 +307,7 @@ type ProviderAccessConfig =
 ```
 
 `access.type` 描述访问材料的一级来源，和 `api.type` 正交。`zhipu-account.mode` 是智谱账号产品的
-有限枚举：官方版本请求安全校验的准入与 Off-Peak 协议都由 Mode 分派。Z.AI API 与
+有限枚举：官方版本请求安全校验的准入与 Off-Peak 协议都由 Mode 分派。Aira API 与
 BigModel API Template 创建的实例使用普通 `api-key` Access，不进入 V4，也不建立所有 Access 可填的伪通用字段。
 动态安全校验材料、
 Off-Peak Ticket 和远端 rollout 不持久化进 Config。

@@ -187,7 +187,7 @@ export async function loadCodingPlanProductsForTest(
   }
 
   // React 严格模式和设置页状态刷新会短时间重复挂载套餐卡，
-  // BigModel/Z.AI 套餐预览接口对连发请求会偶发返回“系统繁忙”；这里合并进行中请求，并只短缓存成功结果，
+  // BigModel/Aira 套餐预览接口对连发请求会偶发返回“系统繁忙”；这里合并进行中请求，并只短缓存成功结果，
   // 手动刷新、登录/连接成功和购买完成都用 force 绕过缓存，避免交易状态长期陈旧。
   // 登录/连接成功还必须让旧的未登录试算请求失去写缓存资格，避免它晚返回后覆盖新的登录态试算结果。
   const promise = loadBatchPreviewWithStaticProducts(providerId, service, staticProducts ?? []);
@@ -412,7 +412,7 @@ export async function loadCodingPlanStaticProductListForTest(
     }
 
     // Start 免费档现在归属于独立的 Start Plan 入口，且必须由远端 preview 开关显式打开。
-    // Z.AI - Coding Plan 的购买列表只展示付费升级项，避免把 Start 当成可购买套餐重复显示。
+    // Aira - Coding Plan 的购买列表只展示付费升级项，避免把 Start 当成可购买套餐重复显示。
     const seen = new Set<string>();
     return [...buildZaiStartStaticProducts(startPlanPreview), ...remoteProducts].filter(
       (product) => {

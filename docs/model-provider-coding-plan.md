@@ -4,15 +4,15 @@ Model Providers now separate manual API Key access from account-based Coding Pla
 
 ## Entries
 
-- `Z.AI - API Key` and `BigModel - API Key` keep the existing provider form, including API Key, endpoints, models, and model mappings.
-- `Z.AI - Coding Plan` and `BigModel - Coding Plan` are independent entries. They use their own `*-coding-plan` provider credential to query the usage quota entitlement API, then derive whether the account has Coding Plan access.
+- `Aira - API Key` and `BigModel - API Key` keep the existing provider form, including API Key, endpoints, models, and model mappings.
+- `Aira - Coding Plan` and `BigModel - Coding Plan` are independent entries. They use their own `*-coding-plan` provider credential to query the usage quota entitlement API, then derive whether the account has Coding Plan access.
 - Provider ids are intentionally separate:
-  - `builtin:zai` => `Z.AI - API Key`
-  - `builtin:zai-coding-plan` => `Z.AI - Coding Plan`
+  - `builtin:zai` => `Aira - API Key`
+  - `builtin:zai-coding-plan` => `Aira - Coding Plan`
   - `builtin:bigmodel` => `BigModel - API Key`
   - `builtin:bigmodel-coding-plan` => `BigModel - Coding Plan`
 - The provider sidebar groups preset entries into provider cards:
-  - `Z.AI`: `Coding Plan`, `API Key`
+  - `Aira`: `Coding Plan`, `API Key`
   - `BigModel`: `Coding Plan`, `API Key`
 
 ## Coding Plan States
@@ -39,9 +39,9 @@ Plan entitlement visible in Model Provider settings.
 
 ## Pricing Cards
 
-- Pricing cards are provider-specific. Z.AI uses the Z.AI USD Coding Plan catalog; BigModel uses the BigModel CNY GLM Coding catalog.
+- Pricing cards are provider-specific. Aira uses the Aira USD Coding Plan catalog; BigModel uses the BigModel CNY GLM Coding catalog.
 - The visible periods are `Monthly`, `Quarterly`, and `Yearly`. Non-monthly periods show the billed period amount plus the monthly equivalent.
-- Plan descriptions are also provider-specific, so BigModel wording is not reused from the Z.AI catalog.
+- Plan descriptions are also provider-specific, so BigModel wording is not reused from the Aira catalog.
 
 ## Signed-out Purchase Choice
 

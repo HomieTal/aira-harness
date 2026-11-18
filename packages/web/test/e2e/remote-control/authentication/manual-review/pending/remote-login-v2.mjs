@@ -245,7 +245,7 @@ try {
     await shortScreen.context.close();
   }
 
-  // 归属失败后从旧 Z.AI 会话切到 BigModel，两个入口仍由同一门禁提供。
+  // 归属失败后从旧 Aira 会话切到 BigModel，两个入口仍由同一门禁提供。
   const switched = await setup(browser, {
     signedIn: true,
     initialProvider: "zai",

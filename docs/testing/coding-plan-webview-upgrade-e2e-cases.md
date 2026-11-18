@@ -1,6 +1,6 @@
 # Coding Plan Webview Upgrade E2E Cases
 
-本文记录 Coding Plan 升级入口迁到官网 embedded webview 后，桌面端需要覆盖的 E2E case。范围限定在 desktop local workspace，接口使用 WDIO case-local mock server，不访问真实 BigModel / Z.AI 套餐接口。
+本文记录 Coding Plan 升级入口迁到官网 embedded webview 后，桌面端需要覆盖的 E2E case。范围限定在 desktop local workspace，接口使用 WDIO case-local mock server，不访问真实 BigModel / Aira 套餐接口。
 
 ## 覆盖原则
 
@@ -29,7 +29,7 @@
 
 | Decision | Pruned combinations                 | Reason                                                                                                        | Representative coverage                                                                                                                   |
 | -------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| CPUW-P01 | Z.AI PayPal / Stripe 真支付完成     | 需要真实第三方支付授权，不能在桌面 CI 中稳定执行；App 侧完成语义由 Aira mock webview completion 覆盖          | CPUW-03 覆盖 Aira bridge + App close/refresh；支付方式内部保留单元/组件测试                                                               |
+| CPUW-P01 | Aira PayPal / Stripe 真支付完成     | 需要真实第三方支付授权，不能在桌面 CI 中稳定执行；App 侧完成语义由 Aira mock webview completion 覆盖          | CPUW-03 覆盖 Aira bridge + App close/refresh；支付方式内部保留单元/组件测试                                                               |
 | CPUW-P02 | Mobile `/remote` webview completion | 手机远控不创建独立官网购买 webview；当前升级 webview 是桌面 renderer 本地弹层                                 | CPUW-01 保持 desktop local scope；远端 Environment 的 Provider Runtime 独立拥有配置与 Registry，不由本用例验证跨 Environment Provisioning |
 | CPUW-P03 | 企业 Team Plan webview 完整购买     | 当前官网完成信号到 App 的关闭/刷新语义与个人套餐相同；企业产品刷新只需断言 `refreshTeamPlanProducts` 单元覆盖 | `modelProviderCodingPlan.test.ts` 覆盖 Team products refresh；CPUW-01 覆盖真实 webview IPC                                                |
 

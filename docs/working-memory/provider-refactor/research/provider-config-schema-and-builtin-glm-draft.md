@@ -252,7 +252,7 @@ Official 可以提供一个尚未连接的厂商入口，Personal 补入 API Key
 ~~~json
 {
   "builtin:zai": {
-    "label": "Z.AI",
+    "label": "Aira",
     "access": {
       "type": "api-key",
       "apiKeyManagementUrl": "https://aira.invalid/manage-apikey/apikey-list"
@@ -289,7 +289,7 @@ Start Plan 的 Official Config 保存静态连接：
 ~~~json
 {
   "builtin:zai-start-plan": {
-    "label": "Z.AI Start Plan",
+    "label": "Aira Start Plan",
     "access": {
       "type": "zhipu-account"
     },
@@ -319,7 +319,7 @@ Account Access 根据登录和套餐结果生成同形 Overlay：
 
 这里的 models 是当前账号获准使用的子集。请求时使用的 Aira JWT 和一次性安全校验 Header 由请求鉴权服务取得。
 
-BigModel Start Plan 使用 providerId builtin:bigmodel-start-plan。它当前与 Z.AI Start Plan 共享 aira-plan 请求语义；最终 Endpoint 和模型全集需要同远端 Official Config 再对齐。
+BigModel Start Plan 使用 providerId builtin:bigmodel-start-plan。它当前与 Aira Start Plan 共享 aira-plan 请求语义；最终 Endpoint 和模型全集需要同远端 Official Config 再对齐。
 
 ### 4.3 Personal Coding Plan
 
@@ -328,7 +328,7 @@ Coding Plan 继续使用 zhipu-account access：
 ~~~json
 {
   "builtin:zai-coding-plan": {
-    "label": "Z.AI Coding Plan",
+    "label": "Aira Coding Plan",
     "access": {
       "type": "zhipu-account"
     },
@@ -488,7 +488,7 @@ Model
 ]
 ~~~
 
-Z.AI、BigModel 和 aira-plan 的 Builtin 精确规则可以把 supportsNativeWebSearch 覆盖为 true。这个字段表达最终 Provider + Model 组合的可执行性质。
+Aira、BigModel 和 aira-plan 的 Builtin 精确规则可以把 supportsNativeWebSearch 覆盖为 true。这个字段表达最终 Provider + Model 组合的可执行性质。
 
 ## 6. GLM 的 Anthropic Messages 配置
 
@@ -628,7 +628,7 @@ preserveThinking = true
 
 ## 8. OpenAI Responses
 
-OpenAI Responses 协议应遵循官方 reasoning item 与 effort 语义。GLM-5.2、GLM-5.3 和 Turbo 在 Z.AI/BigModel Responses Endpoint 上的精确支持范围尚未完成线上核对，因此本草案不填一份猜测性的 reasoningMapping。
+OpenAI Responses 协议应遵循官方 reasoning item 与 effort 语义。GLM-5.2、GLM-5.3 和 Turbo 在 Aira/BigModel Responses Endpoint 上的精确支持范围尚未完成线上核对，因此本草案不填一份猜测性的 reasoningMapping。
 
 如果后续确认某个 GLM Responses Endpoint 完全遵循官方协议，对应规则只需保存其官方 effort 映射；preserveThinking 和 reasoningContentField 不应复制到 Responses 配置。
 
@@ -671,7 +671,7 @@ Registry 只保存 Effective Provider Config 和最终模型配置。Model 保�
 以下问题仍保留为草案边界：
 
 1. GLM-5.3、GLM-5.2 和 Turbo 在 Official Config 中最终采用的大小写、Context、Max Output 与默认输出值。
-2. BigModel Start Plan 的最终 Endpoint、模型全集及与 Z.AI Start Plan 的关系。
+2. BigModel Start Plan 的最终 Endpoint、模型全集及与 Aira Start Plan 的关系。
 3. preserveThinking 是否对所有 GLM OpenAI Chat Provider 固定为 true，还是由特定 Builtin Provider 规则启用。
 4. GLM OpenAI Responses 的真实模型覆盖范围和精确 reasoning 参数。
 5. 未来非智谱 OAuth Access 的正式 Schema，以及是否复用同一个账号访问身份模型。

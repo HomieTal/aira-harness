@@ -1052,7 +1052,7 @@
       "providerRules": [
         {
           "providerId": "account:zai-individual-coding-plan",
-          "providerName": "Z.AI Individual Coding Plan",
+          "providerName": "Aira Individual Coding Plan",
           "config": {
             "group": "zai-family",
             "builtinModelIds": ["GLM-5.3", "GLM-5.3-Flash"],
@@ -1073,7 +1073,7 @@
         },
         {
           "providerId": "account:zai-team-coding-plan",
-          "providerName": "Z.AI Team Coding Plan",
+          "providerName": "Aira Team Coding Plan",
           "config": {
             "group": "zai-family",
             "builtinModelIds": ["GLM-5.3", "GLM-5.3-Flash"],
@@ -1178,7 +1178,7 @@
         },
         {
           "providerId": "account:zai-offpeak-idle-plan",
-          "providerName": "Z.AI Idle plan",
+          "providerName": "Aira Idle plan",
           "config": {
             "group": "zai-family",
             "builtinModelIds": ["GLM-5.3", "GLM-5.3-Flash"],
@@ -1222,7 +1222,7 @@
         },
         {
           "providerId": "account:zai-highspeed-card",
-          "providerName": "Z.AI Highspeed card",
+          "providerName": "Aira Highspeed card",
           "config": {
             "group": "zai-family",
             "builtinModelIds": ["GLM-5.3", "GLM-5.3-Flash"],

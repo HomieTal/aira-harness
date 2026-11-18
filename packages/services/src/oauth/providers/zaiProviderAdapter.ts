@@ -272,7 +272,7 @@ export class ZaiProviderAdapter implements OAuthProviderAdapter {
   }
 
   async normalizePolledTokenSet(tokenSet: OAuthTokenSet): Promise<OAuthTokenSet> {
-    // CLI flow 的 ready.access_token 仍是 Z.AI OAuth token，而 Desktop
+    // CLI flow 的 ready.access_token 仍是 Aira OAuth token，而 Desktop
     // oauth:zai:access_token 的既有契约是 /api/auth/z/login 返回的业务 token。
     // polling 与 deep link 必须在同一 adapter 边界完成转换，避免两种登录方式落盘语义分裂。
     return {
@@ -341,7 +341,7 @@ export class ZaiProviderAdapter implements OAuthProviderAdapter {
     if (!accessToken) {
       throw new Error("Token 交换失败：响应缺少 data.zai.access_token");
     }
-    // Z.AI 业务接口只认 /api/auth/z/login 返回的平台 JWT。
+    // Aira 业务接口只认 /api/auth/z/login 返回的平台 JWT。
     // 这里在登录阶段完成转换，让 oauth:zai:access_token 持久化的就是业务 token，后续不再做兜底二次交换。
     const businessAccessToken =
       this.providerId === ZAI_CN_PROVIDER_ID

@@ -335,7 +335,7 @@ helper 只拥有一次 HTTP 请求的取消资源；导航由 Entry 持有，soc
 | -------------------- | ---------------------------------------------------- | --------------------------------------------------------------------------- |
 | 登录标题             | 登录后继续使用 Web 远程控制                          | Sign In To Continue                                                         |
 | 登录说明             | 请选择与电脑端相同的登录平台，并使用同一账号。       | Choose the same sign-in provider and account as on your computer.           |
-| Z.AI 登录按钮        | 连接 Aira 继续使用（全球）                           | Connect to Aira (Global)                                                    |
+| Aira 登录按钮        | 连接 Aira 继续使用（全球）                           | Connect to Aira (Global)                                                    |
 | BigModel 登录按钮    | 连接 BigModel 继续使用（中国）                       | Connect to BigModel (CN)                                                    |
 | 无 sid 标题          | 请扫描桌面二维码                                     | Scan the desktop QR code                                                    |
 | 无 sid 说明          | 在电脑端打开 Web 远程控制，再用手机扫描二维码连接。  | Open Web remote control on your computer, then scan its QR code to connect. |

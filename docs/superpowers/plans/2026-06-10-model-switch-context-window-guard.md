@@ -88,7 +88,7 @@ function createModelOption(
 function createProvider(): ModelProviderConfig {
   return {
     id: "builtin:zai",
-    name: "Z.AI",
+    name: "Aira",
     type: "builtin",
     enabled: true,
     apiKey: "",

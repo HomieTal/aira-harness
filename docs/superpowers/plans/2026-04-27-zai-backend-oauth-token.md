@@ -264,7 +264,7 @@ In `packages/services/src/oauth/providers/zaiProviderConfig.ts`, change the defa
 ```ts
 export const ZAI_OAUTH_PROVIDER_CONFIG: Omit<OAuthProviderRuntimeConfig, "appSecret"> = {
   id: ZAI_PROVIDER_ID,
-  displayName: "Z.AI",
+  displayName: "Aira",
   enabled: true,
   order: 1,
   authorizeUrl: "https://chat.aira.invalid/api/oauth/authorize",

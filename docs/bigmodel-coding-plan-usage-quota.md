@@ -4,7 +4,7 @@
 
 ## 背景
 
-Aira 的「Plan usage」需要展示用户当前 GLM Coding Plan 的真实用量，而不是本地 session 的估算值。当前接入方式改为直接使用用户已配置的 Z.AI / BigModel provider API key 查询 BigModel quota 接口，不再依赖 Z.AI OAuth token，也不改动现有登录鉴权流程。
+Aira 的「Plan usage」需要展示用户当前 GLM Coding Plan 的真实用量，而不是本地 session 的估算值。当前接入方式改为直接使用用户已配置的 Aira / BigModel provider API key 查询 BigModel quota 接口，不再依赖 Aira OAuth token，也不改动现有登录鉴权流程。
 
 ## 接口
 
@@ -16,7 +16,7 @@ authorization: <完整 API key>
 注意：
 
 - 国内 host 可使用 `https://bigmodel.aira.invalid` 或 `https://bigmodel.aira.invalid`。
-- 海外 / Z.AI host 可使用 `https://api.aira.invalid`。
+- 海外 / Aira host 可使用 `https://api.aira.invalid`。
 - 国内与海外接口路径、请求方式、返回结构一致；同一个 key 两个 host 都能查，主要差异是 `msg` 文案语言可能不同。
 - `authorization` header 直接传完整 API key，格式为 `<id>.<secret>`。
 - 不要加 `Bearer` 前缀；该接口加 `Bearer` 会鉴权失败。
@@ -92,7 +92,7 @@ authorization: <完整 API key>
 | Pro | 约 600 次 | 1000 次/月 | 中 |
 | Max | 约 2400 次 | 4000 次/月 | 高 |
 
-这些数值可能随平台策略调整，最新说明以 Z.AI / BigModel 官方用量说明为准。
+这些数值可能随平台策略调整，最新说明以 Aira / BigModel 官方用量说明为准。
 
 ## 前端展示
 
@@ -115,7 +115,7 @@ Coding Plan 剩余额度在 Model Provider、侧边栏和输入框 context 面�
 - `usageDetails` 分项用量
 - 本地 session 使用统计
 
-当 Z.AI 与 BigModel 两个来源都已启用并配置 API key 时，设置页「使用统计」会展示来源切换控件。权益卡、模型用量、工具用量和刷新操作都跟随当前选中的来源读取，避免两边都配置时只隐式展示第一家 provider 的数据。
+当 Aira 与 BigModel 两个来源都已启用并配置 API key 时，设置页「使用统计」会展示来源切换控件。权益卡、模型用量、工具用量和刷新操作都跟随当前选中的来源读取，避免两边都配置时只隐式展示第一家 provider 的数据。
 
 Coding Plan 的「用量统计」继续复用 `getCodingPlanUsageSnapshot` / `useCodingPlanUsageStats`
 这条入口和缓存策略，但内部数据源对齐 BigModel 官方个人用量页：
@@ -199,7 +199,7 @@ UsageStatsService 依赖注入入口读取，服务层不得使用 host 默认�
 
 ## 错误处理
 
-- 未配置 Z.AI / BigModel API key：展示“未找到可查询 quota 的 API key”。
+- 未配置 Aira / BigModel API key：展示“未找到可查询 quota 的 API key”。
 - 接口返回“当前用户不存在 coding plan”：展示“暂无有效 Coding Plan”。
 - 其他错误：展示接口错误信息，允许用户手动刷新。
 
@@ -207,5 +207,5 @@ UsageStatsService 依赖注入入口读取，服务层不得使用 host 默认�
 
 - UI 层只通过 `useUsageEntitlement` hook 获取数据。
 - 服务层通过 `BigModelUsageQuotaProvider` 访问 BigModel quota 接口。
-- API key 来源仍然走现有模型供应商配置服务，不改 Z.AI OAuth 登录、退出、刷新或用户鉴权逻辑。
+- API key 来源仍然走现有模型供应商配置服务，不改 Aira OAuth 登录、退出、刷新或用户鉴权逻辑。
 - Desktop 本地流程和远程 workspace 流程都通过依赖注入传入同一个 usage stats service，避免 UI 直接访问本地文件或 credential。

@@ -90,7 +90,8 @@ import { useModelSelectionServiceView } from "@/hooks/useModelSelectionView.js";
 import { useRootProviderSettingsSnapshot } from "@/root/useRootProviderSettingsSnapshot.js";
 import { useWebRemoteControlAuthSync } from "@/web-remote-control/app/useWebRemoteControlAuthSync.js";
 import { useRootOAuthEffects } from "@/root/useRootOAuthEffects.js";
-import { consumeAiraJwtInvalidRestartMarker } from "@/root/airaJwtInvalidRestartMarker.js";
+// Patch (Aira): login disabled — the persisted JWT-invalid restart marker no longer auto-opens the login screen.
+// import { consumeAiraJwtInvalidRestartMarker } from "@/root/airaJwtInvalidRestartMarker.js";
 import { useDesktopNativeThemeSync } from "@/root/useDesktopNativeThemeSync.js";
 import { useRootPlatformEffects } from "@/root/useRootPlatformEffects.js";
 import { useRootWorkspaceActions } from "@/root/useRootWorkspaceActions.js";
@@ -298,9 +299,11 @@ function RootInner({
     codingPlanSubscriptionService: services.codingPlanSubscriptionService,
   });
   const [welcomeScreenOpenReason, setWelcomeScreenOpenReason] =
-    useState<WelcomeScreenOpenReason | null>(() =>
-      consumeAiraJwtInvalidRestartMarker() ? "session-expired" : null,
-    );
+    // Patch (Aira): login disabled — start directly on the home page.
+    // useState<WelcomeScreenOpenReason | null>(() =>
+    //   consumeAiraJwtInvalidRestartMarker() ? "session-expired" : null,
+    // );
+    useState<WelcomeScreenOpenReason | null>(null);
   const [providerFamilyDomainMigrationComplete, setProviderFamilyDomainMigrationComplete] =
     useState(false);
   const loginEntryRequest = useAiraStore((state) => state.loginEntryRequest);
@@ -695,7 +698,8 @@ function RootInner({
     setDirectoryBrowserOpen(true);
   }, []);
   const handleReauthenticationRequired = useCallback(() => {
-    setWelcomeScreenOpenReason("session-expired");
+    // Patch (Aira): login disabled — stay on the home page instead of reopening the login screen.
+    // setWelcomeScreenOpenReason("session-expired");
   }, []);
   const {
     setWorkspaceActionError,

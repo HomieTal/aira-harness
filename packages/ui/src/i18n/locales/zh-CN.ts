@@ -1644,7 +1644,7 @@ const zhCN: Record<string, string> = {
   "welcome.loggingIn": "登录中...",
   "welcome.loginFailed": "登录失败",
   "login.title": "欢迎来到 Aira",
-  "login.description": "登录 Z.AI，开始使用 Aira",
+  "login.description": "登录 Aira，开始使用 Aira",
   "login.copyright": "© 2026 北京智谱华章科技股份有限公司",
   "login.agreement.prefix": "登录即表示同意",
   "login.agreement.conjunction": "和",

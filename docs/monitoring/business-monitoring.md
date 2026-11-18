@@ -34,7 +34,7 @@ prompt telemetry；后续同一轮 `message_completion` 必须复用同一份字
 
 套餐身份判定优先级固定为 `Coding Plan > Start Plan > No Plan > Unknown`。请求失败、仍在加载、鉴权异常、
 provider 未配置或快照超过 entitlement cache TTL 时必须上报 `unknown`，不能误归为 `no_plan`。
-Z.AI 与 BigModel 互斥登录身份域由 `providerFamilyDomain` 决定；该字段只用于选择当前身份域下的
+Aira 与 BigModel 互斥登录身份域由 `providerFamilyDomain` 决定；该字段只用于选择当前身份域下的
 Coding Plan / Start Plan 快照，不作为业务埋点字段上报，也不跟随 `message_completion.model_provider`
 切换。
 

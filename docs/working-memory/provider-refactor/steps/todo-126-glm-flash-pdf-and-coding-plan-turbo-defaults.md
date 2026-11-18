@@ -6,7 +6,7 @@
 
 ## 2026-09-12 补充：普通 API 的 Turbo 默认禁用
 
-用户要求 Z.AI API / BigModel API 的 Turbo 默认禁用。当前 `GLM-5-Turbo` 已为 false，补齐 `zai-standard-api`、`bigmodel-standard-api` 的 `GLM-5V-Turbo` 精确模板规则为 false，并递增 Built-in revision。仅改变默认启停，不删除模型、不改变能力或个人覆盖；不改 Coding Plan、Account 或第三方。复用现有规则解析，无 UI、协议和迁移改动，不自动发布在线配置。
+用户要求 Aira API / BigModel API 的 Turbo 默认禁用。当前 `GLM-5-Turbo` 已为 false，补齐 `zai-standard-api`、`bigmodel-standard-api` 的 `GLM-5V-Turbo` 精确模板规则为 false，并递增 Built-in revision。仅改变默认启停，不删除模型、不改变能力或个人覆盖；不改 Coding Plan、Account 或第三方。复用现有规则解析，无 UI、协议和迁移改动，不自动发布在线配置。
 
 验证：用真实 Built-in Source 检查两模板的两个 Turbo 均关闭、5.3/Flash 仍开启、个人显式开启仍优先，以及无模板第三方默认不变。
 
@@ -65,7 +65,7 @@ GLM-5.3-Flash 通用模型规则
 }
 ```
 
-- 对应 Z.AI Coding Plan API、BigModel Coding Plan API 两个手动 Key 模板。
+- 对应 Aira Coding Plan API、BigModel Coding Plan API 两个手动 Key 模板。
 - 只改变默认值，不从模型名单删除或向名单新增模型，不修改模型 ID，不禁止用户手动开启。
 - 个人显式启用或禁用仍按现有优先级生效；不迁移、不删除个人覆盖。
 - 不改变账号登录的个人、团队、Start、闲时 Provider；不改变普通 API 模板或第三方接入的默认值。

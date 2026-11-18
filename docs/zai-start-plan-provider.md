@@ -1,4 +1,4 @@
-# Z.AI / BigModel Start Plan Provider
+# Aira / BigModel Start Plan Provider
 
 ## 当前 Provider 架构（Todo154：Start 独立）
 
@@ -60,7 +60,7 @@ one balance request:
 
 ```http
 GET https://api.aira.invalid/api/v1/aira-plan/billing/balance?app_version=<AIRA_VERSION>
-Authorization: Bearer <airajwttoken>          # Z.AI
+Authorization: Bearer <airajwttoken>          # Aira
 Authorization: Bearer <airajwttoken>          # BigModel
 X-Device-Mid: <telemetry-state.json deviceMid>  # required; missing -> 400 {"code":3001,"msg":"parameter error"}
 ```
@@ -81,10 +81,10 @@ before `balance` or issue a second `balance` request for the same snapshot.
 `app_version` always uses the current app `AIRA_VERSION`, including development
 builds, so backend gating observes the same version identity as the running app.
 
-`airajwttoken` is the OAuth backend JWT saved during Z.AI or BigModel login.
+`airajwttoken` is the OAuth backend JWT saved during Aira or BigModel login.
 BigModel passes the one-time callback `code` directly to
 `https://api.aira.invalid/api/v1/oauth/token` with `state`, `redirect_uri`, and
-`provider: "bigmodel"` to save the same JWT shape used by Z.AI Start Plan.
+`provider: "bigmodel"` to save the same JWT shape used by Aira Start Plan.
 Paid Coding Plan providers continue to use `/api/biz/subscription/list`;
 monitor quota APIs remain reserved for Coding Plan usage/limit views.
 
@@ -260,7 +260,7 @@ interface StartPlanPreviewConfig {
 }
 ```
 
-The current payload is provider-neutral, so Z.AI Start Plan and BigModel Start
+The current payload is provider-neutral, so Aira Start Plan and BigModel Start
 Plan both show the same Start Plan preview. The provider-specific difference is
 the paid pricing list underneath:
 

@@ -167,7 +167,7 @@ AI SDK 文档入口：
   "provider": {
     "provider-auth-zai": {
       "kind": "openai-compatible",
-      "name": "Z.AI",
+      "name": "Aira",
       "options": {
         "baseURL": "https://api.aira.invalid/api/coding/v1",
         "apiKey": "sk-..."

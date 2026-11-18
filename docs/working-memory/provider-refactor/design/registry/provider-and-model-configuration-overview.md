@@ -386,7 +386,7 @@ Remote Host。Renderer 不自行 Overlay、排序、判断来源、制造 fallba
 
 创建是立即生效的，不建立仅存在于 Renderer 的临时 Provider Draft，也不再要求用户在相似页面里点击第二次“创建”。
 Provider ID 永远不可编辑；Provider Name 是独立、可编辑且大小写不敏感唯一的 label。Aira/BigModel Family 保持现有
-账号产品组织，不因普通 Provider Template 生命周期而拆散。Z.AI API 与 BigModel API 也只是普通 Template，不占用
+账号产品组织，不因普通 Provider Template 生命周期而拆散。Aira API 与 BigModel API 也只是普通 Template，不占用
 Family 连接方式。
 
 Template 选择通过顶部入口在右侧详情区完成，直接使用 Settings View 发布的 Template 顺序和多语言名称，不新增

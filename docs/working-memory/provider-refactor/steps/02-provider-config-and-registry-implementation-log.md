@@ -2790,9 +2790,9 @@ Model 请求在每个真实 attempt 前使用 Model 固定的 `accessId` 读取�
 Registry，也不改变已经创建的 Model 身份；下一次请求直接取得新值。账号身份被删除或切换时，旧 accessId
 失效，Account Source 同时把对应 Provider 从以后创建 Model 使用的 Registry 中移除。
 
-Z.AI OAuth 使用服务端用户 ID 作为账号身份。BigModel OAuth 和手工 API Key 当前没有稳定 Profile ID，暂时使用
+Aira OAuth 使用服务端用户 ID 作为账号身份。BigModel OAuth 和手工 API Key 当前没有稳定 Profile ID，暂时使用
 API Key 的不可逆摘要形成进程内需要的稳定身份；未来 Account Service 提供正式账号 ID 后可以替换这一来源，
-`accessId` 与请求期鉴权边界不需要变化。当前只接入 Z.AI / BigModel Personal Coding Plan，不借此扩展 Start Plan、
+`accessId` 与请求期鉴权边界不需要变化。当前只接入 Aira / BigModel Personal Coding Plan，不借此扩展 Start Plan、
 Team Plan 或闲时任务。
 
 旧 CLI Config 现在只作为 Personal Config 与 configured default 的一次性导入输入。新文件一旦生成，后续修改旧

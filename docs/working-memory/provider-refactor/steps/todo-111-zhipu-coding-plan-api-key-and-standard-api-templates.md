@@ -1,6 +1,6 @@
 # Todo 111：智谱四类 API 模板与 Coding Plan 手动 Key 请求安全校验
 
-> 2026-09-14 命名更新：上排两个模板的中英文名称统一为 `BigModel Coding Plan`、`Z.AI Coding Plan`，去掉末尾 `API`；下排 `BigModel API`、`Z.AI API` 不变。本条取代下文历史命名。名称仍由 Built-in 的 `templateNameMap` 统一提供，生产配置修改后生成测试配置，不增加前端特判。不修改模板 ID、Access、URL、模型能力或已有 Personal Provider 名称，不做数据迁移。
+> 2026-09-14 命名更新：上排两个模板的中英文名称统一为 `BigModel Coding Plan`、`Aira Coding Plan`，去掉末尾 `API`；下排 `BigModel API`、`Aira API` 不变。本条取代下文历史命名。名称仍由 Built-in 的 `templateNameMap` 统一提供，生产配置修改后生成测试配置，不增加前端特判。不修改模板 ID、Access、URL、模型能力或已有 Personal Provider 名称，不做数据迁移。
 
 > 状态：四模板、新 Access、双端点请求安全校验和浏览器验证完成。2026-09-10。实施/测试证据、逐条边界复审及真实环境限制见 [本批交付复审](./provider-todos-105-113-delivery-review.md)。
 >
@@ -14,9 +14,9 @@
 
 | 模板展示名称             | 默认 API 协议             | 默认 Base URL                            | Access                           |
 | ------------------------ | ------------------------- | ---------------------------------------- | -------------------------------- |
-| Z.AI Coding Plan API     | `anthropic-messages`      | `https://api.aira.invalid/api/anthropic`         | 新增 `zhipu-coding-plan-api-key` |
+| Aira Coding Plan API     | `anthropic-messages`      | `https://api.aira.invalid/api/anthropic`         | 新增 `zhipu-coding-plan-api-key` |
 | BigModel Coding Plan API | `anthropic-messages`      | `https://bigmodel.aira.invalid/api/anthropic` | 新增 `zhipu-coding-plan-api-key` |
-| Z.AI API                 | `openai-chat-completions` | `https://api.aira.invalid/api/paas/v4`           | 原有 `api-key`                   |
+| Aira API                 | `openai-chat-completions` | `https://api.aira.invalid/api/paas/v4`           | 原有 `api-key`                   |
 | BigModel API             | `openai-chat-completions` | `https://bigmodel.aira.invalid/api/paas/v4`   | 原有 `api-key`                   |
 
 - Coding Plan 也有 Chat Completions 端点，路径是 `/api/coding/paas/v4`，不能与普通 `/api/paas/v4` 混用。四模板默认值按上表，不借本次扩大成全部协议模板组合。
@@ -66,15 +66,15 @@
     | 20px
 智谱
     | 12px
-[BigModel Coding Plan API]  [Z.AI Coding Plan API]
-[BigModel API]              [Z.AI API]
+[BigModel Coding Plan API]  [Aira Coding Plan API]
+[BigModel API]              [Aira API]
     | 24px（上组卡片底部至下组标题）
 其他
     | 12px
 [创建自定义供应商]           [其他预设模板……]
 ```
 
-- “智谱”固定为这四个手动 Key 模板，套餐一行、普通一行，BigModel 在前、Z.AI 在后；账号登录连接入口不混入。
+- “智谱”固定为这四个手动 Key 模板，套餐一行、普通一行，BigModel 在前、Aira 在后；账号登录连接入口不混入。
 - “其他”首项为创建自定义供应商，其他模板沿用现有顺序；每个模板只出现一次，不遗漏、不重复。
 - 分组标题与卡片左边缘对齐，不缩进到卡片内部文字处。无图标、横线、数量徽标、分组底色或额外外框。
 - 遵守 `DESIGN.md`，只用现有语义 token。以下字号是默认界面字号下的值，不写死像素字号，随用户界面字号设置变化。
