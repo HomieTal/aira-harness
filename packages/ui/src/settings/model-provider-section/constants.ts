@@ -31,18 +31,20 @@ export interface PresetProviderSpec {
   oauthProviderId?: OAuthProviderId;
 }
 
-export const PRESET_PROVIDER_SPECS: PresetProviderSpec[] = [
-  {
-    id: BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan,
-    displayName: "Aira",
-    oauthProviderId: ZAI_PROVIDER_ID,
-  },
-  {
-    id: BUILTIN_MODEL_PROVIDER_IDS.bigmodelStartPlan,
-    displayName: "BigModel",
-    oauthProviderId: BIGMODEL_PROVIDER_ID,
-  },
-];
+// Patch (Aira): account-plan login providers removed — model settings keeps only custom API connections.
+// export const PRESET_PROVIDER_SPECS: PresetProviderSpec[] = [
+//   {
+//     id: BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan,
+//     displayName: "Aira",
+//     oauthProviderId: ZAI_PROVIDER_ID,
+//   },
+//   {
+//     id: BUILTIN_MODEL_PROVIDER_IDS.bigmodelStartPlan,
+//     displayName: "BigModel",
+//     oauthProviderId: BIGMODEL_PROVIDER_ID,
+//   },
+// ];
+export const PRESET_PROVIDER_SPECS: PresetProviderSpec[] = [];
 
 export const PRESET_PROVIDER_SPEC_BY_ID = new Map<BuiltinModelProviderId, PresetProviderSpec>(
   PRESET_PROVIDER_SPECS.map((item) => [item.id, item]),
@@ -74,36 +76,38 @@ interface CodingPlanProviderSpec {
   purchaseUrl?: string;
 }
 
-export const CODING_PLAN_PROVIDER_SPECS: CodingPlanProviderSpec[] = [
-  {
-    id: BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan,
-    oauthProviderId: ZAI_PROVIDER_ID,
-    label: "Aira - Coding Plan",
-    providerName: "Aira",
-    purchaseUrl: "https://aira.invalid/manage-apikey/subscription",
-  },
-  {
-    id: BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan,
-    oauthProviderId: ZAI_PROVIDER_ID,
-    label: "Aira - Coding Plan",
-    providerName: "Aira",
-    purchaseUrl: "https://aira.invalid/manage-apikey/subscription",
-  },
-  {
-    id: BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan,
-    oauthProviderId: BIGMODEL_PROVIDER_ID,
-    label: "BigModel - Coding Plan",
-    providerName: "BigModel",
-    purchaseUrl: BIGMODEL_CODING_PLAN_PERSONAL_MANAGE_URL,
-  },
-  {
-    id: BUILTIN_MODEL_PROVIDER_IDS.bigmodelStartPlan,
-    oauthProviderId: BIGMODEL_PROVIDER_ID,
-    label: "BigModel- Coding Plan",
-    providerName: "BigModel",
-    purchaseUrl: BIGMODEL_CODING_PLAN_PERSONAL_MANAGE_URL,
-  },
-];
+// Patch (Aira): coding-plan connect panels removed — model settings keeps only custom API connections.
+// export const CODING_PLAN_PROVIDER_SPECS: CodingPlanProviderSpec[] = [
+//   {
+//     id: BUILTIN_MODEL_PROVIDER_IDS.zaiStartPlan,
+//     oauthProviderId: ZAI_PROVIDER_ID,
+//     label: "Aira - Coding Plan",
+//     providerName: "Aira",
+//     purchaseUrl: "https://aira.invalid/manage-apikey/subscription",
+//   },
+//   {
+//     id: BUILTIN_MODEL_PROVIDER_IDS.zaiIndividualCodingPlan,
+//     oauthProviderId: ZAI_PROVIDER_ID,
+//     label: "Aira - Coding Plan",
+//     providerName: "Aira",
+//     purchaseUrl: "https://aira.invalid/manage-apikey/subscription",
+//   },
+//   {
+//     id: BUILTIN_MODEL_PROVIDER_IDS.bigmodelIndividualCodingPlan,
+//     oauthProviderId: BIGMODEL_PROVIDER_ID,
+//     label: "BigModel - Coding Plan",
+//     providerName: "BigModel",
+//     purchaseUrl: BIGMODEL_CODING_PLAN_PERSONAL_MANAGE_URL,
+//   },
+//   {
+//     id: BUILTIN_MODEL_PROVIDER_IDS.bigmodelStartPlan,
+//     oauthProviderId: BIGMODEL_PROVIDER_ID,
+//     label: "BigModel- Coding Plan",
+//     providerName: "BigModel",
+//     purchaseUrl: BIGMODEL_CODING_PLAN_PERSONAL_MANAGE_URL,
+//   },
+// ];
+export const CODING_PLAN_PROVIDER_SPECS: CodingPlanProviderSpec[] = [];
 
 export interface CodingPlanEntitlementState {
   snapshot: UsageEntitlementSnapshot | null;

@@ -35,17 +35,11 @@ export function ProviderTemplatePicker({
   const { intl, locale } = useAiraIntl();
   const { dismissFeedback, showFeedback } = useProviderDetailFeedback();
   const customLabel = intl.formatMessage({ id: "settings.modelProvider.newProviderName" });
-  const zhipuIds = ["bigmodel-api", "zai-api", "bigmodel-standard-api", "zai-standard-api"];
+  // Patch (Aira): Z.ai/BigModel templates removed — the zhipu group no longer renders.
   const groups = [
     {
-      id: "zhipu",
-      templates: zhipuIds.flatMap((id) =>
-        templates.filter((template) => template.templateId === id),
-      ),
-    },
-    {
       id: "other",
-      templates: templates.filter((template) => !zhipuIds.includes(template.templateId)),
+      templates,
     },
   ] as const;
   const createWithFeedback = async (create: () => Promise<void>) => {
