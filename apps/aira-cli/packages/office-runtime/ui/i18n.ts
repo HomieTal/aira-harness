@@ -221,8 +221,9 @@ const zh: typeof en = {
 };
 
 export type Strings = typeof en;
-export const strings = (locale: string | undefined): Strings =>
-  locale?.toLowerCase().startsWith("zh") ? zh : en;
+// Patch (Aira): English-only — the zh table stays as dead data.
+export const strings = (_locale: string | undefined): Strings => en;
+void zh;
 
 /** A locator as people say it: `page:3` → "Page 3", `Plan!C2:D2` → "Plan · C2:D2". */
 export function describeAt(at: string, t: Strings, lower = false): string {

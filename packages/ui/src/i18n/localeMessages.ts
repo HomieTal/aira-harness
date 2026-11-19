@@ -1,9 +1,5 @@
 import type { Locale } from "@aira/shared";
-import zhCN from "./locales/zh-CN.js";
 import enUS from "./locales/en-US.js";
-import jaJP from "./locales/ja-JP.js";
-import ruRU from "./locales/ru-RU.js";
-import koKR from "./locales/ko-KR.js";
 
 /**
  * 语言 → 翻译消息映射。IntlProvider 与 ErrorBoundary 共用这一份。
@@ -11,9 +7,10 @@ import koKR from "./locales/ko-KR.js";
  * 避免界面直接露出 key；中文表是完整的，不需要合并。
  */
 export const LOCALE_MESSAGES: Record<Locale, Record<string, string>> = {
-  "zh-CN": zhCN,
+  // Patch (Aira): English-only — every locale renders the en-US catalog.
+  "zh-CN": enUS,
   "en-US": enUS,
-  "ja-JP": { ...enUS, ...jaJP },
-  "ru-RU": { ...enUS, ...ruRU },
-  "ko-KR": { ...enUS, ...koKR },
+  "ja-JP": enUS,
+  "ru-RU": enUS,
+  "ko-KR": enUS,
 };

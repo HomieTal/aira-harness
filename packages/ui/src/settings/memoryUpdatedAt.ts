@@ -22,12 +22,13 @@ function formatWeekday(
   locale: Locale,
   formatMessage: IntlInstance["formatMessage"],
 ): string {
-  if (locale === "zh-CN") {
-    return formatMessage(
-      { id: "settings.memory.viewer.updated.weekdayZh" },
-      { weekday: "日一二三四五六"[new Date(timestamp).getDay()] ?? "" },
-    );
-  }
+  // Patch (Aira): English-only — Chinese weekday branch removed.
+  // if (locale === "zh-CN") {
+  //   return formatMessage(
+  //     { id: "settings.memory.viewer.updated.weekdayZh" },
+  //     { weekday: "日一二三四五六"[new Date(timestamp).getDay()] ?? "" },
+  //   );
+  // }
   return new Intl.DateTimeFormat(locale, { weekday: "short" }).format(timestamp);
 }
 

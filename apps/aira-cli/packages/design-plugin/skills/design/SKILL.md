@@ -1,6 +1,6 @@
 ---
 name: design
-description: "设计工作流：交付物是写入工作区的 HTML 设计稿、可交互原型或 HTML 演示稿时使用，覆盖输入理解、新建与改版、品牌配色、视觉探索与审查。不负责对话内的交互视图 / mockup / 变体对比（用 visualize 插件），也不直接生成 .pptx 文件（需要 pptx 时调用 presentations 插件）。Design workflow for workspace deliverables: HTML design files, interactive prototypes and HTML slide decks, including UI/UX, color, brand and design review. Not for in-chat interactive views or mockups (visualize plugin) or .pptx generation (call the presentations plugin when a pptx is needed)."
+description: "Design workflow: deliverables are HTML design mockups, interactive prototypes, or HTML presentations written into the workspace; desktop local workspaces can be edited by clicking in the built-in browser."
 ---
 
 # Design

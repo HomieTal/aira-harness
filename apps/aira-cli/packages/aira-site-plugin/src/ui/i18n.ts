@@ -339,7 +339,9 @@ const zh: Record<MessageKey, string> = {
 export type Locale = "en" | "zh-CN";
 
 export function resolveLocale(locale: string | undefined): Locale {
-  return locale?.toLowerCase().startsWith("zh") ? "zh-CN" : "en";
+  // Patch (Aira): English-only.
+  // return locale?.toLowerCase().startsWith("zh") ? "zh-CN" : "en";
+  return "en";
 }
 
 export type Translate = (

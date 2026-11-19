@@ -1,6 +1,7 @@
 import type { UiLocale, SupportedLocale } from "@aira/contracts";
 import { enUS } from "./locales/en-US.js";
-import { zhCN } from "./locales/zh-CN.js";
+// Patch (Aira): English-only — the zh-CN catalog is no longer bundled.
+// import { zhCN } from "./locales/zh-CN.js";
 import {
   DEFAULT_LOCALE,
   detectLocale,
@@ -24,7 +25,8 @@ export type { CliCopy, TuiCopy, UiLocale, SupportedLocale, AiraCopy } from "./ty
 
 const CATALOGS: Record<SupportedLocale, AiraCopy> = {
   "en-US": enUS,
-  "zh-CN": zhCN,
+  // Patch (Aira): English-only.
+  "zh-CN": enUS,
 };
 
 export function getAiraCopy(locale?: UiLocale | string, detected?: string | null): AiraCopy {

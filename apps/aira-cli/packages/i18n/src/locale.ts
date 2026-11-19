@@ -44,7 +44,9 @@ function normalizeLocale(value: string | null | undefined): SupportedLocale | un
   if (isSupportedLocale(tag)) return tag;
   const lower = tag.toLowerCase();
   if (lower === "en" || lower.startsWith("en-")) return "en-US";
-  if (lower === "zh" || lower.startsWith("zh-")) return "zh-CN";
+  // Patch (Aira): English-only.
+  // if (lower === "zh" || lower.startsWith("zh-")) return "zh-CN";
+  return undefined;
   return undefined;
 }
 

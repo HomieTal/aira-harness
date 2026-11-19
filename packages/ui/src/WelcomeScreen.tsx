@@ -529,29 +529,7 @@ export function LoginPanel({ active, onComplete }: LoginPanelProps) {
                 >
                   {intl.formatMessage({ id: "login.useApiKey" })}
                 </Button>
-                {/* 当前区域停用时仍保留切换入口，不能把用户锁在不可用区域。 */}
-                <div className="mt-4 flex h-7 w-full items-center justify-center">
-                  <button
-                    type="button"
-                    className="rounded-md px-2 text-ui-sm text-foreground-subtle underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                    data-testid={TID_LOGIN_REGION_SWITCH}
-                    onClick={() => {
-                      const nextRegion = loginRegion === "domestic" ? "global" : "domestic";
-                      // 用户手动切换后，区域不再跟随后续语言变化。
-                      loginRegionUserSelectedRef.current = true;
-                      setLoginRegion(nextRegion);
-                      // 区域切换与界面语言联动：国内入口使用中文，海外入口使用英文。
-                      setLocalePreference(nextRegion === "domestic" ? "zh-CN" : "en-US");
-                    }}
-                  >
-                    {intl.formatMessage({
-                      id:
-                        loginRegion === "domestic"
-                          ? "login.singleLogin.switchToGlobal"
-                          : "login.singleLogin.switchToDomestic",
-                    })}
-                  </button>
-                </div>
+                {/* Patch (Aira): region/language toggle removed — English-only UI. */}
               </div>
             ) : null}
           </div>

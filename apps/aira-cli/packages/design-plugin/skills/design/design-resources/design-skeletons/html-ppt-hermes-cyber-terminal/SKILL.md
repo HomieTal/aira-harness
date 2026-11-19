@@ -1,6 +1,6 @@
 ---
 name: html-ppt-hermes-cyber-terminal
-description: 暗终端 honest-review deck — #0a0c10 黑底 + 56px 赛博网格 + CRT 暗角 + 扫描线、窗口红绿灯 chrome、`$ prompt` 命令行标题、薄荷绿 #7ed3a4 大字、JetBrains Mono、stroke-only 柱状图、blinking 光标、琥珀/绿/红三档 tag、暗色代码块。适合 CLI / agent / dev tool 测评（含 trace、diff、benchmark）。
+description: Dark-terminal honest-review deck — #0a0c10 background + 56px cyber grid + CRT vignette + scanlines, window traffic-light chrome, `$ prompt` command-line title, mint-green #7ed3a4 headlines, JetBrains Mono, stroke-only bar charts, blinking cursor, amber/green/red status tags, dark code blocks. Best for CLI / agent / dev tool review decks (trace, diff, benchmark).
 triggers:
   - "terminal review"
   - "cli review"
