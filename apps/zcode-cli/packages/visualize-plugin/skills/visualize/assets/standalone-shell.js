@@ -1,10 +1,10 @@
 (() => {
-  const frame = document.getElementById("zcode-visualization");
+  const frame = document.getElementById("aira-visualization");
   if (!(frame instanceof HTMLIFrameElement)) {
     return;
   }
   let viewportHeight = globalThis.innerHeight;
-  const storageKey = `zcode:visualization-widget-state-v2:${JSON.stringify([
+  const storageKey = `aira:visualization-widget-state-v2:${JSON.stringify([
     globalThis.location.pathname,
     globalThis.location.search,
   ])}`;
@@ -165,7 +165,7 @@
   frame.addEventListener(
     "load",
     () => {
-      frame.contentWindow?.postMessage({ type: "zcode-visualization-initialize" }, "*", [
+      frame.contentWindow?.postMessage({ type: "aira-visualization-initialize" }, "*", [
         channel.port2,
       ]);
     },
@@ -173,9 +173,9 @@
   );
   // Match the trusted bootstrap element, not the same text in an authored title.
   frame.srcdoc = srcdoc.replace(
-    '<script type="application/json" id="zcode-visualization-widget-state">__ZCODE_VISUALIZATION_WIDGET_STATE__</script>',
+    '<script type="application/json" id="aira-visualization-widget-state">__AIRA_VISUALIZATION_WIDGET_STATE__</script>',
     () =>
-      '<script type="application/json" id="zcode-visualization-widget-state">' +
+      '<script type="application/json" id="aira-visualization-widget-state">' +
       JSON.stringify(initialGlobals).replaceAll("<", "\\u003c") +
       "</script>",
   );

@@ -12,7 +12,7 @@ _SKILL_DIRECTORY = Path(__file__).resolve().parents[1]
 _FRAGMENT_PLACEHOLDER = "<!--__INLINE_VISUALIZATION_FRAGMENT__-->"
 _MAX_FRAGMENT_BYTES = 1_000_000
 _DOCUMENT_MARKUP = re.compile(r"<!doctype\s|<\s*(?:html|head|body)(?:\s|>)", re.IGNORECASE)
-_HOST_API_REFERENCE = re.compile(r"\b(?:window|globalThis)\.zcode\b")
+_HOST_API_REFERENCE = re.compile(r"\b(?:window|globalThis)\.aira\b")
 _RESOURCE_SOURCES = " ".join(
     (
         "blob:",
@@ -106,7 +106,7 @@ def _render_document(fragment: str, title: str) -> str:
 html>body{{padding:0}}</style>
 </head>
 <body>
-<script type="application/json" id="zcode-visualization-widget-state">__ZCODE_VISUALIZATION_WIDGET_STATE__</script>
+<script type="application/json" id="aira-visualization-widget-state">__AIRA_VISUALIZATION_WIDGET_STATE__</script>
 <script>{host_bridge}</script>
 {inner_html}
 </body>
@@ -123,7 +123,7 @@ html>body{{padding:0}}</style>
 <style>:root{{color-scheme:light dark;background:light-dark(rgb(255 255 255), rgb(24 24 24))}}html,body{{margin:0}}body{{box-sizing:border-box;padding:1rem;background:inherit}}iframe{{display:block;width:100%;height:calc(100vh - 2rem);margin:0 auto;border:0}}</style>
 </head>
 <body>
-<iframe id="zcode-visualization" sandbox="allow-scripts" referrerpolicy="no-referrer" title="{document_title}" data-srcdoc="{escape(frame_html)}"></iframe>
+<iframe id="aira-visualization" sandbox="allow-scripts" referrerpolicy="no-referrer" title="{document_title}" data-srcdoc="{escape(frame_html)}"></iframe>
 <script>{shell}</script>
 </body>
 </html>
@@ -228,7 +228,7 @@ def main(argv: list[str] | None = None) -> int:
             )
             if references_host_api:
                 print(
-                    "warning: the source references window.zcode; verify APIs beyond "
+                    "warning: the source references window.aira; verify APIs beyond "
                     "widgetState/setWidgetState before hosting",
                     file=sys.stderr,
                 )

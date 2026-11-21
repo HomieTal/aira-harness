@@ -8,7 +8,7 @@
   const stringify = JSON.stringify;
   const parse = JSON.parse;
   const encode = TextEncoder.prototype.encode.bind(new TextEncoder());
-  const initialStateElement = document.getElementById("zcode-visualization-widget-state");
+  const initialStateElement = document.getElementById("aira-visualization-widget-state");
   const initialGlobals = parse(initialStateElement?.textContent ?? "{}");
   initialStateElement?.remove();
   /** @type {Record<string, unknown> | null} */
@@ -110,9 +110,9 @@
       });
     }
     state = storedState;
-    globalThis.zcode.widgetState = state;
+    globalThis.aira.widgetState = state;
     globalThis.dispatchEvent(
-      new CustomEvent("zcode:set_globals", {
+      new CustomEvent("aira:set_globals", {
         detail: { globals: { widgetState: state } },
       }),
     );
@@ -132,8 +132,8 @@
   const syncTheme = () => {
     const theme = mediaQuery.matches ? "dark" : "light";
     root.dataset.theme = theme;
-    globalThis.zcode = {
-      ...globalThis.zcode,
+    globalThis.aira = {
+      ...globalThis.aira,
       openExternal,
       sendFollowUpMessage,
       setWidgetState,
@@ -145,8 +145,8 @@
       stateModelContext: "none",
     };
     globalThis.dispatchEvent(
-      new CustomEvent("zcode:set_globals", {
-        detail: { globals: globalThis.zcode },
+      new CustomEvent("aira:set_globals", {
+        detail: { globals: globalThis.aira },
       }),
     );
   };
@@ -168,7 +168,7 @@
         hostPort != null ||
         source !== parentWindow ||
         typeof data !== "object" ||
-        data?.type !== "zcode-visualization-initialize" ||
+        data?.type !== "aira-visualization-initialize" ||
         !isArray(ports) ||
         ports.length !== 1
       ) {

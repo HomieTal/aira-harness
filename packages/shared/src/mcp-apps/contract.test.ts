@@ -33,11 +33,11 @@ describe("mcp-apps-protocol contract", () => {
     expect(normalizeMcpToolUiMeta({ ui: { resourceUri: "https://a/b" } })).toBeNull();
   });
 
-  it("zcode/csp 只认已知布尔键", () => {
+  it("aira/csp 只认已知布尔键", () => {
     expect(normalizeMcpAppCspRelaxations(exampleResourceMetaWithRelaxations)).toEqual({
       unsafeEval: true,
     });
-    expect(normalizeMcpAppCspRelaxations({ "zcode/csp": { unsafeEval: false, other: true } })).toBe(
+    expect(normalizeMcpAppCspRelaxations({ "aira/csp": { unsafeEval: false, other: true } })).toBe(
       null,
     );
   });
@@ -45,7 +45,7 @@ describe("mcp-apps-protocol contract", () => {
   it("示例描述与句柄满足契约形状", () => {
     expect(exampleToolUiDescriptor.resourceUri.startsWith(MCP_APPS_UI_RESOURCE_SCHEME)).toBe(true);
     expect(exampleSandboxHandle.shellUrl).toBe(
-      `zcode-sandbox://shell-${exampleSandboxHandle.sandboxId}/`,
+      `aira-sandbox://shell-${exampleSandboxHandle.sandboxId}/`,
     );
     expect(exampleSandboxHandle.partition.startsWith("persist:plugin-sandbox-")).toBe(true);
   });

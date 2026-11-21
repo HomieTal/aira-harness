@@ -2,7 +2,7 @@ import { mkdtemp, mkdir, readdir, writeFile, symlink, rm } from "node:fs/promise
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { getGenUiOutputDirectory } from "@zcode/shared/node";
+import { getGenUiOutputDirectory } from "@aira/shared/node";
 import { readGenUiDocument } from "./files.js";
 
 const roots: string[] = [];
@@ -10,7 +10,7 @@ afterEach(async () => {
   await Promise.all(roots.splice(0).map((root) => rm(root, { recursive: true, force: true })));
 });
 async function fixture(workspaceIdentity?: string) {
-  const root = await mkdtemp(join(tmpdir(), "zcode-gen-ui-"));
+  const root = await mkdtemp(join(tmpdir(), "aira-gen-ui-"));
   roots.push(root);
   const workspacePath = join(root, "workspace"),
     outputRoot = join(root, "user-data", "visualizations");

@@ -24,7 +24,7 @@ Read this file in full before authoring. Reread truncated ranges in smaller call
 - For each new or updated visualization, choose a concise ASCII lowercase-hyphenated title and write `<title>.html` in an explicitly writable, durable, task-owned location. Prefer the thread-scoped visualization directory when it appears in the writable roots or is explicitly supplied by the host. Do not write inline fragments into the project; if no visualization directory is supplied, inline rendering is unavailable.
 - Never add `sandbox:` links to inline visualization HTML unless the user specifically requests a download.
 - Do not choose system temp as a separate fallback. Write access alone does not guarantee that the conversation can read the file.
-- Use the absolute path on the executor that creates the file. Never assume `~/.zcode` is writable beyond the session directory explicitly supplied by the host.
+- Use the absolute path on the executor that creates the file. Never assume `~/.aira` is writable beyond the session directory explicitly supplied by the host.
 - Build the visual in the conversation. Use the open project when the user asks for a site, app page, component, or change to existing project files.
 
 ### Fragment
@@ -64,8 +64,8 @@ Read this file in full before authoring. Reread truncated ranges in smaller call
 
 - Keep the fragment as the editable inline source. When the user explicitly asks to save, export, or publish a visualization that is already shown in the conversation, render it with `python3 scripts/render.py <absolute-fragment-path> <destination>.html`.
 - Apply this export flow only when the user explicitly asks to turn the existing inline source or visualization into a website. For a general website request, build a new responsive site in the output directory or open project, without applying this skill's guidance.
-- Keep only `window.zcode.widgetState` and `window.zcode.setWidgetState` calls from window\.zcode.\* when exporting: the standalone wrapper supplies fallback state storage. Replace other host-only interactions before using the standalone HTML outside ZCode.
-- The ZCode inline host does not provide Sites publishing. Export standalone HTML when requested; use an available hosting workflow only when the user asks to publish.
+- Keep only `window.aira.widgetState` and `window.aira.setWidgetState` calls from window\.aira.\* when exporting: the standalone wrapper supplies fallback state storage. Replace other host-only interactions before using the standalone HTML outside Aira.
+- The Aira inline host does not provide Sites publishing. Export standalone HTML when requested; use an available hosting workflow only when the user asks to publish.
 
 ## Runtime styles
 
@@ -97,13 +97,13 @@ Read this file in full before authoring. Reread truncated ranges in smaller call
 Choose the smallest composition that fits.
 
 - Prefer interaction detail over permanent panels, toolbars, repeated legends, or long stacks. Add only requested controls, use one mechanism per state, and never invent search, filter, or reset controls.
-- Keep filters, selections, and other presentation-only interactions local. For drill-down actions that ask ZCode to investigate or explain selected data, call `await window.zcode.sendFollowUpMessage({ prompt, title })`, where the optional `title` is a concise confirmation-dialog heading of up to 250 characters. Include the selected values and requested investigation in the prompt, and label the action clearly.
+- Keep filters, selections, and other presentation-only interactions local. For drill-down actions that ask Aira to investigate or explain selected data, call `await window.aira.sendFollowUpMessage({ prompt, title })`, where the optional `title` is a concise confirmation-dialog heading of up to 250 characters. Include the selected values and requested investigation in the prompt, and label the action clearly.
 - Show only metrics that explain the requested behavior. Put live values in control headers or on the visual before cards. Treat maxima as ceilings, not targets. Never invent qualitative scores, status cards, or secondary fact grids to fill space.
 
 ### Remembering inline interaction state
 
-- Read saved state from `window.zcode.widgetState` when rendering. Listen for `zcode:set_globals` and apply `event.detail.globals.widgetState` when present. Use defaults for missing or incompatible state.
-- After meaningful interactions, call `window.zcode.setWidgetState({ modelContent, privateContent }).catch(() => {})`. Updates are acknowledged after the host persists them. Both fields accept JSON or `null` and may be omitted (treated as `null`). Each call replaces the snapshot; keep it under 16 KiB. Never save on load or state events.
+- Read saved state from `window.aira.widgetState` when rendering. Listen for `aira:set_globals` and apply `event.detail.globals.widgetState` when present. Use defaults for missing or incompatible state.
+- After meaningful interactions, call `window.aira.setWidgetState({ modelContent, privateContent }).catch(() => {})`. Updates are acknowledged after the host persists them. Both fields accept JSON or `null` and may be omitted (treated as `null`). Each call replaces the snapshot; keep it under 16 KiB. Never save on load or state events.
 - Put choices useful for follow-up questions in `modelContent`, UI details worth restoring in `privateContent`, and transient or recomputable values in memory. Only `modelContent` may reach the model: delivery is best-effort and not guaranteed across clients. Never rely on it; saving never starts a turn. No secrets or images.
 
 ### UI mockups
@@ -268,9 +268,9 @@ Choose the smallest composition that fits.
 - Use visibly labeled buttons and inputs for small interactions. Keep all presentation-only interaction local to the fragment and make the first render useful before input changes.
 - Use semantic controls, realistic spacing, and restrained chrome for mockups. Never fake product screenshots when inspectable UI is needed.
 
-## ZCode host compatibility
+## Aira host compatibility
 
 - Emit inline references only when the Desktop context advertises Gen UI and supplies its session output directory; otherwise return an ordinary HTML artifact. Paths must be absolute on the executor, inside that session directory, with no symlinks or parent traversal. The host renders completed assistant messages only.
 - The frame starts at 240px, follows content height up to 10,000px, and has a host-compensated 5px paint gutter. These are implementation limits, not a target height or a reason to add padding. Secondary annotations are optional; there is no required footer.
-- `window.zcode` exposes widget state, state saving, and follow-up messages. See [API](references/api.md) for acknowledgement, cancellation, and Tweak object bindings. The standalone export supplies state fallback, not Agent access.
+- `window.aira` exposes widget state, state saving, and follow-up messages. See [API](references/api.md) for acknowledgement, cancellation, and Tweak object bindings. The standalone export supplies state fallback, not Agent access.
 - Older text `::visualize{path="..."}` references remain supported for historical replies. Generate the Unicode reference described above for new replies.

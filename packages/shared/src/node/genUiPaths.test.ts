@@ -24,6 +24,6 @@ describe("Gen UI output directory", () => {
   it("rejects relative roots and output inside the workspace", () => {
     expect(() => getGenUiOutputDirectory("relative", scope)).toThrow();
     expect(() => getGenUiOutputDirectory(scope.workspacePath, scope)).toThrow();
-    expect(() => getGenUiOutputDirectory(join(scope.workspacePath, ".zcode"), scope)).toThrow();
+    expect(() => getGenUiOutputDirectory(join(scope.workspacePath, ".aira"), scope)).toThrow();
   });
 });

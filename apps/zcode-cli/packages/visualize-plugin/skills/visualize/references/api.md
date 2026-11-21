@@ -1,4 +1,4 @@
-# ZCode page API
+# Aira page API
 
 The host installs the bridge before your fragment's scripts run. Do not load another bridge or MCP client.
 
@@ -13,12 +13,12 @@ The host installs the bridge before your fragment's scripts run. Do not load ano
   const value = document.getElementById("value");
   const status = document.getElementById("status");
   function restore() {
-    const saved = window.zcode.widgetState?.modelContent?.count;
+    const saved = window.aira.widgetState?.modelContent?.count;
     count.value = typeof saved === "number" && saved >= 1 && saved <= 20 ? saved : 5;
     value.textContent = count.value;
   }
   restore();
-  window.addEventListener("zcode:set_globals", (event) => {
+  window.addEventListener("aira:set_globals", (event) => {
     // event.detail.globals contains widgetState and theme.
     restore();
   });
@@ -27,7 +27,7 @@ The host installs the bridge before your fragment's scripts run. Do not load ano
   };
   count.onchange = async () => {
     try {
-      await window.zcode.setWidgetState({
+      await window.aira.setWidgetState({
         modelContent: { count: Number(count.value) },
         privateContent: null,
       });
@@ -37,7 +37,7 @@ The host installs the bridge before your fragment's scripts run. Do not load ano
   };
   document.getElementById("ask").onclick = async () => {
     try {
-      await window.zcode.sendFollowUpMessage({
+      await window.aira.sendFollowUpMessage({
         prompt: `Explain the scenario with count ${count.value}`,
         title: "Count explorer",
       });
@@ -52,7 +52,7 @@ The host installs the bridge before your fragment's scripts run. Do not load ano
 
 ## Local design controls
 
-The source contract is [tweak.md](../tweak.md). The example below uses the same API with the ZCode bridge.
+The source contract is [tweak.md](../tweak.md). The example below uses the same API with the Aira bridge.
 
 Render the initial mockup first. Use a separate Tweak group for each editable component and give its root a descriptive `aria-label`. The optional helper binds objects and supplies host controls; it does not render a Tweak.js panel.
 
