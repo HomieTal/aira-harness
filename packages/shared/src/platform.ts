@@ -1411,3 +1411,10 @@ export interface IPlatformService {
    */
   getDeviceId(): string;
 }
+
+export interface BotRemoteWorkspaceReconnectedEvent {
+  sessionId: string;
+  workspacePath: string;
+  workspaceIdentity: string;
+  target: RemoteTarget;
+}

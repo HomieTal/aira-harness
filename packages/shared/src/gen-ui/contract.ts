@@ -8,6 +8,11 @@ export const GEN_UI_CONTEXT_MAX_BYTES = 64 * 1024;
 export const GEN_UI_GLOBALS_EVENT = "aira:set_globals";
 export const GEN_UI_STATE_CONTEXT_KEY = "aira/genUiState";
 export const GEN_UI_TWEAK_CONTEXT_KEY = "aira/genUiTweaks";
+export const GEN_UI_STYLE_CONTEXT_KEY = "aira/genUiStyles";
+export const genUiStyleVariablesSchema = z.record(
+  z.string().regex(/^--gen-ui-[a-z-]+$/),
+  z.string(),
+);
 export const GEN_UI_STATE_METHOD = "aira/gen-ui/state";
 export const GEN_UI_FOLLOW_UP_METHOD = "aira/gen-ui/follow-up";
 export const GEN_UI_TWEAK_METHOD = "aira/gen-ui/tweak";
@@ -20,6 +25,9 @@ export const GEN_UI_STATIC_DOMAINS = [
   "fonts.googleapis.com",
   "fonts.gstatic.com",
   "fonts.bunny.net",
+  // 自有 CDN：visualize/gen-ui 页面引用 api.aira.invalid 上的图片等静态资源（与上面公共 CDN 同走 resourceDomains，
+  // 会同时进 img/script/style/media/font 五类 src，可控性高于公共 CDN）
+  "api.aira.invalid",
 ] as const;
 
 /** This is a wire-format check. The executor owns normalization and filesystem authorization. */
@@ -192,6 +200,51 @@ export function buildGenUiScopeKey(scope: GenUiScope): string {
 export function buildGenUiStateKey(target: GenUiStateTarget): string {
   return JSON.stringify([buildGenUiScopeKey(target), target.path]);
 }
+export function selectGenUiModelContext(entries: readonly GenUiStateEntry[]): GenUiModelContext {
+  const selected: GenUiModelContext = [];
+  for (const entry of [...entries]
+    .sort((a, b) => a.path.localeCompare(b.path))
+    .slice(0, GEN_UI_STATE_MAX_ENTRIES)) {
+    const parsed = genUiWidgetStateSchema.safeParse(entry.state);
+    if (!parsed.success || parsed.data.modelContent === null) continue;
+    const next = { path: entry.path, state: parsed.data.modelContent };
+    if (
+      new TextEncoder().encode(JSON.stringify([...selected, next])).length >
+      GEN_UI_CONTEXT_MAX_BYTES
+    )
+      break;
+    selected.push(next);
+  }
+  return genUiModelContextSchema.parse(selected);
+}
+
+export const genUiModelContextSchema = z
+  .array(z.object({ path: genUiPathSchema, state: z.unknown() }).strict())
+  .max(GEN_UI_STATE_MAX_ENTRIES)
+  .transform((entries, context) => {
+    try {
+      const serialized = serializeJson(entries);
+      if (
+        new TextEncoder().encode(serialized).byteLength > GEN_UI_CONTEXT_MAX_BYTES ||
+        entries.some(
+          (entry) =>
+            new TextEncoder().encode(serializeJson(entry.state)).byteLength >
+            GEN_UI_STATE_MAX_BYTES,
+        )
+      ) {
+        throw new Error("Gen UI model context exceeds its size limit");
+      }
+      return JSON.parse(serialized) as Array<{ path: string; state: unknown }>;
+    } catch (error) {
+      context.addIssue({
+        code: "custom",
+        message: error instanceof Error ? error.message : "Invalid Gen UI model context",
+      });
+      return z.NEVER;
+    }
+  });
+export type GenUiModelContext = z.infer<typeof genUiModelContextSchema>;
+
 export function buildGenUiModelContext(entries: readonly GenUiStateEntry[]): string {
   const selected: Array<{ path: string; state: unknown }> = [];
   for (const entry of [...entries]
@@ -211,6 +264,7 @@ export function buildGenUiModelContext(entries: readonly GenUiStateEntry[]): str
     ? `<untrusted_gen_ui_state>\n${JSON.stringify(selected).replaceAll("<", "\\u003c")}\n</untrusted_gen_ui_state>`
     : "";
 }
+
 export function stripGenUiModelContext(content: string): string {
   const match = /\n\n<untrusted_gen_ui_state>\n([^]*?)\n<\/untrusted_gen_ui_state>\s*$/u.exec(
     content,

@@ -871,3 +871,4 @@ function emptyComponents(hookDetails: PluginHookDetail[] = []): PluginComponents
 function resolveEnabled(config: PluginConfig, id: string, defaultEnabled: boolean): boolean {
   return config.enabledPlugins[id] ?? defaultEnabled;
 }
+

@@ -2580,3 +2580,69 @@ export function ensureSidePaneTab(
     ...scope,
   });
 }
+
+export function isSidePaneTabVisibleForParent(
+  tab: WorkspaceSidePaneTab,
+  parentSessionId: string | null,
+): boolean {
+  if (tab.type === "browser-use") {
+    return tab.sessionId === parentSessionId;
+  }
+  // 归属于某条对话（而非 workspace 全局）的 tab 按 parentSessionId 收窄。
+  if (
+    tab.type === "selection-side-chat" ||
+    tab.type === "plan-detail" ||
+    tab.type === "plugin-ui" ||
+    tab.type === "workflow-run" ||
+    tab.type === "workflow-directory" ||
+    tab.type === "workflow-actor-session" ||
+    tab.type === "workflow-workspace" ||
+    tab.type === "workflow-artifact"
+  ) {
+    return tab.parentSessionId === parentSessionId;
+  }
+  if (
+    tab.type === "subagent-session" ||
+    tab.type === "subagent-directory" ||
+    tab.type === "bash-output"
+  ) {
+    return tab.rootSessionId === parentSessionId;
+  }
+  return true;
+}
+
+export function closeVisibleOtherSidePaneTabs(
+  current: WorkspaceSidePaneState | null,
+  tabId: string,
+  parentSessionId: string | null,
+): WorkspaceSidePaneState | null {
+  if (!current) return null;
+  const visibleTabs = getVisibleSidePaneTabs(current, parentSessionId);
+  const target = visibleTabs.find((tab) => tab.id === tabId);
+  if (!target) return current;
+  const closingIds = new Set(visibleTabs.filter((tab) => tab.id !== tabId).map((tab) => tab.id));
+  return {
+    tabs: current.tabs.filter((tab) => !closingIds.has(tab.id)),
+    activeTabId: target.id,
+  };
+}
+
+export function closeVisibleSidePaneTabs(
+  current: WorkspaceSidePaneState | null,
+  parentSessionId: string | null,
+): WorkspaceSidePaneState | null {
+  if (!current) return null;
+  const closingIds = new Set(getVisibleSidePaneTabs(current, parentSessionId).map((tab) => tab.id));
+  const tabs = current.tabs.filter((tab) => !closingIds.has(tab.id));
+  return tabs.length === 0 ? null : { tabs, activeTabId: "" };
+}
+
+export function closeSidePaneTabForParent(
+  current: WorkspaceSidePaneState | null,
+  tabId: string,
+  parentSessionId: string | null,
+  preferredTabId?: string | null,
+): WorkspaceSidePaneState | null {
+  const next = closeSidePaneTab(current, tabId);
+  return selectSidePaneTabsForParent(next, parentSessionId, preferredTabId);
+}

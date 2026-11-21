@@ -2538,11 +2538,6 @@ function ConversationComposerImpl({
               onRemove={removePluginUiContext}
               onRemoveAll={clearPluginUiContexts}
             />
-            <PluginUiModelContextChip
-              contexts={pluginUiContexts}
-              onRemove={removePluginUiContext}
-              onRemoveAll={clearPluginUiContexts}
-            />
             <PptxElementReferenceChip
               references={pptxElementReferences}
               onOpen={onOpenCodeViewer ? openPptxElementReference : undefined}
@@ -3169,3 +3164,13 @@ function ConversationComposerImpl({
 }
 
 export const ConversationComposer = memo(ConversationComposerImpl);
+
+export interface ComposerRestoreRequest {
+  requestId: number;
+  sessionId: string;
+  workspaceKey: string;
+  inputKind: "sendText" | "sendGoalCommand";
+  text: string;
+  attachments: readonly AttachmentRef[];
+  config?: Pick<V4ComposerDraft, "mode" | "planEnabled" | "modelSelection">;
+}

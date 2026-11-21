@@ -64,7 +64,6 @@ import type {
 } from "@aira/shared/aira-protocol-v4";
 import { submissionModeSchema } from "@aira/shared/aira-protocol-v4";
 import { logger } from "@/logger.js";
-import { PluginUiSessionProvider } from "@/plugin-ui/index.js";
 import {
   PluginUiSessionProvider,
   registerPluginUiPaneSession,

@@ -53,7 +53,7 @@ export function createPluginSandboxRegistrationBridge(deps: {
           // 资源级尺寸 / 边框提示原样回 renderer。
           ...(result.resourceMeta ? { resourceMeta: result.resourceMeta } : {}),
         });
-      } else request.reject(new Error(result.error ?? "插件 UI 沙箱登记失败"));
+      } else request.reject(new Error(result.error ?? "Failed to register the plugin UI sandbox"));
     },
     dispose() {
       // 修复：原 Host 退出只释放 services，未完成的登记 Promise 没有明确终态。

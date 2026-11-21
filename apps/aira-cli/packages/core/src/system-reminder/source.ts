@@ -288,3 +288,7 @@ function escapeNestedSystemReminderTags(body: string | readonly string[]): strin
   // 与 wrapper 的拒绝规则一致，含空格/大小写变体的关闭标签也只中和起始 <。
   return content.replace(SYSTEM_REMINDER_NESTED_TAG_PATTERN, (tag) => `&lt;${tag.slice(1)}`);
 }
+
+export const SYSTEM_REMINDER_PREFIX_SOURCES = ["context_prefix", "skills_listing"] as const;
+
+export type SystemReminderPrefixSource = (typeof SYSTEM_REMINDER_PREFIX_SOURCES)[number];

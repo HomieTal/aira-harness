@@ -2426,15 +2426,15 @@ The original import revisions of copied components are not recorded in the curre
 
 - ai-elements (Apache-2.0): packages/ui/src/components/ai-elements, .agents/skills/ai-elements. License reference: https://raw.githubusercontent.com/vercel/ai-elements/6a9d5b1822ffb10bba4bd97175f01edd7d8651cd/LICENSE. Original import revision: not recorded.
 
-- Fig autocomplete registry (MIT): apps/aira-cli/packages/core/src/tool/handlers/generated/bash-command-registry.ts. License reference: https://raw.githubusercontent.com/withfig/autocomplete/aef52acff84c45edde61ae610cc2c964802b9a38/LICENSE. Original import revision: not recorded.
+- Fig autocomplete registry (MIT): apps/zcode-cli/packages/core/src/tool/handlers/generated/bash-command-registry.ts. License reference: https://raw.githubusercontent.com/withfig/autocomplete/aef52acff84c45edde61ae610cc2c964802b9a38/LICENSE. Original import revision: not recorded.
 
 - Material Icon Theme (MIT): packages/desktop/src/renderer/public/material-icons, packages/web/public/material-icons. License reference: https://raw.githubusercontent.com/material-extensions/vscode-material-icon-theme/cb1dfb6d9cb73b15681a93939983d75dbba7bf5b/LICENSE. Original import revision: not recorded.
 
 - agent-browser skills (including dogfood) (Apache-2.0): .agents/skills/agent-browser, .agents/skills/dogfood. License reference: https://raw.githubusercontent.com/vercel-labs/agent-browser/99c732c18810494593ead9dd96ab6f5f0c78b729/LICENSE. Original import revision: not recorded.
 
-- Visual Studio Code IPC and common utilities (MIT): packages/rpc/src, packages/rpc/examples, packages/shared/src/aira-protocol-v4/wire-codec.ts. License reference: https://raw.githubusercontent.com/microsoft/vscode/44825207bf4389c3bd17c92d3ec28cf784c324cc/LICENSE.txt. Original import revision: not recorded.
+- Visual Studio Code IPC and common utilities (MIT): packages/rpc/src, packages/rpc/examples, packages/shared/src/zcode-protocol-v4/wire-codec.ts. License reference: https://raw.githubusercontent.com/microsoft/vscode/44825207bf4389c3bd17c92d3ec28cf784c324cc/LICENSE.txt. Original import revision: not recorded.
 
-- Superpowers skill description adaptations (MIT): packages/ui/src/lib/builtinSkillI18n.ts, apps/aira-cli/packages/superpowers-plugin/LICENSE. License reference: https://raw.githubusercontent.com/obra/superpowers/f2cbfbefebbfef77321e4c9abc9e949826bea9d7/LICENSE. Original import revision: not recorded.
+- Superpowers skill description adaptations (MIT): packages/ui/src/lib/builtinSkillI18n.ts, apps/zcode-cli/packages/superpowers-plugin/LICENSE. License reference: https://raw.githubusercontent.com/obra/superpowers/f2cbfbefebbfef77321e4c9abc9e949826bea9d7/LICENSE. Original import revision: not recorded.
 
 - React Best Practices skill (MIT): .agents/skills/react-best-practices. License reference: https://github.com/vercel-labs/agent-skills/tree/063bee94c3f4df8453406c830b0a7df0f2860278. Original import revision: not recorded. Review required: Pinned upstream README and skill declare MIT, but a complete original copyright/license notice has not been obtained.
 
@@ -2446,21 +2446,21 @@ The original import revisions of copied components are not recorded in the curre
 
 - Hack 3.003 in Knip docs (MIT AND Bitstream-Vera): docs/knip/docs/src/fonts/hack-regular-subset.woff2. License reference: https://raw.githubusercontent.com/source-foundry/Hack/b47d21f808fbf4784565feccde2213ef2af924b3/LICENSE.md. Original import revision: not recorded.
 
-- open-design design resources (Apache-2.0): apps/aira-cli/packages/design-plugin/skills/design/design-resources. License reference: https://raw.githubusercontent.com/nexu-io/open-design/11b4750677177c6e7918abd9463224da6331cede/LICENSE. Original import revision: not recorded.
+- open-design design resources (Apache-2.0): apps/zcode-cli/packages/design-plugin/skills/design/design-resources. License reference: https://raw.githubusercontent.com/nexu-io/open-design/11b4750677177c6e7918abd9463224da6331cede/LICENSE. Original import revision: not recorded.
 
-- html-ppt deck templates (MIT): apps/aira-cli/packages/design-plugin/skills/design/design-resources/LICENSE-html-ppt, apps/aira-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-course-module, apps/aira-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-hermes-cyber-terminal, apps/aira-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-pitch-deck. License reference: https://raw.githubusercontent.com/nexu-io/open-design/11b4750677177c6e7918abd9463224da6331cede/design-templates/html-ppt/LICENSE. Original import revision: not recorded.
+- html-ppt deck templates (MIT): apps/zcode-cli/packages/design-plugin/skills/design/design-resources/LICENSE-html-ppt, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-course-module, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-hermes-cyber-terminal, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-pitch-deck. License reference: https://raw.githubusercontent.com/nexu-io/open-design/11b4750677177c6e7918abd9463224da6331cede/design-templates/html-ppt/LICENSE. Original import revision: not recorded.
 
-- Zara Zhang html-ppt deck templates (MIT): apps/aira-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-8-bit-orbit, apps/aira-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-biennale-yellow, apps/aira-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-block-frame, apps/aira-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-bold-poster, apps/aira-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-broadside, apps/aira-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-capsule, apps/aira-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-cartesian, apps/aira-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-coral, apps/aira-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-creative-mode, apps/aira-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-daisy-days, apps/aira-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-editorial-tri-tone, apps/aira-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-grove, apps/aira-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-mat, apps/aira-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-monochrome, apps/aira-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-neo-grid-bold, apps/aira-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-peoples-platform, apps/aira-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-pin-and-paper, apps/aira-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-pink-script, apps/aira-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-playful, apps/aira-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-raw-grid, apps/aira-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-retro-windows, apps/aira-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-retro-zine, apps/aira-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-sakura-chroma, apps/aira-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-signal, apps/aira-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-soft-editorial, apps/aira-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-stencil-tablet, apps/aira-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-studio, apps/aira-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-vellum. License reference: https://raw.githubusercontent.com/nexu-io/open-design/11b4750677177c6e7918abd9463224da6331cede/design-templates/html-ppt-zhangzara-vellum/LICENSE. Original import revision: not recorded.
+- Zara Zhang html-ppt deck templates (MIT): apps/zcode-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-8-bit-orbit, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-biennale-yellow, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-block-frame, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-bold-poster, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-broadside, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-capsule, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-cartesian, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-coral, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-creative-mode, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-daisy-days, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-editorial-tri-tone, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-grove, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-mat, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-monochrome, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-neo-grid-bold, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-peoples-platform, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-pin-and-paper, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-pink-script, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-playful, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-raw-grid, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-retro-windows, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-retro-zine, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-sakura-chroma, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-signal, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-soft-editorial, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-stencil-tablet, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-studio, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-zhangzara-vellum. License reference: https://raw.githubusercontent.com/nexu-io/open-design/11b4750677177c6e7918abd9463224da6331cede/design-templates/html-ppt-zhangzara-vellum/LICENSE. Original import revision: not recorded.
 
-- frontend-slides skill (MIT): apps/aira-cli/packages/design-plugin/skills/design/design-resources/skills/frontend-slides. License reference: https://raw.githubusercontent.com/zarazhangrui/frontend-slides/1cc36e5a7555aab60d4b3e80cf7854edfeb7c4d2/LICENSE. Original import revision: not recorded.
+- frontend-slides skill (MIT): apps/zcode-cli/packages/design-plugin/skills/design/design-resources/skills/frontend-slides. License reference: https://raw.githubusercontent.com/zarazhangrui/frontend-slides/1cc36e5a7555aab60d4b3e80cf7854edfeb7c4d2/LICENSE. Original import revision: not recorded.
 
-- gstack design skills (MIT): apps/aira-cli/packages/design-plugin/skills/design/design-resources/skills/design-consultation, apps/aira-cli/packages/design-plugin/skills/design/design-resources/skills/design-review, apps/aira-cli/packages/design-plugin/skills/design/design-resources/skills/plan-design-review. License reference: https://raw.githubusercontent.com/garrytan/gstack/8bb6d652707615e6a13b20ab162bf00dad9c9392/LICENSE. Original import revision: not recorded.
+- gstack design skills (MIT): apps/zcode-cli/packages/design-plugin/skills/design/design-resources/skills/design-consultation, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/skills/design-review, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/skills/plan-design-review. License reference: https://raw.githubusercontent.com/garrytan/gstack/8bb6d652707615e6a13b20ab162bf00dad9c9392/LICENSE. Original import revision: not recorded.
 
-- brand-guidelines skill (Apache-2.0): apps/aira-cli/packages/design-plugin/skills/design/design-resources/skills/brand-guidelines. License reference: https://raw.githubusercontent.com/anthropics/skills/b9e19e6f44773509fbdd7001d77ff41a49a486c1/skills/brand-guidelines/LICENSE.txt. Original import revision: not recorded.
+- brand-guidelines skill (Apache-2.0): apps/zcode-cli/packages/design-plugin/skills/design/design-resources/skills/brand-guidelines. License reference: https://raw.githubusercontent.com/anthropics/skills/b9e19e6f44773509fbdd7001d77ff41a49a486c1/skills/brand-guidelines/LICENSE.txt. Original import revision: not recorded.
 
-- frontend-design skill (Apache-2.0): apps/aira-cli/packages/design-plugin/skills/design/design-resources/skills/frontend-design. License reference: https://raw.githubusercontent.com/anthropics/skills/5d25128289ff72bc9c7839ac3d245f4d57515447/skills/frontend-design/LICENSE.txt. Original import revision: not recorded.
+- frontend-design skill (Apache-2.0): apps/zcode-cli/packages/design-plugin/skills/design/design-resources/skills/frontend-design. License reference: https://raw.githubusercontent.com/anthropics/skills/5d25128289ff72bc9c7839ac3d245f4d57515447/skills/frontend-design/LICENSE.txt. Original import revision: not recorded.
 
-- taste-skill (MIT): apps/aira-cli/packages/design-plugin/skills/design/design-resources/skills/taste-skill, apps/aira-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-taste-brutalist, apps/aira-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/web-prototype-taste-brutalist, apps/aira-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/web-prototype-taste-editorial, apps/aira-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/web-prototype-taste-soft. License reference: https://raw.githubusercontent.com/Leonxlnx/taste-skill/3c7017d636c3a4aad378433ea6d0cfa6c921da4a/LICENSE. Original import revision: not recorded.
+- taste-skill (MIT): apps/zcode-cli/packages/design-plugin/skills/design/design-resources/skills/taste-skill, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/html-ppt-taste-brutalist, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/web-prototype-taste-brutalist, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/web-prototype-taste-editorial, apps/zcode-cli/packages/design-plugin/skills/design/design-resources/design-skeletons/web-prototype-taste-soft. License reference: https://raw.githubusercontent.com/Leonxlnx/taste-skill/3c7017d636c3a4aad378433ea6d0cfa6c921da4a/LICENSE. Original import revision: not recorded.
 
 Fig autocomplete source carries the repository's MIT license; the generated registry records npm @withfig/autocomplete@2.692.3 metadata as ISC. The original source MIT notice is retained below.
 
@@ -2474,23 +2474,23 @@ Electron/Chromium target-specific notices are shipped separately under Resources
 
 ## Modified npm packages
 
-- @radix-ui/react-collapsible@1.1.12: modified by Aira; the changes are recorded in patches/@radix-ui__react-collapsible@1.1.12.patch in the source repository.
+- @radix-ui/react-collapsible@1.1.12: modified by ZCode; the changes are recorded in patches/@radix-ui__react-collapsible@1.1.12.patch in the source repository.
 
-- vitest@4.1.7: modified by Aira; the changes are recorded in patches/vitest@4.1.7.patch in the source repository.
+- vitest@4.1.7: modified by ZCode; the changes are recorded in patches/vitest@4.1.7.patch in the source repository.
 
-- wdio-electron-service@9.2.1: modified by Aira; the changes are recorded in patches/wdio-electron-service@9.2.1.patch in the source repository.
+- wdio-electron-service@9.2.1: modified by ZCode; the changes are recorded in patches/wdio-electron-service@9.2.1.patch in the source repository.
 
-- @arms/rum-electron@0.0.3: modified by Aira; the changes are recorded in patches/@arms__rum-electron@0.0.3.patch in the source repository.
+- @arms/rum-electron@0.0.3: modified by ZCode; the changes are recorded in patches/@arms__rum-electron@0.0.3.patch in the source repository.
 
-- @ai-sdk/openai-compatible@2.0.60: modified by Aira; the changes are recorded in patches/@ai-sdk__openai-compatible@2.0.60.patch in the source repository.
+- @ai-sdk/openai-compatible@2.0.60: modified by ZCode; the changes are recorded in patches/@ai-sdk__openai-compatible@2.0.60.patch in the source repository.
 
-- @ai-sdk/anthropic@3.0.81: modified by Aira; the changes are recorded in patches/@ai-sdk__anthropic@3.0.81.patch in the source repository.
+- @ai-sdk/anthropic@3.0.81: modified by ZCode; the changes are recorded in patches/@ai-sdk__anthropic@3.0.81.patch in the source repository.
 
-- @aiden0z/pptx-renderer@1.2.4: modified by Aira; the changes are recorded in patches/@aiden0z__pptx-renderer@1.2.4.patch in the source repository.
+- @aiden0z/pptx-renderer@1.2.4: modified by ZCode; the changes are recorded in patches/@aiden0z__pptx-renderer@1.2.4.patch in the source repository.
 
-- @extend-ai/react-xlsx@0.16.0: modified by Aira; the changes are recorded in patches/@extend-ai__react-xlsx@0.16.0.patch in the source repository.
+- @extend-ai/react-xlsx@0.16.0: modified by ZCode; the changes are recorded in patches/@extend-ai__react-xlsx@0.16.0.patch in the source repository.
 
-- @radix-ui/react-menu@2.1.16: modified by Aira; the changes are recorded in patches/@radix-ui__react-menu@2.1.16.patch in the source repository.
+- @radix-ui/react-menu@2.1.16: modified by ZCode; the changes are recorded in patches/@radix-ui__react-menu@2.1.16.patch in the source repository.
 
 ## License and NOTICE texts
 
@@ -76789,56 +76789,3 @@ their own copyright notices and license terms:
 
 
 ````
-
-## Gen UI bundled Lucide icons
-
-- lucide@1.17.0 — ISC (with MIT notices for derived Feather icons).
-- Source: https://github.com/lucide-icons/lucide
-- Bundled into the Gen UI page runtime; no proprietary reference application assets are included.
-
-```text
-ISC License
-
-Copyright (c) 2026 Lucide Icons and Contributors
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted, provided that the above
-copyright notice and this permission notice appear in all copies.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
-ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
-ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
-OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
----
-
-The following Lucide icons are derived from the Feather project:
-
-airplay, alert-circle, alert-octagon, alert-triangle, aperture, arrow-down-circle, arrow-down-left, arrow-down-right, arrow-down, arrow-left-circle, arrow-left, arrow-right-circle, arrow-right, arrow-up-circle, arrow-up-left, arrow-up-right, arrow-up, at-sign, calendar, cast, check, chevron-down, chevron-left, chevron-right, chevron-up, chevrons-down, chevrons-left, chevrons-right, chevrons-up, circle, clipboard, clock, code, columns, command, compass, corner-down-left, corner-down-right, corner-left-down, corner-left-up, corner-right-down, corner-right-up, corner-up-left, corner-up-right, crosshair, database, divide-circle, divide-square, dollar-sign, download, external-link, feather, frown, hash, headphones, help-circle, info, italic, key, layout, life-buoy, link-2, link, loader, lock, log-in, log-out, maximize, meh, minimize, minimize-2, minus-circle, minus-square, minus, monitor, moon, more-horizontal, more-vertical, move, music, navigation-2, navigation, octagon, pause-circle, percent, plus-circle, plus-square, plus, power, radio, rss, search, server, share, shopping-bag, sidebar, smartphone, smile, square, table-2, tablet, target, terminal, trash-2, trash, triangle, tv, type, upload, x-circle, x-octagon, x-square, x, zoom-in, zoom-out
-
-The MIT License (MIT) (for the icons listed above)
-
-Copyright (c) 2013-present Cole Bemis
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-```

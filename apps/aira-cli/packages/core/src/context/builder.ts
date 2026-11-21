@@ -363,3 +363,23 @@ function createSection(input: {
 export function createContextBuilder(config: ContextBuilderConfig): ContextBuilder {
   return new ContextBuilder(config);
 }
+
+export function buildContextMetaUserBody(sections: ContextSection[]): string | null {
+  if (sections.length === 0) return null;
+
+  return [
+    "As you answer the user's questions, you can use the following context:",
+    buildSectionContent(sections),
+    "",
+    "      IMPORTANT: this context may or may not be relevant to your tasks. You should not respond to this context unless it is highly relevant to your task.",
+  ].join("\n");
+}
+
+export function buildSkillsMetaUserBody(sections: ContextSection[]): string | null {
+  const content = buildSectionContent(sections);
+  if (!content) {
+    return null;
+  }
+
+  return content;
+}
