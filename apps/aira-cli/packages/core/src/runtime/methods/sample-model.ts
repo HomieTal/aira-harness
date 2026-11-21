@@ -60,7 +60,6 @@ export async function sampleModel(
   await this.ensureSessionPersisted("MCP App sampling", traceContext);
   signal.throwIfAborted();
   const events: SessionEvent[] = [];
-  using statusSink = this.createModelStatusSink(traceContext, events, { persist: false });
   const startedAt = Date.now();
   let result: Awaited<ReturnType<typeof model.generateText>> | undefined;
   let error: unknown;
@@ -70,7 +69,7 @@ export async function sampleModel(
         metadata: traceContextToLogContext(traceContext),
         modelRequestSessionType: "other",
         modelCall: { operation: "workspace_generate_text" },
-        statusSink,
+        statusSink: this.createModelStatusSink(traceContext, events, { persist: false }),
         traceContext,
         refreshRuntimeHeadersBeforeAttempt: createRefreshRuntimeHeadersBeforeModelAttempt(this, {
           abortSignal: signal,

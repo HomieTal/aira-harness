@@ -2538,6 +2538,11 @@ function ConversationComposerImpl({
               onRemove={removePluginUiContext}
               onRemoveAll={clearPluginUiContexts}
             />
+            <PluginUiModelContextChip
+              contexts={pluginUiContexts}
+              onRemove={removePluginUiContext}
+              onRemoveAll={clearPluginUiContexts}
+            />
             <PptxElementReferenceChip
               references={pptxElementReferences}
               onOpen={onOpenCodeViewer ? openPptxElementReference : undefined}

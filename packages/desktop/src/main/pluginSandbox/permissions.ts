@@ -109,10 +109,7 @@ export function formatPluginSandboxPermissionDialogText(
   input: { serverName: string; permissions: readonly PluginSandboxPromptedPermission[] },
   locale: Locale,
 ): PluginSandboxPermissionDialogText {
-  // English-only build: the zh-CN dialog branch is retained for reference but never selected.
-  const isZh = false;
-  void locale;
-  if (isZh) {
+  if (locale === "zh-CN") {
     const list = input.permissions.map((permission) => PERMISSION_LABELS.zh[permission]).join("、");
     return {
       title: "应用权限请求",

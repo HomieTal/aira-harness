@@ -13,21 +13,6 @@ export interface AiraAgentWorkspaceTarget {
   remoteSessionId?: string;
 }
 
-export interface AiraAgentPluginMutationTarget extends AiraAgentWorkspaceTarget {
-  /** 仅 Host 观测使用；不会传给 CLI。 */
-  telemetry?: {
-    entry?:
-      | "store_list"
-      | "store_detail"
-      | "side_pane_market"
-      | "recommended_prompt"
-      | "recommended_ui"
-      | "component_settings";
-    client_kind?: "desktop" | "mobile";
-    trigger?: "user" | "automatic" | "dependency" | "restore" | "sync";
-  };
-}
-
 export interface AiraAgentPluginViewParams extends AiraAgentWorkspaceTarget {
   configScope?: "user" | "workspace";
 }
@@ -37,22 +22,22 @@ export interface AiraAgentListMcpServerStatusesParams extends AiraAgentWorkspace
   mode?: AiraMcpListMode;
 }
 
-export interface AiraAgentAddPluginMarketplaceParams extends AiraAgentPluginMutationTarget {
+export interface AiraAgentAddPluginMarketplaceParams extends AiraAgentWorkspaceTarget {
   dryRun?: boolean;
   operationId?: string;
   source: string;
 }
 
-export interface AiraAgentRemovePluginMarketplaceParams extends AiraAgentPluginMutationTarget {
+export interface AiraAgentRemovePluginMarketplaceParams extends AiraAgentWorkspaceTarget {
   marketplace: string;
 }
 
-export interface AiraAgentUpdatePluginMarketplaceParams extends AiraAgentPluginMutationTarget {
+export interface AiraAgentUpdatePluginMarketplaceParams extends AiraAgentWorkspaceTarget {
   marketplace?: string;
   operationId?: string;
 }
 
-export interface AiraAgentInstallPluginParams extends AiraAgentPluginMutationTarget {
+export interface AiraAgentInstallPluginParams extends AiraAgentWorkspaceTarget {
   dryRun?: boolean;
   marketplace: string;
   operationId?: string;
@@ -64,23 +49,23 @@ export interface AiraAgentCancelPluginOperationParams {
   operationId: string;
 }
 
-export interface AiraAgentUninstallPluginParams extends AiraAgentPluginMutationTarget {
+export interface AiraAgentUninstallPluginParams extends AiraAgentWorkspaceTarget {
   marketplace?: string;
   pluginId?: string;
   pluginName?: string;
   removeCache?: boolean;
 }
 
-export interface AiraAgentUpdatePluginParams extends AiraAgentPluginMutationTarget {
+export interface AiraAgentUpdatePluginParams extends AiraAgentWorkspaceTarget {
   pluginId?: string;
   marketplace?: string;
 }
 
-export interface AiraAgentRestoreBuiltinPluginParams extends AiraAgentPluginMutationTarget {
+export interface AiraAgentRestoreBuiltinPluginParams extends AiraAgentWorkspaceTarget {
   pluginId: string;
 }
 
-export interface AiraAgentConfigurePluginParams extends AiraAgentPluginMutationTarget {
+export interface AiraAgentConfigurePluginParams extends AiraAgentWorkspaceTarget {
   clearOptionKeys?: string[];
   dryRun?: boolean;
   options: Record<string, unknown>;
@@ -88,7 +73,7 @@ export interface AiraAgentConfigurePluginParams extends AiraAgentPluginMutationT
   scope?: "user" | "workspace";
 }
 
-export interface AiraAgentResetPluginConfigParams extends AiraAgentPluginMutationTarget {
+export interface AiraAgentResetPluginConfigParams extends AiraAgentWorkspaceTarget {
   pluginId: string;
   scope?: "user" | "workspace";
 }
@@ -104,7 +89,7 @@ export interface AiraAgentDescribePluginParams extends AiraAgentWorkspaceTarget 
   pluginName: string;
 }
 
-export interface AiraAgentSetPluginEnabledParams extends AiraAgentPluginMutationTarget {
+export interface AiraAgentSetPluginEnabledParams extends AiraAgentWorkspaceTarget {
   enabled: boolean;
   operationId?: string;
   pluginId: string;
@@ -200,7 +185,6 @@ export interface AiraAgentResolveSuggestedPluginReferenceParams extends AiraAgen
 // ---- 定时任务(automation)管理参数 ----
 
 export interface AiraAgentCreateAutomationParams extends AiraAgentWorkspaceTarget {
-  projectId?: string | null;
   title: string;
   cronExpr: string;
   relativeDelayMinutes?: number;

@@ -1,51 +1,54 @@
-import { toolSearchNameForMode } from "@aira/contracts";
-import { resolveDeferredToolCall } from "../deferred-call.js";
+import type { SkillTelemetryMetadata } from "@aira/contracts";
 import {
-  type AgentTelemetryErrorCategory,
   CoreErrorType,
-  HookEventName,
   createChildTraceContext,
   createCoreError,
   createRootTraceContext,
   getCurrentTraceContext,
   traceContextToLogContext,
-  type ToolExecutionSpanWriter,
+  type AgentTelemetryErrorCategory,
   type SessionEvent,
+  type ToolExecutionSpanWriter,
 } from "@aira/contracts";
 import {
   OFFICIAL_CUA_FRAME_MODEL_CONTENT_PROTECTION,
   attestOfficialCuaFrameContent,
-  containsOfficialCuaImageRefCredentialText,
 } from "@aira/aira-cua/frame-contract";
+import { resolveEmbeddedSearchBranchCapability } from "../../embedded-search/capability.js";
+import { hasOfficialCuaFrameAuthority } from "../../mcp/image-normalization.js";
+import { mergeToolExecutionTelemetry, readToolExecutionTelemetry } from "../handlers/tool-perf.js";
 import {
   normalizeToolExecutionInput,
   prepareInitialToolExecutionInput,
 } from "../input-normalization.js";
-import { hasOfficialCuaFrameAuthority } from "../../mcp/image-normalization.js";
-import type { SkillTelemetryMetadata } from "@aira/contracts";
-import type { ToolExecutionContext, ToolExecutionResult } from "../types.js";
-import type { ToolEntry } from "../types.js";
+import { resolveToolEntryModelContract } from "../model-contract.js";
+import type {
+  ExecutableToolCall,
+  ToolEntry,
+  ToolExecutionContext,
+  ToolExecutionResult,
+} from "../types.js";
 import type { BackgroundTaskTracker } from "./background-tasks.js";
 import {
-  annotateUnsettledCall,
   createErrorResult,
   createPermissionErrorResult,
   createToolHandlerFailureError,
   isToolHandlerFailure,
+  isToolHandlerFailureError,
 } from "./errors.js";
 import { emitToolCallError, emitToolCallResult, emitToolCallStarted } from "./events.js";
 import {
-  formatToolHookAdditionalContexts,
+  formatHookAdditionalContexts,
   runPostToolUseFailureHooks,
   runPostToolUseHooks,
   runPreToolUseHooks,
 } from "./hook-flow.js";
+import { createToolModelStatusSink, withDefaultToolModelStatusSink } from "./model-status-sink.js";
 import { resolveToolCallCapabilityFlags } from "./permission-capability.js";
 import { resolveToolPermission } from "./permission-flow.js";
-import { snapshotPermissionInput } from "./permission-input.js";
-import { buildToolInputResolutionContext } from "./permission-input-adjustments.js";
 import { createMcpToolDisplay, createToolResultDisplay } from "./result-display.js";
-import { serializeOutput } from "./result-serialization.js";
+import { appendHookAdditionalContexts, serializeOutput } from "./result-serialization.js";
+import { runToolCallWithTelemetry } from "./telemetry.js";
 import {
   ToolDeadline,
   executeWithTimeout,
@@ -53,24 +56,14 @@ import {
   observeToolAdmissionClock,
   resolveTimeoutMs,
 } from "./timeout.js";
-import { createToolModelStatusSink, withDefaultToolModelStatusSink } from "./model-status-sink.js";
-import { runToolCallWithTelemetry } from "./telemetry.js";
 import {
   withAutomationCreateLimitTurnStop,
   withPlanExitDeniedTurnStop,
   withTerminalToolTurnStop,
   withWorkflowRefineDeniedFollowUp,
 } from "./turn-control.js";
-import { mergeToolExecutionTelemetry, readToolExecutionTelemetry } from "../handlers/tool-perf.js";
 import type { ToolExecuteOptions, ToolExecutorDeps } from "./types.js";
 import { validateInitialModelToolInput, validateInput, validateOutput } from "./validation.js";
-import type { ExecutableToolCall } from "../types.js";
-import { resolveEmbeddedSearchBranchCapability } from "../../embedded-search/capability.js";
-import { resolveToolEntryModelContract } from "../model-contract.js";
-
-const UNDISCOVERED_TOOL_SCHEMA_EXPLANATION =
-  "\n\nThis tool's schema was not sent to the API — it was not in the discovered-tool set derived from message history. " +
-  "Without the schema in your prompt, typed parameters (arrays, numbers, booleans) get emitted as strings and the client-side parser rejects them. ";
 
 export async function executeToolCall(
   deps: ToolExecutorDeps,
@@ -78,24 +71,6 @@ export async function executeToolCall(
   toolCall: ExecutableToolCall,
   options?: ToolExecuteOptions,
 ): Promise<ToolExecutionResult> {
-  const admission = resolveDeferredToolCall(toolCall, options?.toolSearch, deps.registry);
-  if (admission.error) {
-    const result = createErrorResult(admission.call, admission.error);
-    await emitToolCallError(
-      deps,
-      toolCall.id,
-      options?.traceContext ??
-        deps.traceContext ??
-        createRootTraceContext({ sessionId: deps.sessionId, turnId: deps.turnId }),
-      deps.turnId,
-      result.error,
-    );
-    return result;
-  }
-  // 历史只保存一份原始目标参数；执行/Hook 可修改的对象在执行入口独立复制。
-  toolCall = admission.call.modelCallWrapper
-    ? { ...admission.call, input: structuredClone(admission.call.input) }
-    : admission.call;
   const totalStartedAt = Date.now();
   const entry = isEmptyToolName(toolCall.name) ? undefined : deps.registry.get(toolCall.name);
   const canonicalToolCall =
@@ -131,7 +106,6 @@ async function executeToolCallImpl(
         model,
       })
     : undefined;
-  const pluginId = entry?.metadata.mcpPresentation?.pluginId;
   const canonicalToolCall =
     entry && toolCall.name !== entry.metadata.name
       ? { ...toolCall, name: entry.metadata.name }
@@ -161,21 +135,14 @@ async function executeToolCallImpl(
         },
       ),
     );
-    // 空名在 admission 阶段停止会让模型永远收不到配对结果。复用
-    // registry-miss 生命周期，provider 内容严格保留模型返回的原始名称（含空白名称）。
-    // 修复原因：非空的未知工具名只发 `Tool not found: X` 时没有 tool_use_error 包装。
-    result.modelContent = `<tool_use_error>Error: No such tool available: ${toolCall.name}</tool_use_error>`;
+    if (emptyToolName) {
+      // 空名在 admission 阶段停止会让模型永远收不到配对结果。复用
+      // registry-miss 生命周期，但 provider 内容严格保留模型返回的原始空白名称。
+      result.modelContent = `<tool_use_error>Error: No such tool available: ${toolCall.name}</tool_use_error>`;
+    }
     // registry miss 发生在 handler/ToolCallStarted 之前；旧代码只把失败
     // 返回给 provider，没有发布 ToolCallError，V4 tool row 因而永久停在 inputStreaming。
-    await emitToolCallError(
-      deps,
-      toolCall.id,
-      traceContext,
-      turnId,
-      result.error,
-      undefined,
-      pluginId,
-    );
+    await emitToolCallError(deps, toolCall.id, traceContext, turnId, result.error);
     deps.logger?.warn("Tool call rejected because the tool is not registered", {
       ...traceContextToLogContext(traceContext),
       event: "tool.call.not_found",
@@ -199,15 +166,7 @@ async function executeToolCallImpl(
         error instanceof Error ? error.message : "Tool instance is unavailable",
       ),
     );
-    await emitToolCallError(
-      deps,
-      canonicalToolCall.id,
-      traceContext,
-      turnId,
-      result.error,
-      undefined,
-      pluginId,
-    );
+    await emitToolCallError(deps, canonicalToolCall.id, traceContext, turnId, result.error);
     return result;
   }
   if (lifetime)
@@ -242,35 +201,10 @@ async function executeToolCallImpl(
     );
     if (initialInputValidation) {
       const result = createErrorResult(canonicalToolCall, initialInputValidation);
-      const search = options?.toolSearch;
-      // 延迟 schema 未加载只提供纠错提示，不增加工具执行拒绝条件。
-      if (
-        search?.enabled &&
-        !search.discovered.has(canonicalToolCall.name) &&
-        search.catalog.some((tool) => tool.name === canonicalToolCall.name && tool.deferred)
-      ) {
-        // 原提示省略了类型退化原因；完整解释与 schema 一并提供，避免只引导盲目重试。
-        result.modelContent =
-          (result.modelContent ?? initialInputValidation.message) +
-          UNDISCOVERED_TOOL_SCHEMA_EXPLANATION +
-          `Load the tool first: call ${toolSearchNameForMode(search.mode)} with query "select:${canonicalToolCall.name}", then retry this call. ` +
-          `For reference, this tool's input schema is: ${JSON.stringify(entry.inputSchema)}` +
-          (search.mode === "local"
-            ? `\nCall DeferredToolCall with {name: "${canonicalToolCall.name}", input: {...}}.`
-            : "");
-      }
       // schema 失败与 registry miss 同属 handler/ToolCallStarted 之前的早退；旧代码
       // 只把失败回灌模型，没有发布 ToolCallError，V4 tool row 因而在整个 turn 里停在
       // inputStreaming（CreateWorkflow 卡持续显示「正在编写工作流」），模型重试后又叠一张。
-      await emitToolCallError(
-        deps,
-        canonicalToolCall.id,
-        traceContext,
-        turnId,
-        result.error,
-        undefined,
-        pluginId,
-      );
+      await emitToolCallError(deps, canonicalToolCall.id, traceContext, turnId, result.error);
       telemetry?.finishFailed("validation", "parse", result.error);
       return result;
     }
@@ -285,15 +219,7 @@ async function executeToolCallImpl(
         canonicalToolCall,
         createToolHandlerFailureError(canonicalToolCall, toolInputValidation),
       );
-      await emitToolCallError(
-        deps,
-        canonicalToolCall.id,
-        traceContext,
-        turnId,
-        result.error,
-        undefined,
-        pluginId,
-      );
+      await emitToolCallError(deps, canonicalToolCall.id, traceContext, turnId, result.error);
       // 工具专属校验以普通失败结果返回，不走 handler 执行的 try/catch 失败收口。
       // 先发出 ToolCallError 更新工具行，再显式标记遥测失败，避免被记录为 abandoned。
       telemetry?.finishFailed("validation", "parse", result.error);
@@ -304,10 +230,17 @@ async function executeToolCallImpl(
     // hook、权限规则、确认窗载荷、prepareApproval 与 handler 读的都是同一份输入，于是
     // 「策略看得到真正的脚本」「跨版本可见」「确认与执行同字节」三件事一次到位。
     if (entry.resolveInput) {
-      const resolution = await entry.resolveInput(
-        executionInput,
-        buildToolInputResolutionContext(deps),
-      );
+      const workingDirectory = deps.getWorkingDirectory?.();
+      const resolution = await entry.resolveInput(executionInput, {
+        ...(workingDirectory === undefined ? {} : { workingDirectory }),
+        runtimeTaskRegistry: deps.runtimeTaskRegistry,
+        ...(deps.dynamicWorkflowRunPort === undefined
+          ? {}
+          : { dynamicWorkflowRunPort: deps.dynamicWorkflowRunPort }),
+        ...(deps.modelCatalogPort === undefined ? {} : { modelCatalogPort: deps.modelCatalogPort }),
+        sessionId: deps.sessionId,
+        ...(deps.hasLoadedSkill === undefined ? {} : { hasLoadedSkill: deps.hasLoadedSkill }),
+      });
       if (isToolHandlerFailure(resolution)) {
         // 与 validateInput 同一条生命周期出口：解析不出来是模型该立刻拿回去修的东西，
         // 不该先弹一次注定失败的确认窗。
@@ -315,15 +248,7 @@ async function executeToolCallImpl(
           canonicalToolCall,
           createToolHandlerFailureError(canonicalToolCall, resolution),
         );
-        await emitToolCallError(
-          deps,
-          canonicalToolCall.id,
-          traceContext,
-          turnId,
-          result.error,
-          undefined,
-          pluginId,
-        );
+        await emitToolCallError(deps, canonicalToolCall.id, traceContext, turnId, result.error);
         telemetry?.finishFailed("validation", "parse", result.error);
         return result;
       }
@@ -339,19 +264,8 @@ async function executeToolCallImpl(
       traceContext,
       options?.signal,
     );
-    // 在各出口按需格式化：成功路径要先做凭据过滤再格式化（见下）；超长 context 会落盘，提前算好会多写一次文件。
-    const formatPreToolHookContexts = () =>
-      formatToolHookAdditionalContexts(
-        deps,
-        HookEventName.PreToolUse,
-        canonicalToolCall,
-        preToolHookResult.additionalContexts,
-        traceContext,
-      );
-    // 成功路径已过滤、已格式化的 Pre 上下文；之后再抛错时 catch 复用它。
-    let formattedSafePreContexts: string[] | undefined;
     if (preToolHookResult.permissionBehavior === "deny" || preToolHookResult.preventContinuation) {
-      const result = withHookAdditionalContexts(
+      const result = appendPreToolAdditionalContextsToErrorResult(
         withPlanExitDeniedTurnStop(
           createPermissionErrorResult(
             canonicalToolCall,
@@ -372,7 +286,7 @@ async function executeToolCallImpl(
             toolName: canonicalToolCall.name,
           },
         ),
-        await formatPreToolHookContexts(),
+        preToolHookResult.additionalContexts,
       );
       telemetry?.setPermissionDecision("denied");
       telemetry?.finishDenied("policy_denied");
@@ -387,22 +301,18 @@ async function executeToolCallImpl(
       });
       const hookInputValidation = validateInput(executionInput, entry);
       if (hookInputValidation) {
-        // Hook 修改后的输入校验失败会在 handler 前直接返回，旧分支没有带上
-        // PreToolUse context，导致模型只看到 schema error，看不到 Hook
+        // Hook 修改后的输入校验失败会在 handler 前直接返回，旧分支没有走
+        // PreToolUse context 的统一追加逻辑，导致模型只看到 schema error，看不到 Hook
         // 已产生的诊断上下文；与 deny、permission-deny 的提前失败契约不一致。
-        const result = withHookAdditionalContexts(
+        const result = appendPreToolAdditionalContextsToErrorResult(
           createErrorResult(canonicalToolCall, hookInputValidation),
-          await formatPreToolHookContexts(),
+          preToolHookResult.additionalContexts,
         );
         telemetry?.finishFailed("validation", "parse", result.error);
         return result;
       }
     }
 
-    // Shell 已由 session owner 固定；匹配和执行复用同一选择，不为不存在的热切换再建快照。
-    const bashShellSelection = deps.getBashShellSelection?.() ?? deps.bashShellSelection;
-    const guardedWorkingDirectory = mode === "guarded" ? deps.getWorkingDirectory() : undefined;
-    if (mode === "guarded") executionInput = snapshotPermissionInput(executionInput);
     const permissionResult = await resolveToolPermission(
       deps,
       canonicalToolCall,
@@ -413,16 +323,9 @@ async function executeToolCallImpl(
       traceContext,
       options?.signal,
       telemetry,
-      {
-        mode,
-        bashShellSelection,
-        ...(guardedWorkingDirectory === undefined
-          ? {}
-          : { workingDirectory: guardedWorkingDirectory }),
-      },
     );
     if (!permissionResult.allowed) {
-      const result = withHookAdditionalContexts(
+      const result = appendPreToolAdditionalContextsToErrorResult(
         withWorkflowRefineDeniedFollowUp(
           withPlanExitDeniedTurnStop(permissionResult.result, {
             mode,
@@ -431,7 +334,7 @@ async function executeToolCallImpl(
           }),
           { toolName: canonicalToolCall.name },
         ),
-        await formatPreToolHookContexts(),
+        preToolHookResult.additionalContexts,
       );
       if (result.error?.type === CoreErrorType.PermissionDenied) {
         telemetry?.finishDenied("user_denied");
@@ -446,7 +349,6 @@ async function executeToolCallImpl(
     }
     executionInput = permissionResult.executionInput;
     const permissionWaitMs = permissionResult.permissionWaitMs;
-    const inputAdjustments = permissionResult.inputAdjustments;
 
     const startTime = Date.now();
     // 按**执行入参**解析一次副作用旗标（Bash 的只读命令判定就在这里落定），随 ToolCallStarted 发出：
@@ -486,21 +388,19 @@ async function executeToolCallImpl(
             await deps.emitEvent(event);
           };
     let readFileStateMetadata: ToolExecutionResult["readFileStateMetadata"];
-    let skillTelemetryMetadata: SkillTelemetryMetadata | undefined;
     let failureStage: "handler" | "serialize" | "post_hook" = "handler";
+    let skillTelemetryMetadata: SkillTelemetryMetadata | undefined;
 
     try {
       const model = options?.model ?? deps.model;
+      const bashShellSelection = deps.getBashShellSelection?.() ?? deps.bashShellSelection;
       const embeddedSearchDecision = resolveEmbeddedSearchBranchCapability({
         bashAvailable: deps.registry.has("Bash"),
       });
       const context: ToolExecutionContext = {
         toolCallId: canonicalToolCall.id,
-        toolSearch: options?.toolSearch,
         telemetry,
-        logger: deps.logger,
         automationTurn: options?.automationTurn,
-        automationId: options?.automationId,
         offPeakTurn: options?.offPeakTurn,
         traceContext,
         traceId,
@@ -532,13 +432,9 @@ async function executeToolCallImpl(
         coordinatorResponsePort: deps.coordinatorResponsePort,
         workflowSubmitPort: deps.workflowSubmitPort,
         workflowEscalatePort: deps.workflowEscalatePort,
-        webSearchBudget: deps.webSearchBudget,
         artifactStore: deps.artifactStore,
-        sessionControl: deps.sessionControl,
         automationPort: deps.automationPort,
         offPeakPort: deps.offPeakPort,
-        pluginDiscoveryPort: options?.pluginDiscoveryUi ? deps.pluginDiscoveryPort : undefined,
-        topicResourcePort: deps.topicResourcePort,
         sessionStore: deps.sessionStore,
         sessionModePort: deps.sessionModePort,
         workflowPort: deps.workflowPort,
@@ -548,23 +444,16 @@ async function executeToolCallImpl(
         runtimeTaskRegistry: deps.runtimeTaskRegistry,
         readFileState: deps.readFileState,
         recordReadFileStateMetadata: (metadata) => {
-          // 修复原因：part 在工具开始前按声明顺序落盘、完成时原地更新；工具结果返回的先后也不等于
-          // 写入先后（handler 写入之后还有序列化、hook、结果事件等异步步骤）。冷恢复按这两种顺序重放
-          // 快照，并行工具会选错视图。工具写 live 状态后同步调用这里，此刻取号就是 live 的写入顺序。
-          readFileStateMetadata = {
-            ...metadata,
-            snapshotIndex: deps.nextReadFileStateSnapshotIndex(),
-          };
+          readFileStateMetadata = metadata;
         },
         recordSkillTelemetryMetadata: (metadata) => {
           skillTelemetryMetadata = metadata;
         },
         bashShellSelection,
         setWorkingDirectory: deps.setWorkingDirectory,
-        workingDirectory: guardedWorkingDirectory ?? deps.getWorkingDirectory(),
+        workingDirectory: deps.getWorkingDirectory(),
         workspaceRoot: deps.getWorkspaceRoot(),
         workspaceIdentity: deps.workspaceIdentity,
-        workspaceKey: deps.workspaceKey,
         remoteSessionId: deps.remoteSessionId,
         clientMode: deps.clientMode,
         deliveryKind: deps.deliveryKind,
@@ -575,7 +464,6 @@ async function executeToolCallImpl(
           .filter((name) => deps.registry.getMetadata(name)?.providerVisible !== false),
         sessionId: deps.sessionId,
         turnId,
-        ...(inputAdjustments === undefined ? {} : { inputAdjustments }),
       };
 
       const output = await executeWithTimeout(
@@ -616,37 +504,11 @@ async function executeToolCallImpl(
         traceContext,
         options?.signal,
       );
-      // 修复原因：Hook 文本原来拼进 tool result、占用它的预算；现在 tool result 只放工具原文，
-      // Hook 文本由结算写成这批结果之后的附件。
-      // 官方 CUA 帧的 image_ref 凭据不能经 Hook 文本进入模型上下文：去掉这类 context 并按截断记账。
-      const isCredentialSafe = (context: string) =>
-        modelOutputEntry.modelContentProtection !== OFFICIAL_CUA_FRAME_MODEL_CONTENT_PROTECTION ||
-        !containsOfficialCuaImageRefCredentialText(context);
-      const safePreContexts = preToolHookResult.additionalContexts.filter(isCredentialSafe);
-      const safePostContexts = postToolHookResult.additionalContexts.filter(isCredentialSafe);
-      if (
-        safePreContexts.length < preToolHookResult.additionalContexts.length ||
-        safePostContexts.length < postToolHookResult.additionalContexts.length
-      ) {
-        serialization = { ...serialization, truncated: true };
-      }
-      formattedSafePreContexts = await formatToolHookAdditionalContexts(
-        deps,
-        HookEventName.PreToolUse,
-        canonicalToolCall,
-        safePreContexts,
-        traceContext,
+      serialization = appendHookAdditionalContexts(
+        serialization,
+        [...preToolHookResult.additionalContexts, ...postToolHookResult.additionalContexts],
+        modelOutputEntry,
       );
-      const hookAdditionalContexts = [
-        ...formattedSafePreContexts,
-        ...(await formatToolHookAdditionalContexts(
-          deps,
-          HookEventName.PostToolUse,
-          canonicalToolCall,
-          safePostContexts,
-          traceContext,
-        )),
-      ];
       const display = createToolResultDisplay(canonicalToolCall.name, output, {
         mcp: entry.metadata.mcpPresentation,
         officialCua: entry.modelContentProtection === OFFICIAL_CUA_FRAME_MODEL_CONTENT_PROTECTION,
@@ -683,7 +545,6 @@ async function executeToolCallImpl(
           output,
           display,
           modelContent: finalModelContent,
-          ...(hookAdditionalContexts.length > 0 ? { hookAdditionalContexts } : {}),
           ...(readFileStateMetadata ? { readFileStateMetadata } : {}),
           performance: perf,
           serialization,
@@ -704,7 +565,6 @@ async function executeToolCallImpl(
         display,
         perf,
         skillTelemetryMetadata,
-        pluginId,
       );
 
       await backgroundTasks.trackBackgroundTask(canonicalToolCall, output, traceContext, turnId);
@@ -733,33 +593,30 @@ async function executeToolCallImpl(
         traceContext,
         options?.signal,
       );
-      // 修复原因：Hook 文本原来以 UI 摘要为底拼进失败结果，有 Hook 与没有 Hook 时模型看到的
-      // 错误不同。现在 tool result 只放 createErrorResult 的原文，Hook 文本另成附件。
-      // 规格 0.15：超时与执行中取消会在「请求可能已被受理」之后打断 handler，回执送不回来；
-      // 让工具把对账身份追加进同一条错误，否则模型只能另起新请求、重复执行。
-      const failure = annotateUnsettledCall(
+      let result = createErrorResult(
+        canonicalToolCall,
         error instanceof Error ? error : new Error(String(error)),
-        entry ?? {},
-        executionInput,
-        canonicalToolCall.id,
+        durationMs,
       );
-      // 修复原因：同步子代理失败时父模型只收到 provider 原文，拿不到续接用的 agentId。
-      // 工具补充的文本只接在模型可见原文之后；UI 摘要、错误事件和日志都不变。
-      const errorResult = createErrorResult(canonicalToolCall, failure, durationMs, {
-        modelNote: entry?.formatErrorModelContent?.(error),
-      });
-      let result = withHookAdditionalContexts(errorResult, [
-        // 修复原因：成功路径格式化之后再抛错（例如官方 CUA 帧校验失败、写结果事件失败）时，
-        // 重新格式化会用未过滤的上下文，把被过滤的凭据送进附件，超长上下文还会再落盘一次。
-        ...(formattedSafePreContexts ?? (await formatPreToolHookContexts())),
-        ...(await formatToolHookAdditionalContexts(
-          deps,
-          HookEventName.PostToolUseFailure,
-          canonicalToolCall,
-          failureHookResult.additionalContexts,
-          traceContext,
-        )),
-      ]);
+      const baseModelContent = result.error
+        ? isToolHandlerFailureError(error) && typeof result.modelContent === "string"
+          ? result.modelContent
+          : result.error.message
+        : undefined;
+      if (failureHookResult.additionalContexts.length > 0 && baseModelContent) {
+        result.modelContent = [
+          baseModelContent,
+          formatHookAdditionalContexts([
+            ...preToolHookResult.additionalContexts,
+            ...failureHookResult.additionalContexts,
+          ]),
+        ].join("\n\n");
+      } else if (preToolHookResult.additionalContexts.length > 0 && baseModelContent) {
+        result.modelContent = [
+          baseModelContent,
+          formatHookAdditionalContexts(preToolHookResult.additionalContexts),
+        ].join("\n\n");
+      }
       result = withAutomationCreateLimitTurnStop(result, {
         error,
         toolName: canonicalToolCall.name,
@@ -774,7 +631,6 @@ async function executeToolCallImpl(
         turnId,
         result.error,
         skillTelemetryMetadata,
-        pluginId,
       );
 
       deps.logger?.error(
@@ -859,15 +715,18 @@ function errorCategoryForToolError(type: string | undefined): AgentTelemetryErro
   }
 }
 
-/**
- * 成功、失败与提前返回的失败（PreToolUse 拒绝、Hook 改写后校验失败、权限拒绝）都带上 Hook context。
- * PreToolUse deny 和权限拒绝会在 handler 前提前返回，旧逻辑只在 handler 的成功/异常路径带 context，
- * 导致 Hook 明明返回了 additionalContext，模型却看不到。
- */
-function withHookAdditionalContexts(
+function appendPreToolAdditionalContextsToErrorResult(
   result: ToolExecutionResult,
-  hookAdditionalContexts: readonly string[],
+  additionalContexts: string[],
 ): ToolExecutionResult {
-  if (hookAdditionalContexts.length === 0) return result;
-  return { ...result, hookAdditionalContexts: [...hookAdditionalContexts] };
+  if (result.success || !result.error || additionalContexts.length === 0) return result;
+
+  // PreToolUse deny 和权限拒绝会在 handler 前提前返回，旧逻辑只在 handler 的
+  // 成功/异常路径追加 context，导致 Hook 明明返回了 additionalContext，模型却看不到。
+  const baseModelContent =
+    typeof result.modelContent === "string" ? result.modelContent : result.error.message;
+  return {
+    ...result,
+    modelContent: [baseModelContent, formatHookAdditionalContexts(additionalContexts)].join("\n\n"),
+  };
 }

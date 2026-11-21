@@ -35,9 +35,8 @@ export interface PluginSandboxRecord extends PluginSandboxHandle {
   workspacePath?: string;
   workspaceIdentity?: string;
   ownerWebContentsId: number;
-  /** 扩展视图没有会话（contentKind "extension"）；其他类型都有。 */
-  sessionId?: string;
-  contentKind?: "gen-ui" | "extension";
+  sessionId: string;
+  contentKind?: "gen-ui";
   pluginId?: string;
   serverName?: string;
   scopeId: string;

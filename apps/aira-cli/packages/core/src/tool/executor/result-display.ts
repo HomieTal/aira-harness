@@ -37,6 +37,13 @@ import {
   type McpToolUiDescriptor,
 } from "@aira/shared/mcp-apps";
 import {
+  MCP_APPS_CONTENT_MAX_BYTES,
+  MCP_APPS_STRUCTURED_CONTENT_MAX_BYTES,
+  MCP_APPS_WIDGET_META_MAX_BYTES,
+  type McpToolDisplayUi,
+  type McpToolUiDescriptor,
+} from "@zcode/shared/mcp-apps";
+import {
   CUA_REQUEST_ACCESS_STATUS_META_KEY,
   cuaRequestAccessStatusSchema,
 } from "@aira/aira-cua/request-access-contract";

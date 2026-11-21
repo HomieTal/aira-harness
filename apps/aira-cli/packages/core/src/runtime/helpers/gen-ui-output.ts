@@ -1,22 +1,13 @@
 import { getGenUiOutputDirectory } from "@aira/shared/node";
 import type { AgentRuntimeInternal } from "../internal.js";
 
-/**
- * 会话的 Gen UI 输出目录；fork 时传子会话 id，取子会话自己的目录。
- * fork 到另一个 cwd（受管 worktree）时再传子会话的 workspace 路径：worktree 子会话的 workspace 路径
- * 就是它的 cwd，目录按 [workspace, sessionId] 计算，必须与子会话 runtime 自己算出的一致。
- */
-export function resolveGenUiOutputDirectory(
-  runtime: AgentRuntimeInternal,
-  sessionId: string = runtime.sessionId,
-  workspacePath: string = runtime.config.workspacePath ?? runtime.workspaceRoot,
-): string | undefined {
+export function resolveGenUiOutputDirectory(runtime: AgentRuntimeInternal): string | undefined {
   if (runtime.config.presentationSurface !== "aira_desktop" || !runtime.config.genUiOutputRoot)
     return undefined;
   return getGenUiOutputDirectory(runtime.config.genUiOutputRoot, {
-    workspacePath,
+    workspacePath: runtime.config.workspacePath ?? runtime.workspaceRoot,
     workspaceIdentity: runtime.config.workspaceIdentity,
-    sessionId,
+    sessionId: runtime.sessionId,
   });
 }
 

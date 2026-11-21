@@ -1,12 +1,3 @@
-import { requestVerificationReasons } from "../request-security-edition/verification-policy.js";
-import { airaProtocolTraceSchema } from "./trace.js";
-export * from "../app-control/contract.js";
-import { appControlProtocol, appControlCancelMethod } from "../app-control/contract.js";
-// Bot 反向回复的名字解析/待澄清结果与 App、CLI 使用同一严格 schema。
-export { channelReplyRequestSchema, channelReplyResultSchema } from "../channel-mention.js";
-export { airaProtocolTraceSchema, type AiraProtocolTrace } from "./trace.js";
-// 扩展进程 P2 的插件只读查询（plugins/readUserOptions、plugins/mentionItems）。
-export * from "./plugin-host-queries/contract.js";
 import {
   databaseMigrationFactsSchema,
   databaseStartupErrorCodeSchema,
@@ -21,7 +12,6 @@ import {
 } from "../mcp-apps/appTools.js";
 import { mcpAppsSamplingParamsSchema, mcpAppsSamplingResultSchema } from "../mcp-apps/sampling.js";
 import { mcpAppInstanceSchema } from "../mcp-apps/instance.js";
-export { conversationQuoteSchema, conversationQuotesSchema } from "../conversationSelection.js";
 /* oxlint-disable eslint(max-lines) -- Aira Protocol schema 需要单文件导出，方便 app 与 agent 共享同一份协议契约。 */
 // ── 旧协议删除边界──────────────────────
 // 剩余 ~257 个导出：旧 Aira Protocol 方法契约、请求/响应/事件 schema、
@@ -42,44 +32,12 @@ import { airaAutomationBotDeliveryTargetSchema } from "../bots.js";
 import { executionOutputPreviewSchema } from "../execution-output-preview.js";
 import { completeModelPropertiesDataSchema } from "../model-config.js";
 import { modelExecutionSchema } from "../model-execution.js";
-export type { ModelExecutionSelectionFallback } from "../model-execution.js";
-export * from "../off-peak-execution.js";
 import { modelSelectionSchema } from "../model-selection.js";
 import { APP_USAGE_RANGES, appUsageSnapshotSchema } from "../usage-stats.js";
-import { DYNAMIC_WORKFLOW_MODES } from "../dynamic-workflow-feature.js";
 import { errorAttributionSchema } from "../aira-protocol-v4/snapshot.js";
-import { workflowLaunchMetaSchema } from "../aira-protocol-v4/workflow-row-meta.js";
 // 后台详情共享精简的只读响应 schema，不携带命令或计时元数据。
 export * from "../background-bash-output.js";
 export * from "../process-diagnostic.js";
-export { attachmentSourceKindSchema, type AttachmentSourceKind } from "../attachment-source.js";
-import { PROTOCOL_V4_LIMITS } from "../aira-protocol-v4/core.js";
-
-export const airaTopicResourceReadParamsSchema = z
-  .object({
-    requestId: z.string().min(1).max(256),
-    taskId: z.string().min(1).max(256),
-    inputId: z.string().min(1).max(256),
-    authorizationId: z.string().min(1).max(256),
-    messageId: z.string().min(1).max(256),
-    resourceIndex: z.number().int().nonnegative(),
-  })
-  .strict();
-export const airaTopicResourceReadResultSchema = z
-  .object({
-    ref: z.string().min(1),
-    fileName: z.string().min(1).max(1024),
-    mime: z.string().min(1).max(256),
-    bytes: z.number().int().min(0).max(PROTOCOL_V4_LIMITS.attachmentMaxBytes),
-  })
-  .strict();
-export const airaTopicResourceCancelParamsSchema = z
-  .object({ requestId: z.string().min(1).max(256), taskId: z.string().min(1).max(256) })
-  .strict();
-export const airaTopicResourceCancelResultSchema = z.object({ cancelled: z.boolean() }).strict();
-export type AiraTopicResourceReadParams = z.infer<typeof airaTopicResourceReadParamsSchema>;
-export type AiraTopicResourceReadResult = z.infer<typeof airaTopicResourceReadResultSchema>;
-export { activeWorkSummarySchema, type ActiveWorkSummary } from "../aira-protocol-v4/snapshot.js";
 // browser-use 命令/结果契约单一来源：agent 构造、协议校验和 main executor 共用同一 schema。
 import {
   browserBackendListResultSchema,
@@ -87,13 +45,8 @@ import {
 } from "../browser-use/backend.js";
 import { browserClientModeSchema, browserCommandSchema } from "../browser-use/commands.js";
 import { browserCommandResultSchema } from "../browser-use/result.js";
-import { appToolSearchModeSchema } from "../app-runtime-preferences.js";
+import { OFFICIAL_MCP_AUTH_PORT_FAILURE_REASONS } from "../official-mcp-auth.js";
 import { integratedTerminalShellSelectionSchema } from "../validationAppSettings.js";
-import { airaTaskModeSchema } from "../aira-task-mode-schema.js";
-import {
-  OFFICIAL_AUTH_CONSUMER_KINDS,
-  OFFICIAL_MCP_AUTH_PORT_FAILURE_REASONS,
-} from "../official-mcp-auth.js";
 import {
   airaSyntheticUserMessageSourceSchema as legacyAiraSyntheticUserMessageSourceSchema,
   airaDeliveryKindSchema,
@@ -117,8 +70,9 @@ import {
   airaToolStateSchema,
   airaWorkspaceRefSchema,
 } from "../aira-protocol-legacy-types.js";
+import { airaTaskModeSchema } from "../aira-task-mode-schema.js";
 
-export * from "../local-ttft/contract.js";
+export * from "../localTtft.js";
 export {
   hookExecutionProjectionSchema,
   hookInvocationRowSchema,
@@ -126,63 +80,13 @@ export {
   type HookInvocationRow,
 } from "../aira-protocol-v4/rows.js";
 
-export {
-  sessionsIndexReconcileParamsSchema,
-  sessionsIndexReconcileResultSchema,
-  type SessionsIndexReconcileParams,
-  type SessionsIndexReconcileResult,
-} from "../aira-protocol-v4/sessions-index.js";
-
 export const AIRA_PROTOCOL_NAME = "Aira Protocol" as const;
 export const AIRA_PROTOCOL_VERSION = 1 as const;
 // V4 wire 与 legacy 主协议并存；禁止为了 V4 physical framing 改写 legacy 版本。
 export const AIRA_PROTOCOL_V4_WIRE_VERSION = 3 as const;
 export const airaRuntimeCapabilitiesSchema = z.object({
-  highspeedCardOwner: z.boolean().optional(),
-  pluginDiscoveryUi: z.boolean().optional(),
-  sessionLifecycleWorkspace: z.boolean().optional(),
-  sessionDirectorySource: z.boolean().optional(),
-  sessionWorkspaceRouting: z.boolean().optional(),
-  genUiContext: z.boolean().optional(),
-  historyFirst: z.boolean().optional(),
   independentPlanState: z.boolean().optional(),
-  /** CLI 认识 rowsRange 的 residency 参数；旧 CLI 会剥掉它并冷恢复，Host 据此拒绝转发。 */
-  residentRowsRange: z.boolean().optional(),
-  /**
-   * CLI 支持"会话 cwd 与 workspace 不同"：createSession.cwd / worktreeCreation、
-   * forkAssistant.targetCwd、按 Host 请求的 workspace key 冷恢复（docs/git/worktree.md §9.3）。
-   * 旧 CLI 会静默丢弃这些字段，Host 据此决定是否开放 worktree 入口。
-   */
-  worktreeCwd: z.boolean().optional(),
-  /**
-   * CLI 认识 `{kind:"extension"}` 输入来源（sendText.source、createSession.firstInput.source）。
-   * 旧 CLI 对 sendText 整条拒绝、对 firstInput 静默剥掉来源，Host 据此决定能否代扩展发消息
-   * （apps/aira-cli/docs/design/v2/conversation-input-source.md §7）。
-   */
-  extensionInputSource: z.boolean().optional(),
-  /**
-   * CLI 认识对话引用上的 comment / agent 字段（选区批注）。旧 CLI 的 quote schema 非 strict，
-   * 会静默剥掉这两个字段：用户看到批注而模型收不到，所以 App 据此决定是否提供“批注”入口。
-   */
-  conversationQuoteComment: z.boolean().optional(),
-  /**
-   * CLI 认识 plugins/overview 的 includeExtensionSummary 参数，并按它在商店信息里带 extensionSummary
-   * （docs/plugins/plugin-publishing.md §4.3）。参数与结果的 schema 都是 strict：旧 CLI 拒绝新参数，
-   * 旧 services 拒绝新字段，所以 services 只在看到这一位时才要这个字段。
-   */
-  pluginExtensionSummary: z.boolean().optional(),
 });
-export const airaRuntimeCapabilitiesParamsSchema = z
-  .object({
-    hostCapabilities: z
-      .object({
-        sessionDirectorySource: z.boolean().optional(),
-        sessionWorkspaceRouting: z.boolean().optional(),
-      })
-      .strict()
-      .optional(),
-  })
-  .strict();
 export const airaProtocolErrorCodes = {
   sessionUnavailable: -32004,
 } as const;
@@ -248,8 +152,7 @@ const airaCreateWorkflowCausalityGraphDisplaySchema = z
         z
           .object({
             id: z.string().min(1).max(64),
-            // `hole`：开着的留白自己的站点（docs/dynamic-workflow/presentation.md「Holes on the timeline」）；镜像 v4。
-            kind: z.enum(["ask", "world-read", "hole"]),
+            kind: z.enum(["ask", "world-read"]),
             label: z.string().min(1).max(128),
             // 内联 `agent()` receiver 让 label 落到兜底串时，那个名字的静态形状。
             labelPattern: airaWorkflowNamePatternSchema.optional(),
@@ -264,8 +167,6 @@ const airaCreateWorkflowCausalityGraphDisplaySchema = z
             // 与图的 phases / phaseEdges / exits 同进同退：全在场或全缺席。
             phase: z.string().min(1).max(64).optional(),
             repeat: z.enum(["stack", "serial"]).optional(),
-            // 这个站点是某次补全写进来的：值是那个留白的站点 id；镜像 v4。
-            fill: z.string().min(1).max(64).optional(),
           })
           .strict(),
       )
@@ -324,35 +225,12 @@ const airaCreateWorkflowCausalityGraphDisplaySchema = z
             // 为空时缺席。是节点事实而不是边——控制没有从那里转移过来，所以不进 phaseEdges。
             // 时间轴据此把相邻阶段折成一条分叉的「带」，侧栏迷你轨道画成双线段。
             alongside: z.array(z.string().min(1).max(64)).min(1).max(32).optional(),
-            // 这个阶段是某次补全写进来的：值是那个留白的站点 id；镜像 v4。
-            fill: z.string().min(1).max(64).optional(),
           })
           .strict(),
       )
       .max(32)
       .optional(),
     phaseEdges: z.array(airaWorkflowEdgeSchema).max(128).optional(),
-    // 阶段流（docs/dynamic-workflow/presentation.md「Streams」）：两端互为 alongside 的 data 边，
-    // 只有 {from, to}——不是 runs after，不进 phaseEdges、不带 back。与词汇表同进同退。
-    phaseStreams: z
-      .array(z.object({ from: z.string().min(1).max(64), to: z.string().min(1).max(64) }).strict())
-      .max(128)
-      .optional(),
-    // 还开着的留白，源码序（docs/dynamic-workflow/authoring.md「Holes」）；镜像 v4。
-    holes: z
-      .array(
-        z
-          .object({
-            siteId: z.string().min(1).max(64),
-            name: z.string().min(1).max(128),
-            type: z.string().min(1).max(128),
-            phase: z.string().min(1).max(64).optional(),
-            tail: z.boolean().optional(),
-          })
-          .strict(),
-      )
-      .max(32)
-      .optional(),
     // 控制流可在其后正常完成的阶段（阶段视图的「阶段 → 返回物」箭头）；组内可为空数组。
     exits: z.array(z.string().min(1).max(64)).max(32).optional(),
     sink: z.array(z.string().min(1).max(64)).max(64).optional(),
@@ -379,18 +257,6 @@ export const airaCreateWorkflowToolResultDisplaySchema = z
       .max(100),
     causalityGraph: airaCreateWorkflowCausalityGraphDisplaySchema.optional(),
     truncated: z.boolean().optional(),
-    // FillWorkflowHole 行补的是哪处留白（docs/dynamic-workflow/presentation.md「The fill row」）；镜像 v4。
-    // 修复原因：dwf-recursive 只给 contracts 与 v4 加了留白字段，v3 的 .strict() 拒掉整条 tool.updated，
-    // 桌面端 v3 订阅于是把含留白的 CreateWorkflow / FillWorkflowHole 结果当无效事件丢掉。
-    fill: z
-      .object({
-        siteId: z.string().min(1).max(64),
-        name: z.string().min(1).max(128),
-        draftPath: z.string().min(1).max(1_024).optional(),
-        line: z.number().int().positive().optional(),
-      })
-      .strict()
-      .optional(),
   })
   .strict();
 
@@ -417,42 +283,15 @@ const airaToolResultObjectSchema = jsonObjectSchema.superRefine((result, context
 export const airaProtocolRequestIdSchema = z.union([z.string(), z.number().int()]);
 export type AiraProtocolRequestId = z.infer<typeof airaProtocolRequestIdSchema>;
 
-// 远程历史附件仅通过现有连接的私有反向频道传输，单块保持在 RPC 帧预算内。
-export const TOPIC_RESOURCE_RELAY_CHUNK_BYTES = 384 * 1024;
-export const TOPIC_RESOURCE_RELAY_CHANNEL = "host-topic-resource";
-export const airaTopicResourceRelayRequestSchema = airaTopicResourceReadParamsSchema
-  .extend({
-    workspacePath: z.string().min(1).max(4096),
-    workspaceIdentity: z.string().min(1).max(4096),
-    remoteSessionId: z.string().min(1).max(256),
-    trace: airaProtocolTraceSchema.optional(),
-  })
-  .strict();
-export type AiraTopicResourceRelayRequest = z.infer<typeof airaTopicResourceRelayRequestSchema>;
-export const airaTopicResourceRelayKeySchema = airaTopicResourceCancelParamsSchema;
-export const airaTopicResourceRelayChunkRequestSchema = airaTopicResourceRelayKeySchema
-  .extend({
-    index: z.number().int().nonnegative(),
-  })
-  .strict();
-export const airaTopicResourceRelayMetadataSchema = z
+export const airaProtocolTraceSchema = z
   .object({
-    fileName: z.string().min(1).max(1024),
-    mime: z.string().min(1).max(256),
-    bytes: z.number().int().min(0).max(PROTOCOL_V4_LIMITS.attachmentMaxBytes),
-    totalChunks: z
-      .number()
-      .int()
-      .min(0)
-      .max(Math.ceil(PROTOCOL_V4_LIMITS.attachmentMaxBytes / TOPIC_RESOURCE_RELAY_CHUNK_BYTES)),
-    checksum: z.string().regex(/^sha256:[a-f0-9]{64}$/),
+    traceparent: nonEmptyString.optional(),
+    traceId: nonEmptyString.optional(),
+    parentId: nonEmptyString.optional(),
+    spanId: nonEmptyString.optional(),
   })
   .strict();
-export const airaTopicResourceRelayChunkSchema = z
-  .object({
-    dataBase64: z.string().max((TOPIC_RESOURCE_RELAY_CHUNK_BYTES / 3) * 4),
-  })
-  .strict();
+export type AiraProtocolTrace = z.infer<typeof airaProtocolTraceSchema>;
 
 export const airaProtocolRequestSchema = z
   .object({
@@ -504,7 +343,6 @@ export const airaProtocolMessageSchema = z.union([
 export type AiraProtocolMessage = z.infer<typeof airaProtocolMessageSchema>;
 
 export const airaProtocolNotifications = {
-  pluginStartupDegraded: "startup/pluginsDegraded",
   storageStartup: "startup/storageState",
   providerRuntimeHeadersCancelled: "interaction/providerRuntimeHeadersCancelled",
   mcpTelemetry: "process/mcpTelemetry",
@@ -512,10 +350,7 @@ export const airaProtocolNotifications = {
   toolExecResource: "process/toolExecResource",
   pluginOperationProgress: "plugins/operationProgress",
   processResourceSample: "process/resourceSample",
-  processNetworkRequests: "process/networkRequests",
 } as const;
-
-export const airaPluginStartupDegradedSchema = z.object({ reason: z.literal("timeout") }).strict();
 
 /** 启动控制面独立于 task stream；数据库身份不可携带路径/凭据。 */
 export const airaStorageStartupStateSchema = z
@@ -758,7 +593,6 @@ export type AiraProcessChildProcessesResult = z.infer<
 export type AiraDeliveryKind = z.infer<typeof airaDeliveryKindSchema>;
 // TurnStarted 与持久 message 必须共用同一来源词表；否则 live event 能通过而 cold
 // message 在 app/agent 边界被拒绝，造成 continuous/replayable 语义分叉。
-// 持久消息与输入沿用同一 source schema；agent_listing_delta 只作 provider context，不触发新 turn。
 const airaTurnInputSourceSchema = legacyAiraSyntheticUserMessageSourceSchema;
 export const airaSessionPersistenceSchema = z.enum(["immediate", "deferred"]);
 export type AiraSessionPersistence = z.infer<typeof airaSessionPersistenceSchema>;
@@ -806,28 +640,23 @@ export const airaProtocolMcpServerSchema = z.union([
   z
     .object({
       name: nonEmptyString,
-      scope: z.enum(["user", "workspace"]).optional(),
       command: nonEmptyString,
-      cwd: nonEmptyString.optional(),
       args: z.array(z.string()),
       env: z.array(airaProtocolMcpEntrySchema),
       isolation: z.enum(["session", "workspace"]).optional(),
       protocolVersion: z.enum(["legacy", "auto", "2026-07-28"]).optional(),
-      alwaysLoad: z.boolean().optional(),
       timeoutMs: z.number().int().positive().optional(),
     })
     .strict(),
   z
     .object({
       name: nonEmptyString,
-      scope: z.enum(["user", "workspace"]).optional(),
       type: z.enum(["http", "sse"]),
       url: nonEmptyString,
       headers: z.array(airaProtocolMcpEntrySchema),
       oauth: airaProtocolMcpOAuthSchema.optional(),
       isolation: z.enum(["session", "workspace"]).optional(),
       protocolVersion: z.enum(["legacy", "auto", "2026-07-28"]).optional(),
-      alwaysLoad: z.boolean().optional(),
       timeoutMs: z.number().int().positive().optional(),
     })
     .strict(),
@@ -865,38 +694,9 @@ export const MCP_SERVER_FAILURE_KINDS = [
 ] as const;
 export const mcpServerFailureKindSchema = z.enum(MCP_SERVER_FAILURE_KINDS);
 export type McpServerFailureKind = z.infer<typeof mcpServerFailureKindSchema>;
-export const workspaceMcpTrustReviewSchema = z
-  .object({
-    declarationDigest: z.string().regex(/^[a-f0-9]{64}$/u),
-    sourcePaths: z.array(nonEmptyString),
-    display: z.string(),
-    trusted: z.boolean(),
-    configuredEnabled: z.boolean(),
-    transport: z.enum(["stdio", "http", "sse"]),
-  })
-  .strict();
-export type WorkspaceMcpTrustReview = z.infer<typeof workspaceMcpTrustReviewSchema>;
-export const airaWorkspaceMcpTrustParamsSchema = z
-  .object({
-    workspace: airaWorkspaceRefSchema,
-    serverName: nonEmptyString,
-    declarationDigest: z.string().regex(/^[a-f0-9]{64}$/u),
-    trusted: z.boolean(),
-  })
-  .strict();
-export const airaWorkspaceMcpTrustResultSchema = z
-  .object({
-    accepted: z.boolean(),
-    reasonCode: z
-      .enum(["workspace_mcp_declaration_changed", "workspace_mcp_trust_unavailable"])
-      .optional(),
-  })
-  .strict();
-export type AiraWorkspaceMcpTrustResult = z.infer<typeof airaWorkspaceMcpTrustResultSchema>;
 export const airaMcpServerStatusSnapshotSchema = z
   .object({
     status: airaMcpServerStatusKindSchema,
-    workspaceTrust: workspaceMcpTrustReviewSchema.optional(),
     transport: z.enum(["stdio", "http", "sse"]),
     toolCount: z.number().int().nonnegative(),
     updatedAt: nonEmptyString,
@@ -1277,15 +1077,7 @@ export const airaProviderAccountAccessSchema = z
   .object({
     type: z.literal("zhipu-account"),
     accountType: z.enum(["zai", "bigmodel"]),
-    // `highspeed` 指加速卡这一账号访问类别（隐藏 Provider + 免签网关），与模型名
-    // GLM-5.1-Highspeed 无关，仅字面重合。见 docs/highspeed/highspeed-access-mode-migration.md。
-    mode: z.enum([
-      "start-plan",
-      "individual-coding-plan",
-      "team-coding-plan",
-      "off-peak",
-      "highspeed",
-    ]),
+    mode: z.enum(["start-plan", "individual-coding-plan", "team-coding-plan", "off-peak"]),
     entitled: z.boolean(),
   })
   .strict();
@@ -1611,24 +1403,11 @@ export const airaSessionTitleUpdatedEventPayloadSchema = z
   .strict();
 export const airaTurnStartedEventPayloadSchema = z
   .object({
-    // CLI 的高精度执行时间可含小数；漏声明会使 strict 校验丢弃整条开始事件，Bot 因此无法清空上一轮回复。
-    executionStartedAt: z.number().nonnegative().optional(),
-    // Bugfix：CLI TurnStartedPayloadBase 新增的统计来源、工作流启动元数据与尾注下标漏声明时，
-    // strict 校验丢弃整条 turn.started，Bot 收不到 task_run_started，上一轮正文会串进下一轮投递。
-    workflowLaunch: workflowLaunchMetaSchema.optional(),
-    epilogueStart: z.number().int().nonnegative().optional(),
     turnNumber: z.number().int().nonnegative(),
     input: z.string(),
     inputId: nonEmptyString.optional(),
     queryId: nonEmptyString.optional(),
-    // Bugfix：CLI 会把 Host 准入的后台执行归因写入 turn.started。这里漏声明时，
-    // strict 校验会丢弃整条开始事件，复用中的 Bot 私聊订阅就无法切换到新轮次。
-    automationId: nonEmptyString.optional(),
-    offPeakTaskId: nonEmptyString.optional(),
-    offPeakRunType: z.enum(["init", "resume"]).optional(),
     inputSource: airaTurnInputSourceSchema.optional(),
-    // CLI 已在开始事件中携带输入来源；漏声明会使严格校验拒绝会话事件，导致运行中摘要读取失败。
-    inputOrigin: z.enum(["desktop", "mobile"]).optional(),
     inputVisibility: airaMessageVisibilitySchema.optional(),
     executionKind: z.enum(["agent", "controlOnly"]).optional(),
     targetId: nonEmptyString.optional(),
@@ -1655,11 +1434,6 @@ export const airaTurnSteerQueuedEventPayloadSchema = z
     inputSize: z.number().int().nonnegative(),
     commandKind: airaTurnSteerCommandKindSchema.optional(),
     source: airaTurnSteerSourceSchema.optional(),
-    // Bugfix：CLI TurnSteerQueuedPayload 的字段漏声明会让 strict 校验丢弃整条排队事件。
-    // inputPresentation 的取值由 CLI contracts 定义且 v3 消费方不读取；这里不复制枚举，
-    // 避免 CLI 新增取值时再次整条丢弃。
-    inputPresentation: nonEmptyString.optional(),
-    automationId: nonEmptyString.optional(),
     toolDisallowlist: z.array(nonEmptyString).optional(),
     delivery: airaTurnSteerDeliverySchema.optional(),
     targetTurnId: nonEmptyString,
@@ -1853,7 +1627,6 @@ export const airaPermissionRequestedEventPayloadSchema = z
     reason: z.string(),
     input: z.unknown(),
     suggestedPermissionUpdates: z.array(airaPermissionUpdateSchema).optional(),
-    approvalMode: z.literal("user-once").optional(),
     origin: airaInteractionRequestOriginSchema.optional(),
     options: z.array(airaPermissionOptionSchema).min(1),
     childSessionId: nonEmptyString.optional(),
@@ -2018,12 +1791,8 @@ export const airaSessionSubagentsResultSchema = z
   })
   .strict();
 export type AiraSessionSubagentsResult = z.infer<typeof airaSessionSubagentsResultSchema>;
-/** 服务端 feature key 的取值域在协议里的 zod 形态（packages/shared/src/dynamic-workflow-feature.ts）。 */
-export const airaDynamicWorkflowModeSchema = z.enum(DYNAMIC_WORKFLOW_MODES);
-
 export const airaSessionCreateParamsSchema = z
   .object({
-    additionalDirectories: z.array(nonEmptyString).max(256).optional(),
     sessionId: nonEmptyString.optional(),
     workspace: airaWorkspaceRefSchema,
     parentSessionId: nonEmptyString.optional(),
@@ -2042,16 +1811,12 @@ export const airaSessionCreateParamsSchema = z
     // 动态工作流灰度：与 offPeakToolEnabled 同一
     // 模式——host 裁决后下发，缺省不下发 = 不注册工作流工具簇（fail-closed）。
     dynamicWorkflowEnabled: z.boolean().optional(),
-    // 灰度 mode 随布尔同行下发（launch.md「On demand: activation」）：`onDemand` 让 CLI 把十个
-    // 工具推迟到会话首次 `/workflow` 才注册；缺席 = 按布尔行事（alwaysOn），供旧 Host 配对。
-    dynamicWorkflowMode: airaDynamicWorkflowModeSchema.optional(),
   })
   .strict();
 export type AiraSessionCreateParams = z.infer<typeof airaSessionCreateParamsSchema>;
 
 export const airaSessionResumeParamsSchema = z
   .object({
-    additionalDirectories: z.array(nonEmptyString).max(256).optional(),
     sessionId: nonEmptyString,
     workspace: airaWorkspaceRefSchema.optional(),
     // 旧 session 尚无 runtime/model_selection entry 时，由同 task 的索引元数据提供迁移 hint。
@@ -2064,7 +1829,6 @@ export const airaSessionResumeParamsSchema = z
     offPeakToolEnabled: z.boolean().optional(),
     // 与 create 同语义；resume 不带会导致冷恢复丢工作流工具簇。
     dynamicWorkflowEnabled: z.boolean().optional(),
-    dynamicWorkflowMode: airaDynamicWorkflowModeSchema.optional(),
   })
   .strict();
 export type AiraSessionResumeParams = z.infer<typeof airaSessionResumeParamsSchema>;
@@ -2072,7 +1836,9 @@ export type AiraSessionResumeParams = z.infer<typeof airaSessionResumeParamsSche
 export const airaSessionListParamsSchema = z
   .object({
     workspace: airaWorkspaceRefSchema.optional(),
+    // 显式身份查询包含隐藏会话；普通列表仍只返回主任务，避免索引修复激活 runtime。
     sessionIds: z.array(nonEmptyString).min(1).max(64).optional(),
+    includeArchived: z.boolean().default(false),
     limit: z.number().int().positive().optional(),
   })
   .strict();
@@ -2121,9 +1887,6 @@ export const airaSessionReadParamsSchema = z
     deliveryKind: airaDeliveryKindSchema.optional(),
     messageLimit: z.number().int().positive().optional(),
     afterSeq: z.number().int().nonnegative().optional(),
-    // "index"：仅 task index resync 使用，返回剥离 tool/reasoning/data URL 大载荷的同结构 snapshot，
-    // 结果禁止回写 UI 状态；缺省等同 "full"。
-    contentProfile: z.enum(["full", "index"]).optional(),
   })
   .strict();
 export type AiraSessionReadParams = z.infer<typeof airaSessionReadParamsSchema>;
@@ -2133,8 +1896,6 @@ export const airaSessionMessagesParamsSchema = z
     sessionId: nonEmptyString,
     afterMessageId: nonEmptyString.optional(),
     limit: z.number().int().positive().optional(),
-    // 缺省保留最近历史窗口；forward 从 cursor 后最早消息开始分页。
-    direction: z.enum(["forward", "backward"]).optional(),
   })
   .strict();
 export type AiraSessionMessagesParams = z.infer<typeof airaSessionMessagesParamsSchema>;
@@ -2156,24 +1917,12 @@ export type AiraSessionRuntimePreferencesScope = z.infer<
   typeof airaSessionRuntimePreferencesScopeSchema
 >;
 
-// subagents/readRuntimeConfig 返回 Host 已解析的完整快照或显式内置回退，不再传 Markdown。
-export {
-  subagentRuntimeConfigSchema,
-  type SubagentRuntimeConfig,
-} from "../subagent-runtime-config.js";
-export const airaSubagentsReadRuntimeConfigParamsSchema = z
-  .object({ sessionId: nonEmptyString, workspace: airaWorkspaceRefSchema.optional() })
-  .strict();
-
 export const AIRA_SESSION_RUNTIME_PREFERENCES_REQUEST_TIMEOUT_MS = 15_000;
 
 export const airaSessionRequestRuntimePreferencesParamsSchema = z
   .object({
     sessionId: nonEmptyString,
     scope: airaSessionRuntimePreferencesScopeSchema,
-    workspace: airaWorkspaceRefSchema.optional(),
-    // CLI 依据持久化父链给出目录来源；目标 sessionId 仍保留 child 身份。
-    directorySessionId: nonEmptyString.optional(),
   })
   .strict();
 export type AiraSessionRequestRuntimePreferencesParams = z.infer<
@@ -2188,12 +1937,7 @@ export type AiraModelContextBudgetStrategy = z.infer<typeof airaModelContextBudg
 
 export const airaSessionRuntimePreferencesResultSchema = z
   .object({
-    additionalDirectories: z.array(nonEmptyString).max(256).optional(),
     nativeSearchEnhancementsEnabled: z.boolean(),
-    toolSearchMode: appToolSearchModeSchema.default("off"),
-    subagentRuntimeConfigEnabled: z.boolean().optional(),
-    // 旧 Host 缺席即不注册 App 控制工具；只由 Host 装配能力声明。
-    appControlEnabled: z.boolean().optional(),
     memoryEnabled: z.boolean().default(false),
     askUserQuestionAutoResolutionEnabled: z.boolean().default(true),
     integratedTerminalShell: integratedTerminalShellSelectionSchema.optional(),
@@ -2223,7 +1967,6 @@ export const airaSessionSendParamsSchema = z
   .object({
     sessionId: nonEmptyString,
     modelSelection: modelSelectionSchema.optional(),
-    modelSelectionBasis: modelSelectionSchema.optional(),
     modelExecution: modelExecutionSchema.optional(),
     inputId: nonEmptyString.optional(),
     queryId: nonEmptyString.optional(),
@@ -2487,22 +2230,6 @@ export const airaSessionCloseResultSchema = z
   })
   .strict();
 export type AiraSessionCloseResult = z.infer<typeof airaSessionCloseResultSchema>;
-/**
- * 卸载 cwd 位于 directory 内的全部驻留会话；任一会话忙时全部不卸载（docs/git/worktree.md §8.3）。
- * 随 worktreeCwd 能力提供。
- */
-export const airaSessionReleaseUnderDirectoryParamsSchema = z
-  .object({ directory: nonEmptyString })
-  .strict();
-export type AiraSessionReleaseUnderDirectoryParams = z.infer<
-  typeof airaSessionReleaseUnderDirectoryParamsSchema
->;
-export const airaSessionReleaseUnderDirectoryResultSchema = z
-  .object({ released: z.array(nonEmptyString), busy: z.array(nonEmptyString) })
-  .strict();
-export type AiraSessionReleaseUnderDirectoryResult = z.infer<
-  typeof airaSessionReleaseUnderDirectoryResultSchema
->;
 export const airaWorkspaceReadPresentationParamsSchema = z
   .object({ workspace: airaWorkspaceRefSchema })
   .strict();
@@ -2686,23 +2413,6 @@ export const airaProviderUpdateAccountConfigResultSchema = z
 export type AiraProviderUpdateAccountConfigResult = z.infer<
   typeof airaProviderUpdateAccountConfigResultSchema
 >;
-/** Worker 从所属 Environment 的正式 Config Store 重建进程内 Provider Registry。 */
-export const airaProviderRefreshRegistryParamsSchema = z
-  .object({
-    reason: nonEmptyString,
-  })
-  .strict();
-export const airaProviderRefreshRegistryResultSchema = z
-  .object({
-    refreshed: z.literal(true),
-  })
-  .strict();
-export type AiraProviderRefreshRegistryParams = z.infer<
-  typeof airaProviderRefreshRegistryParamsSchema
->;
-export type AiraProviderRefreshRegistryResult = z.infer<
-  typeof airaProviderRefreshRegistryResultSchema
->;
 export const airaInteractionPreferencesSchema = z
   .object({
     askUserQuestionAutoResolutionEnabled: z.boolean(),
@@ -2785,8 +2495,6 @@ export const airaWorkspaceUpdateDynamicWorkflowPolicyParamsSchema = z
   .object({
     workspace: airaWorkspaceRefSchema,
     enabled: z.boolean(),
-    // launch.md「On demand: activation」：mode 与布尔同行；缺席时 CLI 按布尔行事（alwaysOn）。
-    mode: airaDynamicWorkflowModeSchema.optional(),
   })
   .strict();
 export type AiraWorkspaceUpdateDynamicWorkflowPolicyParams = z.infer<
@@ -2841,7 +2549,6 @@ export type AiraBrowserListResult = z.infer<typeof airaBrowserListResultSchema>;
 /** Agent 把一条 browser-use 命令发送给 app 执行。 */
 export const airaBrowserExecuteParamsSchema = z
   .object({
-    controlScopeId: nonEmptyString.optional(),
     requestId: nonEmptyString,
     sessionId: nonEmptyString,
     turnId: nonEmptyString.optional(),
@@ -2906,7 +2613,7 @@ export const airaUserInputResponseSchema = z
   .strict();
 export type AiraUserInputResponse = z.infer<typeof airaUserInputResponseSchema>;
 
-export const airaProviderRuntimeHeadersRequestReasonSchema = z.enum(requestVerificationReasons);
+export const airaProviderRuntimeHeadersRequestReasonSchema = z.enum(["model-request"]);
 export const airaProviderRuntimeHeadersRequestParamsSchema = z
   .object({
     requestId: nonEmptyString,
@@ -2916,14 +2623,6 @@ export const airaProviderRuntimeHeadersRequestParamsSchema = z
     modelSelection: modelSelectionSchema,
     providerId: nonEmptyString,
     accountAccess: airaProviderAccountAccessSchema.optional(),
-    expectedAccountScope: z
-      .string()
-      .regex(/^[a-f0-9]{64}$/)
-      .optional(),
-    rejectedProjectTokenFingerprint: z
-      .string()
-      .regex(/^[a-f0-9]{64}$/)
-      .optional(),
     reason: airaProviderRuntimeHeadersRequestReasonSchema,
   })
   .strict();
@@ -2943,14 +2642,6 @@ export type AiraProviderRuntimeHeadersCancelled = z.infer<
   typeof airaProviderRuntimeHeadersCancelledSchema
 >;
 
-// 标准 JSON-RPC error 保留旧版 schema 兼容，不向严格校验的 response 增加字段。
-export const AIRA_PROVIDER_CONFIG_NETWORK_ERROR = -32032;
-
-export const airaProviderRuntimeHeadersErrorCode = {
-  configNetwork: "request_verification_config_network",
-  configInvalid: "request_verification_config_invalid",
-} as const;
-
 export const airaProviderRuntimeHeadersResponseSchema = z.discriminatedUnion("headersApplied", [
   z
     .object({
@@ -2959,11 +2650,6 @@ export const airaProviderRuntimeHeadersResponseSchema = z.discriminatedUnion("he
       requestAuth: z
         .object({
           apiKey: nonEmptyString.optional(),
-          apiKeyId: z.string().trim().min(1).optional(),
-          accountScope: z
-            .string()
-            .regex(/^[a-f0-9]{64}$/)
-            .optional(),
           headers: z.record(nonEmptyString, nonEmptyString).optional(),
         })
         .strict(),
@@ -2985,37 +2671,15 @@ export type AiraProviderRuntimeHeadersResponse = z.infer<
 // Agent 进程不是用户身份权威：它把 (pluginId, mcpKey, targetOrigin) 报给 host，由 host
 // 解析当前 Coding Plan 凭证并回传本次请求的身份头。请求侧不含任何秘密。
 // 与 interaction/requestProviderRuntimeHeaders 同类：Agent 发起、host 自动响应、零 UI。
-//
-// `consumer` 缺省为 `mcp-server`（旧版 agent 不带该字段），此时必须带 `mcpKey`；
-// `plugin-command` 是官方插件命令进程经 agent 代理端点发起的请求，没有 MCP，不带 `mcpKey`，
-// host 按「套餐可选」解析：没有套餐时只给 Aira 登录身份（技术方案 5.8）。
 export const airaOfficialMcpAuthHeadersRequestParamsSchema = z
   .object({
     requestId: nonEmptyString,
     workspace: airaWorkspaceRefSchema,
     pluginId: nonEmptyString,
-    consumer: z.enum(OFFICIAL_AUTH_CONSUMER_KINDS).optional(),
-    mcpKey: nonEmptyString.optional(),
+    mcpKey: nonEmptyString,
     targetOrigin: nonEmptyString,
   })
-  .strict()
-  .superRefine((params, ctx) => {
-    const isCommand = params.consumer === "plugin-command";
-    if (isCommand && params.mcpKey !== undefined) {
-      ctx.addIssue({
-        code: "custom",
-        message: "plugin-command must not carry mcpKey",
-        path: ["mcpKey"],
-      });
-    }
-    if (!isCommand && params.mcpKey === undefined) {
-      ctx.addIssue({
-        code: "custom",
-        message: "mcpKey is required for mcp-server",
-        path: ["mcpKey"],
-      });
-    }
-  });
+  .strict();
 export type AiraOfficialMcpAuthHeadersRequestParams = z.infer<
   typeof airaOfficialMcpAuthHeadersRequestParamsSchema
 >;
@@ -3103,21 +2767,6 @@ export const airaPluginComponentGroupSchema = z
   .strict();
 export type AiraPluginComponentGroup = z.infer<typeof airaPluginComponentGroupSchema>;
 
-export const airaPluginUiSurfaceSchema = z
-  .object({
-    pluginId: nonEmptyString,
-    pluginName: nonEmptyString,
-    id: nonEmptyString.max(128),
-    title: z.union([nonEmptyString, z.record(z.string(), z.string())]),
-    icon: z.string().optional(),
-    // 运行时 namespaced server 名（plugin:<name>:<server>），可直接用于 mcp/uiReadResource。
-    server: nonEmptyString,
-    resourceUri: nonEmptyString.max(2048),
-    availability: z.literal("session"),
-  })
-  .strict();
-export type AiraPluginUiSurface = z.infer<typeof airaPluginUiSurfaceSchema>;
-
 export const airaPluginInfoSchema = z
   .object({
     id: nonEmptyString,
@@ -3137,15 +2786,11 @@ export const airaPluginInfoSchema = z
     // 权威组件清单（名称 + 可选描述），由 CLI 对插件根目录枚举得出，与启用态无关。
     // 详情 UI 直接展示，取代旧的「数量取协议、名称靠 UI 侧 join」脆弱方案。optional 兼容旧 payload。
     components: z.array(airaPluginComponentGroupSchema).optional(),
-    uiSurfaces: z.array(airaPluginUiSurfaceSchema).optional(),
     declaredMcpServerNames: z.array(z.string()).optional(),
     hostMcpServerNames: z.array(z.string()).optional(),
     mcpServerNames: z.array(z.string()),
     hookDetails: z.array(airaPluginHookDetailSchema).optional(),
     rootPath: z.string(),
-    // 插件的持久数据目录（CLI 的 PluginMetadata.dataPath，与 ${AIRA_PLUGIN_DATA} 同值）。
-    // 扩展的 ctx.extension.dataPath 只取它，App 不自己拼路径；旧 CLI 不报告时缺省。
-    dataPath: z.string().optional(),
     userConfig: z.record(z.string(), airaPluginUserConfigOptionSchema).optional(),
     configuredOptions: z.record(z.string(), airaPluginOptionValueSchema).optional(),
     // 缺省表示 package 可用；missing 用于保留已声明但目标 Host 尚未物化的配置行。
@@ -3183,6 +2828,20 @@ export type AiraPluginsListResult = z.infer<typeof airaPluginsListResultSchema>;
 
 // ── 插件 UI 面板入口──
 // 工作区级只读投影：已启用插件清单 `ui.surfaces[]` 的合法条目；插件启停后 host 重新拉取。
+export const airaPluginUiSurfaceSchema = z
+  .object({
+    pluginId: nonEmptyString,
+    pluginName: nonEmptyString,
+    id: nonEmptyString.max(128),
+    title: z.union([nonEmptyString, z.record(z.string(), z.string())]),
+    icon: z.string().optional(),
+    // 运行时 namespaced server 名（plugin:<name>:<server>），可直接用于 mcp/uiReadResource。
+    server: nonEmptyString,
+    resourceUri: nonEmptyString.max(2048),
+    availability: z.literal("session"),
+  })
+  .strict();
+export type AiraPluginUiSurface = z.infer<typeof airaPluginUiSurfaceSchema>;
 export const airaPluginsListUiSurfacesParamsSchema = z
   .object({ workspace: airaWorkspaceRefSchema })
   .strict();
@@ -3543,99 +3202,6 @@ export const airaWorkflowsMoveResultSchema = z.union([
 ]);
 export type AiraWorkflowsMoveResult = z.infer<typeof airaWorkflowsMoveResultSchema>;
 
-// ── 从一次 run 保存工作流（docs/dynamic-workflow/transcript-and-notifications.md「Saving the
-// run, and running it again」）──
-// 完成卡的「直接保存」走这条：**不收脚本，只收 runId**——要写的那份正文是这次 run 实际执行的
-// 脚本，agent 从 journal 记录（`scriptText`）里读。脚本不经 GUI 走一圈有两个后果值得写下来：
-// 修订过的 run 存下的是**结算它的**那一份，而工具行入参被快照裁成预览的老对话也照样存得出
-// 同样的字节。名字合法性、覆盖、遮��与类型检查全部复用 SaveWorkflow 的同一套实现（不变式 3）。
-/** 另一档已有同名定义（遮蔽事实）；与 contracts 的 SavedWorkflowShadowing 逐字对齐。 */
-export const airaSavedWorkflowShadowingSchema = z.enum(["hides_global", "hidden_by_project"]);
-export type AiraSavedWorkflowShadowing = z.infer<typeof airaSavedWorkflowShadowingSchema>;
-
-export const airaWorkflowsSaveParamsSchema = z
-  .object({
-    // 两用：既是载体运行时，也是这次 run 的项目——journal 在它那里，项目根也在它那里。
-    // 全局档同样带它（与 list/get 的「全局只当载体」不同）：脚本必须从这个 agent 的 journal 读。
-    workspace: airaWorkspaceRefSchema,
-    runId: nonEmptyString,
-    name: nonEmptyString,
-    meta: airaSavedWorkflowMetaSchema,
-    // 缺省 `project`。
-    scope: airaSavedWorkflowScopeSchema.optional(),
-    // 只有 GUI 已经把覆盖警告摆给用户看过时才为 true；缺省即「目标已存在就拒绝」——
-    // 覆盖是用户的决定，不是一次保存的副作用（与 `workflows/move` 不覆盖同一条纪律）。
-    overwrite: z.boolean().optional(),
-  })
-  .strict();
-export type AiraWorkflowsSaveParams = z.infer<typeof airaWorkflowsSaveParamsSchema>;
-export const airaWorkflowsSaveResultSchema = z.union([
-  z
-    .object({
-      ok: z.literal(true),
-      name: nonEmptyString,
-      scope: airaSavedWorkflowScopeSchema,
-      path: nonEmptyString,
-      /** 写的那一刻重新判定，不回抄入参里的 `overwrite`（与 SaveWorkflow 的 `overwritten` 同源）。 */
-      overwritten: z.boolean(),
-      shadowing: airaSavedWorkflowShadowingSchema.optional(),
-    })
-    .strict(),
-  z
-    .object({
-      ok: z.literal(false),
-      // run_not_found：journal 里没有这条 run；script_missing：老记录没存脚本原文；
-      // target_exists：目标已存在而调用方没说覆盖；compile_failed：类型检查没过，一个字节都没写。
-      reason: z.enum([
-        "invalid_name",
-        "run_not_found",
-        "script_missing",
-        "target_exists",
-        "compile_failed",
-        "write_error",
-      ]),
-      path: z.string().optional(),
-      detail: z.string().optional(),
-    })
-    .strict(),
-]);
-export type AiraWorkflowsSaveResult = z.infer<typeof airaWorkflowsSaveResultSchema>;
-
-// ── 一次 run 对应哪个已保存工作流 ──
-// 完成卡的「已保存」芯片与「再次运行」都问这一个问题，而答案**推导得来、不记在卡上**：重开
-// 会话、换一个窗口保存、在对话里保存，都走同一条判定。判定住在 agent 一侧，因为两份事实
-// （run 的 journal 记录与磁盘上的定义）都在那里；返回解析好的 entry，用户后来删掉的那一份
-// 因此会自动不再算数。
-/** 转写自对话的候选：模型用 `SaveWorkflow` 存过、并在入参里认领了这次 run。 */
-export const airaWorkflowsForRunCandidateSchema = z
-  .object({ name: nonEmptyString, scope: airaSavedWorkflowScopeSchema.optional() })
-  .strict();
-export type AiraWorkflowsForRunCandidate = z.infer<typeof airaWorkflowsForRunCandidateSchema>;
-/** 候选上界：一次 run 在一段对话里被存过的次数远小于它。 */
-export const AIRA_WORKFLOWS_FOR_RUN_MAX_CANDIDATES = 8;
-export const airaWorkflowsForRunParamsSchema = z
-  .object({
-    workspace: airaWorkspaceRefSchema,
-    runId: nonEmptyString,
-    candidates: z
-      .array(airaWorkflowsForRunCandidateSchema)
-      .max(AIRA_WORKFLOWS_FOR_RUN_MAX_CANDIDATES)
-      .optional(),
-  })
-  .strict();
-export type AiraWorkflowsForRunParams = z.infer<typeof airaWorkflowsForRunParamsSchema>;
-export const airaWorkflowsForRunResultSchema = z
-  .object({
-    /** 命中的定义；缺席即这次 run 还没有对应的已保存工作流。 */
-    entry: airaSavedWorkflowEntrySchema.optional(),
-    /** 命中的是哪一条规则（诊断与测试用；UI 只看 entry 在不在）。 */
-    match: z.enum(["candidate", "script", "name"]).optional(),
-    /** 这次 run 跑时用的实参（journal 原样），供「再次运行」预填实参窗。 */
-    runArgs: z.record(z.string(), z.unknown()).optional(),
-  })
-  .strict();
-export type AiraWorkflowsForRunResult = z.infer<typeof airaWorkflowsForRunResultSchema>;
-
 // 推荐 Prompt 的可信插件解析：UI 不拆解 stableId，也不从旧目录快照推断可安装性。
 export const airaPluginSuggestedReferenceStatusSchema = z.enum([
   "ready",
@@ -3696,19 +3262,6 @@ export const airaPluginsSetEnabledResultSchema = z
   .strict();
 export type AiraPluginsSetEnabledResult = z.infer<typeof airaPluginsSetEnabledResultSchema>;
 
-/**
- * 目录条目的扩展摘要（docs/plugins/plugin-publishing.md §4.2–4.3）：插件要求的插件 API 版本范围与
- * 扩展申请的权限档位。CLI 只透传、只留这两个键；App 用 isExtensionEngineCompatible 判断。
- * grants 是开放的字符串数组：以后新增的档位不能让旧 App 整页解析失败。
- */
-export const airaPluginExtensionSummarySchema = z
-  .object({
-    engines: z.object({ aira: z.string().min(1) }).strict(),
-    grants: z.array(z.string()),
-  })
-  .strict();
-export type AiraPluginExtensionSummary = z.infer<typeof airaPluginExtensionSummarySchema>;
-
 // 商店信息（Store Listing）：目录条目携带的展示性元数据（显示名/icon/分类/作者/链接/hero/
 // 示例提示词），全部可选，UI 缺失时按降级矩阵处理（字母头像/隐藏区块/省略信息行）。
 // i18n 采用 `<字段>I18n` map，locale 解析复用 shared 的 plugin-display-name helper。
@@ -3719,7 +3272,6 @@ export const airaPluginStoreListingSchema = z
     descriptionI18n: z.record(z.string(), z.string()).optional(),
     icon: z.string().optional(),
     category: z.string().optional(),
-    publisherType: z.enum(["official", "community"]).optional(),
     author: z.string().optional(),
     authorUrl: z.string().optional(),
     homepage: z.string().optional(),
@@ -3734,11 +3286,6 @@ export const airaPluginStoreListingSchema = z
      * 不参与安装门禁与计费，命名也不绑定具体套餐商品名。
      */
     requiresPaidPlan: z.boolean().optional(),
-    /**
-     * 带扩展的插件：只在 plugins/overview 带 includeExtensionSummary 时出现（§4.3 能力位）。
-     * 已装插件的 listing 来自目录最新版条目，所以这里是最新版的摘要。
-     */
-    extensionSummary: airaPluginExtensionSummarySchema.optional(),
   })
   .strict();
 export type AiraPluginStoreListing = z.infer<typeof airaPluginStoreListingSchema>;
@@ -3832,8 +3379,6 @@ export const airaPluginsOverviewParamsSchema = z
   .object({
     workspace: airaWorkspaceRefSchema,
     configScope: airaPluginScopeSchema.optional(),
-    /** 要商店信息里的 extensionSummary。只发给声明了 pluginExtensionSummary 的 CLI（§4.3）。 */
-    includeExtensionSummary: z.boolean().optional(),
   })
   .strict();
 export const airaPluginsOverviewResultSchema = z
@@ -4090,7 +3635,6 @@ export type AiraAutomationProtocol = z.infer<typeof airaAutomationProtocolSchema
 
 export const airaAutomationCreateParamsSchema = z
   .object({
-    workspace: airaWorkspaceRefSchema.optional(),
     title: z.string().optional(),
     cronExpr: nonEmptyString,
     relativeDelayMinutes: z.number().int().positive().max(525_600).optional(),
@@ -4134,7 +3678,6 @@ export type AiraAutomationCreateProtocolResult = z.infer<typeof airaAutomationCr
 
 export const airaAutomationUpdateParamsSchema = z
   .object({
-    workspace: airaWorkspaceRefSchema.optional(),
     automationId: nonEmptyString,
     title: nonEmptyString.optional(),
     cronExpr: nonEmptyString.optional(),
@@ -4190,9 +3733,7 @@ export const airaAutomationUpdateResultSchema = z
   .strict();
 export type AiraAutomationUpdateProtocolResult = z.infer<typeof airaAutomationUpdateResultSchema>;
 
-export const airaAutomationListParamsSchema = z
-  .object({ workspace: airaWorkspaceRefSchema.optional() })
-  .strict();
+export const airaAutomationListParamsSchema = z.object({}).strict();
 export type AiraAutomationListProtocolParams = z.infer<typeof airaAutomationListParamsSchema>;
 export const airaAutomationListResultSchema = z
   .object({ automations: z.array(airaAutomationProtocolSchema) })
@@ -4200,7 +3741,7 @@ export const airaAutomationListResultSchema = z
 export type AiraAutomationListProtocolResult = z.infer<typeof airaAutomationListResultSchema>;
 
 export const airaAutomationCheckTaskBindingParamsSchema = z
-  .object({ workspace: airaWorkspaceRefSchema.optional(), targetTaskId: nonEmptyString })
+  .object({ targetTaskId: nonEmptyString })
   .strict();
 export type AiraAutomationCheckTaskBindingProtocolParams = z.infer<
   typeof airaAutomationCheckTaskBindingParamsSchema
@@ -4213,37 +3754,21 @@ export type AiraAutomationCheckTaskBindingProtocolResult = z.infer<
 >;
 
 export const airaAutomationDeleteParamsSchema = z
-  .object({ workspace: airaWorkspaceRefSchema.optional(), automationId: nonEmptyString })
+  .object({ automationId: nonEmptyString })
   .strict();
 export type AiraAutomationDeleteProtocolParams = z.infer<typeof airaAutomationDeleteParamsSchema>;
 export const airaAutomationDeleteResultSchema = z.object({ deleted: z.boolean() }).strict();
 export type AiraAutomationDeleteProtocolResult = z.infer<typeof airaAutomationDeleteResultSchema>;
 
-// 执行轮自暂停（CronPauseSelf）：automationId 来自 CLI loop state，Host 只在当前 workspace
-// 内做条件暂停（active 且 enabled 才转 paused）并回报是否生效。
-export const airaAutomationPauseParamsSchema = z
-  .object({ workspace: airaWorkspaceRefSchema.optional(), automationId: nonEmptyString })
-  .strict();
-export type AiraAutomationPauseProtocolParams = z.infer<typeof airaAutomationPauseParamsSchema>;
-export const airaAutomationPauseResultSchema = z.object({ paused: z.boolean() }).strict();
-export type AiraAutomationPauseProtocolResult = z.infer<typeof airaAutomationPauseResultSchema>;
-
 // ---- Off-Peak（闲时任务）会话内创建协议----
 // 与 automation 兄弟并列（独立域，禁止互相复用标记/表）。workspace 由 host 端从
-// 当前 session 的已协商 workspace 注入。permissionMode 只开放产品
-// 四档词表（D29-4）；缺省解析在 host 端（D49-4：yolo / allowed_models 末位 / 最高推理档）。
-export const airaOffPeakPermissionModeSchema = z.enum([
-  "build",
-  "edit",
-  "plan",
-  "yolo",
-  "guarded",
-]);
+// 当前 session 注入，不进协议参数（对称 automation/create）。permissionMode 只开放产品
+// 四档词表；缺省解析在 host 端（yolo / allowed_models 末位 / 最高推理档）。
+export const airaOffPeakPermissionModeSchema = z.enum(["build", "edit", "plan", "yolo"]);
 export type AiraOffPeakProtocolPermissionMode = z.infer<typeof airaOffPeakPermissionModeSchema>;
 
 export const airaOffPeakCreateParamsSchema = z
   .object({
-    workspace: airaWorkspaceRefSchema.optional(),
     title: nonEmptyString,
     prompt: nonEmptyString,
     permissionMode: airaOffPeakPermissionModeSchema.optional(),
@@ -4292,69 +3817,14 @@ export const airaOffPeakCreateResultSchema = z.discriminatedUnion("ok", [
 ]);
 export type AiraOffPeakCreateProtocolResult = z.infer<typeof airaOffPeakCreateResultSchema>;
 
-export const airaOffPeakListParamsSchema = z
-  .object({ workspace: airaWorkspaceRefSchema.optional() })
-  .strict();
+export const airaOffPeakListParamsSchema = z.object({}).strict();
 export type AiraOffPeakListProtocolParams = z.infer<typeof airaOffPeakListParamsSchema>;
 export const airaOffPeakListResultSchema = z
   .object({ tasks: z.array(airaOffPeakTaskSnapshotSchema) })
   .strict();
 export type AiraOffPeakListProtocolResult = z.infer<typeof airaOffPeakListResultSchema>;
 
-// Session 运行实例生命周期；不同于 session/stop（停止生成）。
-export const sessionLifecycleParamsSchema = z.object({ sessionId: z.string().min(1) }).strict();
-export const sessionLifecycleActivationParamsSchema = sessionLifecycleParamsSchema.extend({
-  workspace: airaWorkspaceRefSchema.optional(),
-});
-export const sessionLifecycleStateSchema = z.enum([
-  "unloaded",
-  "starting",
-  "ready",
-  "stopping",
-  "faulted",
-]);
-export const sessionLifecycleOperationSchema = z.enum(["ensureReady", "stop", "restart"]);
-export const sessionLifecycleFailureSchema = z
-  .object({
-    operation: sessionLifecycleOperationSchema,
-    code: z.string(),
-    message: z.string(),
-  })
-  .strict();
-export const sessionLifecycleSnapshotSchema = z
-  .object({
-    sessionId: z.string().min(1),
-    state: sessionLifecycleStateSchema,
-    generation: z.number().int().nonnegative().default(0),
-    revision: z.number().int().nonnegative().default(0),
-    lastError: sessionLifecycleFailureSchema.nullable(),
-  })
-  .strict();
-export const sessionLifecycleResultSchema = z.object({ completed: z.literal(true) }).strict();
-export type SessionLifecycleState = z.infer<typeof sessionLifecycleStateSchema>;
-export type SessionLifecycleOperation = z.infer<typeof sessionLifecycleOperationSchema>;
-export type SessionLifecycleFailure = z.infer<typeof sessionLifecycleFailureSchema>;
-export type SessionLifecycleSnapshot = z.infer<typeof sessionLifecycleSnapshotSchema>;
-
 export const airaProtocolMethods = {
-  appControlListProjects: appControlProtocol.listProjects.method,
-  appControlListSessions: appControlProtocol.listSessions.method,
-  appControlReadSession: appControlProtocol.readSession.method,
-  appControlCreateSession: appControlProtocol.createSession.method,
-  appControlForkSession: appControlProtocol.forkSession.method,
-  appControlSendToSession: appControlProtocol.sendToSession.method,
-  appControlWaitSessions: appControlProtocol.waitSessions.method,
-  appControlInterruptSession: appControlProtocol.interruptSession.method,
-  appControlRenameSession: appControlProtocol.renameSession.method,
-  appControlOpenSession: appControlProtocol.openSession.method,
-  appControlSetSessionArchived: appControlProtocol.setSessionArchived.method,
-  appControlSetSessionPinned: appControlProtocol.setSessionPinned.method,
-  appControlCancel: appControlCancelMethod,
-  sessionLifecycleChanged: "session/lifecycle/changed",
-  sessionLifecycleGetState: "session/lifecycle/getState",
-  sessionLifecycleEnsureReady: "session/lifecycle/ensureReady",
-  sessionLifecycleStop: "session/lifecycle/stop",
-  sessionLifecycleRestart: "session/lifecycle/restart",
   runtimeCapabilities: "runtime/capabilities",
   computerUseOperationEvent: "computer-use/operation-event",
   sessionCreate: "session/create",
@@ -4362,7 +3832,6 @@ export const airaProtocolMethods = {
   sessionList: "session/list",
   sessionSubagents: "session/subagents",
   sessionRequestRuntimePreferences: "session/requestRuntimePreferences",
-  subagentsReadRuntimeConfig: "subagents/readRuntimeConfig",
   sessionRead: "session/read",
   sessionMessages: "session/messages",
   sessionEvents: "session/events",
@@ -4384,7 +3853,6 @@ export const airaProtocolMethods = {
   sessionCompact: "session/compact",
   sessionGoal: "session/goal",
   sessionClose: "session/close",
-  sessionReleaseUnderDirectory: "session/releaseUnderDirectory",
   // setModel 仍被 airaSessionService 的 desktop 旧链路消费；replayable
   // switchModelConfig 已直接由目标 Environment Registry 解析 Selection。
   sessionSetModel: "session/setModel",
@@ -4397,7 +3865,6 @@ export const airaProtocolMethods = {
   workspaceHookTrustGrant: "workspace/hooks/trustGrant",
   // 进程级 Account Provider Config 与 workspace 运行目录分离。
   providerUpdateAccountConfig: "provider/updateAccountConfig",
-  providerRefreshRegistry: "provider/refreshRegistry",
   workspaceUpdateInteractionPreferences: "workspace/updateInteractionPreferences",
   workspaceUpdateModelIoPreferences: "workspace/updateModelIoPreferences",
   // Off-Peak 工具面门禁是 workspace 级事实（灰度 + 本地/远程），由 host 在 agent 就绪时同步；
@@ -4411,7 +3878,6 @@ export const airaProtocolMethods = {
   workspaceCancelGenerateText: "workspace/cancelGenerateText",
   providerTestModelConnectivity: "provider/testModelConnectivity",
   mcpList: "mcp/list",
-  workspaceMcpTrust: "workspace/mcp/trust",
   mcpReadResource: "mcp/readResource",
   mcpUiOpenInstance: "mcp/uiOpenInstance",
   mcpUiCloseInstance: "mcp/uiCloseInstance",
@@ -4443,10 +3909,6 @@ export const airaProtocolMethods = {
   workflowsRuns: "workflows/runs",
   // 在项目档 / 全局档之间移动同名文件。
   workflowsMove: "workflows/move",
-  // 完成卡的「直接保存」与「已保存」判定（docs/dynamic-workflow/transcript-and-notifications.md）：
-  // 前者按 runId 从 journal 取脚本落盘，后者回答「这次 run 对应哪个已保存工作流」。
-  workflowsSave: "workflows/save",
-  workflowsForRun: "workflows/forRun",
   pluginsResolveSuggestedReference: "plugins/resolveSuggestedReference",
   pluginsSetEnabled: "plugins/setEnabled",
   pluginsOverview: "plugins/overview",
@@ -4462,19 +3924,11 @@ export const airaProtocolMethods = {
   pluginsResetConfig: "plugins/resetConfig",
   pluginsValidate: "plugins/validate",
   pluginsDescribe: "plugins/describe",
-  // 扩展 settings 能力读本插件 user 层有效值（含敏感值）；旧 CLI method-not-found → App 当作不支持。
-  pluginsReadUserOptions: "plugins/readUserOptions",
-  // 输入框 `@` 面板的 MCP 工具候选项：只在内存里的会话上调插件工具；旧 CLI method-not-found → 不显示这一组。
-  pluginsMentionItems: "plugins/mentionItems",
   automationCreate: "automation/create",
-  topicResourceRead: "topic/resource/read",
-  channelReply: "bot/channel/reply",
-  topicResourceCancel: "topic/resource/cancel",
   automationUpdate: "automation/update",
   automationCheckTaskBinding: "automation/checkTaskBinding",
   automationList: "automation/list",
   automationDelete: "automation/delete",
-  automationPause: "automation/pause",
   // Off-Peak 会话内创建：与 automation 兄弟并列的独立方法族。
   offPeakCreate: "offPeak/create",
   offPeakList: "offPeak/list",
@@ -4486,12 +3940,10 @@ export const airaProtocolMethods = {
   sessionUsage: "session/usage",
   // 资源管理器：CLI 回报其 MCP 子进程 pid 与插件归属（纯内存，无 I/O），采样在 Host 侧完成。
   processChildProcesses: "process/childProcesses",
-  processNetworkCapture: "process/networkCapture",
   interactionRequestPermission: "interaction/requestPermission",
   interactionRequestUserInput: "interaction/requestUserInput",
   interactionRequestProviderRuntimeHeaders: "interaction/requestProviderRuntimeHeaders",
   interactionRequestOfficialMcpAuthHeaders: "interaction/requestOfficialMcpAuthHeaders",
-  interactionRequestCredentialCipher: "interaction/requestCredentialCipher",
   // browser-use 反向请求由 agent 发起，host 转给 main 中的 CDP executor。
   interactionBrowserList: "interaction/browserList",
   interactionBrowserExecute: "interaction/browserExecute",
@@ -4519,10 +3971,6 @@ export const airaProtocolSessionMethodContracts = {
   [airaProtocolMethods.workspaceHookTrustGrant]: {
     params: airaWorkspaceHookTrustGrantParamsSchema,
     result: airaWorkspaceHookTrustGrantResultSchema,
-  },
-  [airaProtocolMethods.workspaceMcpTrust]: {
-    params: airaWorkspaceMcpTrustParamsSchema,
-    result: airaWorkspaceMcpTrustResultSchema,
   },
   [airaProtocolMethods.mcpList]: {
     params: airaMcpListParamsSchema,
@@ -4599,12 +4047,6 @@ export const airaProtocolSessionMethodContracts = {
 export type AiraProtocolSessionMethodContract =
   (typeof airaProtocolSessionMethodContracts)[keyof typeof airaProtocolSessionMethodContracts];
 
-// 启动入口的独立存储命令与严格结果 schema，和 CLI 共用一份契约。
-export {
-  STORAGE_MIGRATION_COMMAND,
-  storageMigrationReportSchema,
-} from "../sqlite-migrations/contract.js";
-
 /** 仅存储准备子进程的私有控制帧，原始路径不进入业务事件或遥测。 */
 export const airaStoragePreparationFrameSchema = z.discriminatedUnion("method", [
   z
@@ -4625,17 +4067,4 @@ export const airaStoragePathReadySchema = z
   .strict();
 
 // 桌面本地 TTFT 的严格事实合同；检查点不能替代实际内容帧。
-export { localTtftFactsSchema } from "../local-ttft/contract.js";
-// 群来源由可信 Host 注入，V4 命令与持久化输入使用相同运行时校验。
-export {
-  botIdentitySchema,
-  botTopicInputMessageSchema,
-  botGroupInputSourceSchema,
-  type BotGroupInputSource,
-} from "../bots.js";
-export {
-  botTopicContextSchema,
-  botTopicMessageSchema,
-  type BotTopicHistoryBatch,
-  type BotTopicMessage,
-} from "../bots.js";
+export { localTtftFactsSchema } from "../localTtft.js";

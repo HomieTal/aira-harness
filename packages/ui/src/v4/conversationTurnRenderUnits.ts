@@ -21,6 +21,7 @@ import type {
   UserInputRow,
 } from "@aira/shared/aira-protocol-v4";
 import type { AssistantWorkRow, ConversationTurnFlowItem } from "@/v4/conversationTurnFlowItems.js";
+import type { PluginUiRowPinResolver } from "@/plugin-ui/index.js";
 import {
   isWorkflowLaunchUserInputRow,
   resolveWorkflowLaunchMeta,

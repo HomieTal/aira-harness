@@ -1,5 +1,4 @@
 import type { GenUiStateTarget, GenUiTweak, GenUiTweakValues } from "@aira/shared/gen-ui";
-export { collectGenUiSourcePaths, matchesGenUiSourcePath } from "@/gen-ui/domain/sourceFiles.js";
 export interface GenUiCardTarget extends GenUiStateTarget {
   remoteSessionId?: string;
   instanceKey: string;

@@ -37,12 +37,8 @@ export async function listPluginUiSurfaces(
   rawParams: unknown,
 ): Promise<AiraPluginsListUiSurfacesResult> {
   const params = parseParams(airaPluginsListUiSurfacesParamsSchema, rawParams);
-  const outcome = await resolveAiraPlugins({
+  const outcome = resolveAiraPlugins({
     logger: context.logger,
-    pluginPreparation: context.deps?.pluginPreparation,
-    pluginDiscovery: context.deps?.pluginDiscovery,
-    workspaceIdentity: params.workspace.workspaceIdentity,
-    remoteSessionId: params.workspace.remoteSessionId,
     workingDirectory: params.workspace.workspacePath,
   });
   return { surfaces: listPluginUiSurfacesFromPlugins(outcome.plugins) };

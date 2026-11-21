@@ -134,6 +134,9 @@ type TabsScrollMaskEdges = {
   left: boolean;
   right: boolean;
 };
+const OPEN_TAB_LAUNCHER_BUTTON_CLASS =
+  "side-pane-open-tab-button flex h-12 min-w-0 items-center gap-3 rounded-xl bg-surface px-3 text-ui-base font-medium text-foreground transition-colors hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
+
 type OpenTabLauncherItem = {
   id: OpenTabLauncherItemId;
   label: string;

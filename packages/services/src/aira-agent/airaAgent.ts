@@ -1,31 +1,8 @@
-import type {
-  V4SessionDeletionParams,
-  V4SessionDeletionExecuteParams,
-  V4SessionDeletionPreview,
-  V4SessionDeletionResult,
-} from "@aira/shared/aira-protocol-v4";
-import type { PluginUiToolResultNotification } from "@aira/shared/mcp-apps";
-import type {
-  ContextComposition,
-  ContextCompositionChangedEvent,
-  ModelRequestMetricsFact,
-} from "@aira/shared/aira-protocol-v4";
-import type { AiraAgentContextCompositionParams } from "#src/aira-agent/contextCompositionClient.js";
-import type {
-  AiraAgentPluginMentionItemsParams,
-  AiraAgentPluginMentionItemsResult,
-} from "#src/aira-agent/pluginHostQueriesClient.js";
-import type {
-  BackgroundBashOutputResult,
-  SessionDebugSnapshot,
-  AiraSessionContentProfile,
-} from "@aira/shared";
+import type { BackgroundBashOutputResult, SessionDebugSnapshot } from "@aira/shared";
 /* eslint-disable max-lines -- Aira agent service 接口集中声明 protocol/session/workspace 方法，拆分会增加 service descriptor 迁移成本。 */
-import type { RemoteConversationTelemetryEvent } from "@aira/shared/conversation-telemetry";
 import type { Event, IDisposable } from "@aira/rpc";
 import { ServiceChannels } from "@aira/shared";
 import type { AppUsageRange, AppUsageSnapshot, AiraTaskTokenUsageResult } from "@aira/shared";
-import type { DynamicWorkflowMode } from "@aira/shared";
 import type { AiraAutomation, AiraAutomationRun } from "@aira/shared";
 import type {
   AiraStorageStartupState,
@@ -46,8 +23,6 @@ import type {
   AiraToolExecResource,
   AiraProcessChildProcess,
   AiraMcpListResult,
-  WorkspaceMcpTrustDecision,
-  AiraWorkspaceMcpTrustResult,
   AiraPluginsListResult,
   AiraPluginsOverviewResult,
   AiraPluginsMarketplaceMutationResult,
@@ -65,12 +40,10 @@ import type {
   AiraMcpUiListResourceTemplatesResult,
   AiraPluginsListUiSurfacesResult,
   AiraWorkflowsDeleteResult,
-  AiraWorkflowsForRunResult,
   AiraWorkflowsGetResult,
   AiraWorkflowsListResult,
   AiraWorkflowsMoveResult,
   AiraWorkflowsRunsResult,
-  AiraWorkflowsSaveResult,
   AiraWorkflowsUpdateMetaResult,
   AiraPluginsUninstallResult,
   AiraPluginsRestoreBuiltinResult,
@@ -80,9 +53,6 @@ import type {
   AiraPluginsSetEnabledResult,
   AiraPluginsCancelOperationResult,
   AiraPluginOperationProgressNotification,
-  AiraProviderRuntimeHeadersRequestParams,
-  RequestVerificationConfig,
-  AiraProviderRuntimeHeadersCancelled,
   AiraProviderTestModelConnectivityParams,
   AiraProviderTestModelConnectivityResult,
   AiraUserInputRequestParams,
@@ -117,7 +87,6 @@ import type {
   ConversationRowTarget,
   HelloMessage,
   SessionsIndexTopicWireCandidate,
-  SessionsIndexReconcileResult,
   V4AttachmentBeginResult,
   V4AttachmentChunkResult,
   V4AttachmentCommitResult,
@@ -128,7 +97,6 @@ import type {
   V4ConnectionFlowState,
   V4ConversationFileChangesResult,
   V4ConversationFileRewindPreviewResult,
-  V4ConversationInputPredictionResult,
   V4ConversationPlansResult,
   V4ConversationWorkflowRunEventsResult,
   V4ConversationWorkflowRunArtifactDataResult,
@@ -144,20 +112,10 @@ import type {
   V4WorkspaceConfigSubscribeResult,
   WorkspaceConfigTopicWireCandidate,
 } from "@aira/shared/aira-protocol-v4";
-import type {
-  V4SessionDataMeasureResult,
-  V4SessionDataParams,
-  V4SessionDataPurgeResult,
-} from "@aira/shared/aira-protocol-v4";
 import { createServiceDescriptor } from "../descriptors.js";
 
 export * from "./airaAgentPluginParams.js";
 export * from "./airaAgentWorkflowParams.js";
-export type { AiraAgentContextCompositionParams } from "#src/aira-agent/contextCompositionClient.js";
-export type {
-  AiraAgentPluginMentionItemsParams,
-  AiraAgentPluginMentionItemsResult,
-} from "#src/aira-agent/pluginHostQueriesClient.js";
 import type {
   AiraAgentAddPluginMarketplaceParams,
   AiraAgentAutomationIdParams,
@@ -196,12 +154,10 @@ import type {
 } from "./airaAgentPluginParams.js";
 import type {
   AiraAgentDeleteSavedWorkflowParams,
-  AiraAgentFindSavedWorkflowForRunParams,
   AiraAgentGetSavedWorkflowParams,
   AiraAgentListSavedWorkflowRunsParams,
   AiraAgentListSavedWorkflowsParams,
   AiraAgentMoveSavedWorkflowParams,
-  AiraAgentSaveSavedWorkflowFromRunParams,
   AiraAgentUpdateSavedWorkflowMetaParams,
 } from "./airaAgentWorkflowParams.js";
 
@@ -210,7 +166,6 @@ export interface AiraAgentSessionTarget extends AiraAgentWorkspaceTarget {
 }
 
 export interface AiraAgentResumeSessionParams extends AiraAgentSessionTarget {
-  additionalDirectories?: string[];
   model?: ModelSelection;
   thoughtLevel?: string;
   mcpServers?: AiraAgentMcpServer[];
@@ -251,26 +206,10 @@ export interface AiraAgentRuntimeLifecycleEvent extends AiraAgentWorkspaceTarget
   state: "available" | "unavailable";
 }
 
-/**
- * runtime 进程意外退出（晚于同一进程的 unavailable，退出码已知）。只用于向用户说明原因；
- * 回合、子代理的收口由 CLI 投影在重连后给出，界面不据此改写会话状态。
- */
-export interface AiraAgentRuntimeExitedEvent extends AiraAgentWorkspaceTarget {
-  workspaceKey: string;
-  runtimeIdentity: AiraAgentWorkspaceRuntimeIdentity;
-  exitCode: number | null;
-  signal: string | null;
-  /** `native_out_of_memory`：Windows 0xE0000008，系统可提交内存耗尽。 */
-  cause?: "native_out_of_memory";
-  exitedAt: number;
-}
-
 export type AiraAgentCuaPermissionObservation = CuaPermissionObservation &
   AiraAgentWorkspaceTarget;
 
 export interface AiraAgentCreateSessionParams extends AiraAgentWorkspaceTarget {
-  projectId?: string | null;
-  additionalDirectories?: string[];
   sessionId?: string;
   sessionTraceId?: TraceId;
   parentSessionId?: string;
@@ -289,6 +228,7 @@ export interface AiraAgentCreateSessionParams extends AiraAgentWorkspaceTarget {
 export interface AiraAgentListSessionsParams extends AiraAgentWorkspaceTarget {
   sessionIds?: string[];
   runtimePolicy?: AiraAgentRuntimePolicy;
+  includeArchived?: boolean;
   limit?: number;
 }
 
@@ -312,21 +252,16 @@ export interface AiraAgentReadSessionParams extends AiraAgentSessionTarget {
   afterSeq?: number;
   /** 被动索引/观察者只能读取现有 runtime，禁止为了读快照拉起 session。 */
   runtimePolicy?: AiraAgentRuntimePolicy;
-  /** "index" 仅供 task index：返回剥离大载荷的同结构 snapshot，禁止回写 UI 状态。 */
-  contentProfile?: AiraSessionContentProfile;
 }
 
 export interface AiraAgentReadSessionMessagesParams extends AiraAgentSessionTarget {
   afterMessageId?: string;
   limit?: number;
-  direction?: "forward" | "backward";
 }
 
 export interface AiraAgentReadSessionEventsParams extends AiraAgentSessionTarget {
   afterSeq?: number;
   limit?: number;
-  /** App 后台状态读取只观察现有 CLI，不因 runtime 消失重启。 */
-  runtimePolicy?: AiraAgentRuntimePolicy;
 }
 
 export type AiraAgentReadWorkspacePresentationParams = AiraAgentWorkspaceTarget;
@@ -338,7 +273,6 @@ export interface AiraAgentGrantWorkspaceHookTrustParams extends AiraAgentWorkspa
 
 export interface AiraAgentSendPromptParamsBase extends AiraAgentSessionTarget {
   modelSelection?: ModelSelection;
-  modelSelectionBasis?: ModelSelection;
   modelExecution?: import("@aira/shared/aira-protocol-v4").CommandPayloadMap["sendText"]["modelExecution"];
   inputId?: string;
   queryId?: string;
@@ -411,16 +345,6 @@ export interface AiraAgentTestModelConnectivityParams extends AiraAgentWorkspace
   signal?: AbortSignal;
 }
 
-// 合并时曾混用 Agent 完整鉴权响应；UI 只能回传请求校验，账号鉴权必须由 Host 合成。
-export type ProviderRuntimeHeadersUiResponse =
-  | { headersApplied: true; runtimeProviderHeaders: Record<string, string>; errorMessage?: string }
-  | { headersApplied: false; errorMessage?: string };
-
-export interface AiraAgentRespondProviderRuntimeHeadersParams extends AiraAgentSessionTarget {
-  requestId: string;
-  response: ProviderRuntimeHeadersUiResponse;
-}
-
 export interface AiraAgentSessionRuntimePreferencesRequest extends AiraSessionRequestRuntimePreferencesParams {
   requestId: string;
 }
@@ -447,7 +371,6 @@ export interface AiraAgentSessionSubscribeParams extends AiraAgentSessionTarget 
 // v4/conversation/frame 通知按 workspace fan-out 给 renderer。
 
 export interface AiraAgentConversationSubscribeParams extends AiraAgentSessionTarget {
-  retryInitialization?: string;
   /** 水位不变量：仅当客户端真持有该时刻一致状态才允许带。 */
   base?: { logEpoch: string; seq: number };
   visibility?: "foreground" | "background";
@@ -471,25 +394,10 @@ export interface AiraAgentConversationRowsRangeParams extends AiraAgentSessionTa
   beforeRowId?: number;
   /** 1..rowsRangeMaxLimit（200）。 */
   limit: number;
-  /**
-   * 手机预加载：只读热会话。工作区 CLI 未运行、执行端不支持、会话不在内存都报
-   * proto.sessionNotResident，不拉起进程、不冷恢复。
-   */
-  residency?: "resident-only";
 }
 
 /** 当前有效分支里的终态 ExitPlanMode 目录。 */
 export type AiraAgentConversationPlansParams = AiraAgentSessionTarget;
-
-/** 手机远控输入预测（ghost hint）；线格式见 docs/web-remote-control/mobile-input-prediction.md。 */
-export interface AiraAgentConversationInputPredictionParams extends AiraAgentSessionTarget {
-  /** 手机当前看到的会话 revision；参与 CLI 侧缓存键，回包据此丢弃过期结果。 */
-  revision: number;
-  /** 当前草稿；缺省/空 = 预测下一条输入，非空 = 续写草稿。 */
-  draft?: string;
-  /** 手机侧请求 id，原样回声，用于丢弃过期回包。 */
-  requestId?: string;
-}
 
 /** workflow run 的事件日志分页（详情页审计面）；cursor = journal sequence。 */
 export interface AiraAgentConversationWorkflowRunEventsParams extends AiraAgentSessionTarget {
@@ -559,18 +467,8 @@ export interface AiraAgentConversationFileRewindPreviewParams extends AiraAgentS
   baseLogEpoch: string;
 }
 
-/**
- * Host 进程内的受管 worktree 服务发送命令时设置的标记。只有带此标记的命令可以携带
- * createSession.cwd / worktreeCreation 与 forkAssistant.targetCwd；Symbol 键无法经 RPC 序列化伪造。
- */
-export const HOST_WORKTREE_COMMAND: unique symbol = Symbol("aira.hostWorktreeCommand");
-
 export interface AiraAgentConversationCommandParams extends AiraAgentWorkspaceTarget {
-  /** 仅 Host 消费；显式 NULL 表示全局任务，不向 CLI 发送项目概念。 */
-  projectId?: string | null;
   envelope: CommandEnvelope;
-  /** 只有 Host 进程内的受管 worktree 服务设置（见 HOST_WORKTREE_COMMAND）。 */
-  [HOST_WORKTREE_COMMAND]?: true;
   /** 仅 host 内部用于 Browser Use runtime 边界，不进入 v4 wire envelope。 */
   clientMode?: AiraTaskClientMode;
 }
@@ -658,11 +556,6 @@ export interface AiraAgentWorkspaceConfigSubscribeParams extends AiraAgentWorksp
   runtimePolicy?: AiraAgentRuntimePolicy;
 }
 
-/** Host 为 App 应答方绑定的本次配置；不扩展 Agent wire 协议。 */
-export type AiraAgentProviderRuntimeHeadersRequest = AiraProviderRuntimeHeadersRequestParams & {
-  requestVerificationConfig?: RequestVerificationConfig;
-};
-
 export type AiraAgentServiceEvent =
   | { type: "session.event"; event: AiraSessionEvent }
   | { type: "state.updated"; notification: AiraStateUpdatedNotification }
@@ -673,13 +566,11 @@ export type AiraAgentServiceEvent =
       requestId: string;
       response: AiraUserInputResponse;
     }
-  | { type: "providerRuntimeHeaders.request"; request: AiraAgentProviderRuntimeHeadersRequest }
   | { type: "snapshot"; snapshot: AiraSessionStateSnapshot };
 
 export interface AiraAgentAppRuntimePreferences {
   askUserQuestionAutoResolutionEnabled: boolean;
   modelIoFullRetentionEnabled?: boolean;
-  pluginAutoRecommendationEnabled?: boolean;
 }
 
 export interface AiraAgentLocalRuntimeChildProcesses {
@@ -709,13 +600,6 @@ export interface IAiraAgentService {
    * 同步 App 全局运行时偏好到所有已活动 workspace；不得为此启动空闲 Agent。
    */
   syncAppRuntimePreferences(preferences: AiraAgentAppRuntimePreferences): Promise<void>;
-  /**
-   * 动态工作流用户选择变化的信号（docs/dynamic-workflow/launch.md「The user's choice」）：Host 重新计算
-   * 生效模式并串行重发 workspace/updateDynamicWorkflowPolicy。有本机设置权威的 Host 以设置文件为准；
-   * desktop-attached remote Host 以传入值为准（缺席 = 跟随服务端）。不得为此启动空闲 Agent。
-   * Host 记下选择即返回，不等 CLI 应答；返回后重读的可用性快照已是新模式。
-   */
-  syncDynamicWorkflowUserMode(params: { mode?: DynamicWorkflowMode }): Promise<void>;
   getWorkspaceRuntimeIdentity(
     params: AiraAgentWorkspaceTarget,
   ): Promise<AiraAgentWorkspaceRuntimeIdentity>;
@@ -726,30 +610,6 @@ export interface IAiraAgentService {
     params: AiraAgentListSessionSubagentsParams,
   ): Promise<AiraSessionSubagentsResult>;
   getAppUsageStats(params: AiraAgentAppUsageParams): Promise<AppUsageSnapshot>;
-  previewSessionDeletion?(params: V4SessionDeletionParams): Promise<V4SessionDeletionPreview>;
-  executeSessionDeletion?(params: V4SessionDeletionExecuteParams): Promise<V4SessionDeletionResult>;
-  /** 项目数据删除前的测量：只读，用本机已有 runtime 或管理面进程，不为某个项目拉起 Agent。 */
-  measureSessionData?(params: V4SessionDataParams): Promise<V4SessionDataMeasureResult>;
-  /**
-   * 彻底删除会话与目录记忆。workspace 已有 Agent 进程时交给它（它持有会话运行态，能判断运行中
-   * 并释放已加载会话）；否则交给管理面进程。只用于本机。
-   */
-  purgeSessionData?(
-    params: V4SessionDataParams & { workspace: AiraAgentWorkspaceTarget },
-  ): Promise<V4SessionDataPurgeResult>;
-  /** 该 workspace 的 CLI 是否在 runtime/capabilities 中声明 worktreeCwd（只供 Host 进程内调用）。 */
-  supportsWorktreeCwd?(target: AiraAgentWorkspaceTarget): Promise<boolean>;
-  /**
-   * 该 workspace 的 CLI 是否在 runtime/capabilities 中声明 extensionInputSource（只供 Host 进程内调用）。
-   * 代扩展发消息前必须确认；false 时调用方报 unavailable，不去掉来源后发送
-   * （apps/aira-cli/docs/design/v2/conversation-input-source.md §7）。
-   */
-  supportsExtensionInputSource?(target: AiraAgentWorkspaceTarget): Promise<boolean>;
-  /**
-   * 该 workspace 的 CLI 是否在 runtime/capabilities 中声明 conversationQuoteComment。
-   * renderer 据此决定是否提供选区“批注”入口；未实现（旧 Host / 远端）按不支持处理。
-   */
-  supportsConversationQuoteComment?(target: AiraAgentWorkspaceTarget): Promise<boolean>;
   getTaskTokenUsage(params: AiraAgentTaskTokenUsageParams): Promise<AiraTaskTokenUsageResult>;
   readSession(params: AiraAgentReadSessionParams): Promise<AiraSessionStateSnapshot>;
   readSessionMessages(
@@ -764,7 +624,6 @@ export interface IAiraAgentService {
   grantWorkspaceHookTrust(
     params: AiraAgentGrantWorkspaceHookTrustParams,
   ): Promise<AiraWorkspaceHookTrustGrantResult>;
-  setWorkspaceMcpTrust(params: WorkspaceMcpTrustDecision): Promise<AiraWorkspaceMcpTrustResult>;
   listMcpServerStatuses(params: AiraAgentListMcpServerStatusesParams): Promise<AiraMcpListResult>;
   listPlugins(params: AiraAgentPluginViewParams): Promise<AiraPluginsListResult>;
   /**
@@ -852,15 +711,6 @@ export interface IAiraAgentService {
   // 在项目档 / 全局档之间移动同名文件：
   // `workspace` 是载体（移到项目传目标项目、移到全局传源项目），`to` 是落点档；不覆盖已存在的目标。
   moveSavedWorkflow(params: AiraAgentMoveSavedWorkflowParams): Promise<AiraWorkflowsMoveResult>;
-  // 完成卡的「直接保存」（docs/dynamic-workflow/transcript-and-notifications.md）：按 runId 从
-  // journal 取这次 run 实际跑过的脚本落盘，不经模型回合。两者都必带 workspace（journal 在那里）。
-  saveSavedWorkflowFromRun(
-    params: AiraAgentSaveSavedWorkflowFromRunParams,
-  ): Promise<AiraWorkflowsSaveResult>;
-  /** 这次 run 对应哪个已保存工作流（推导，不记忆）；顺带回 run 的实参供「再次运行」预填。 */
-  findSavedWorkflowForRun(
-    params: AiraAgentFindSavedWorkflowForRunParams,
-  ): Promise<AiraWorkflowsForRunResult>;
   resolveSuggestedPluginReference(
     params: AiraAgentResolveSuggestedPluginReferenceParams,
   ): Promise<import("@aira/shared").AiraPluginsResolveSuggestedReferenceResult>;
@@ -929,51 +779,12 @@ export interface IAiraAgentService {
   closeSession(
     params: AiraAgentSessionTarget & { expectedPersistence?: "deferred" | "immediate" },
   ): Promise<boolean>;
-  /**
-   * 卸载 cwd 位于 directory 内的全部驻留会话（session/releaseUnderDirectory，docs/git/worktree.md §8.3）。
-   * 会话选择与忙闲由 CLI 判断，任一会话忙时全部不卸载。只使用已存在的进程；没有进程时没有驻留会话。
-   */
-  releaseSessionsUnderDirectory?(
-    params: AiraAgentWorkspaceTarget & { directory: string },
-  ): Promise<{ released: string[]; busy: string[] }>;
-  /**
-   * 按 commandId 查询 CLI 对一条命令的裁决（commands/query）；Host 内部用于确认失败的会话命令
-   * 是否实际执行（docs/git/worktree.md §3.5）。CLI 没有记录时返回 "unknown"。
-   */
-  queryCommandResult?(
-    params: AiraAgentWorkspaceTarget & { key: CommandKey },
-  ): Promise<CommandAck | "unknown">;
   setModel(params: AiraAgentSetModelParams): Promise<AiraSessionStateSnapshot>;
   setThoughtLevel(params: AiraAgentSetThoughtLevelParams): Promise<AiraSessionStateSnapshot>;
   setMode(params: AiraAgentSetModeParams): Promise<AiraSessionStateSnapshot>;
-  respondProviderRuntimeHeaders(
-    params: AiraAgentRespondProviderRuntimeHeadersParams,
-  ): Promise<void>;
   respondSessionRuntimePreferences(
     params: AiraAgentRespondSessionRuntimePreferencesParams,
   ): Promise<void>;
-  /**
-   * v4 UI 的 Start Plan runtime-auth bridge 只需要本地 pending request 事件，
-   * 不能为此额外打开旧 `session/subscribe`，否则会把旧 replay/continuous 读路径
-   * 重新带回 v4 pane。
-   */
-  onDynamicProviderRuntimeHeadersRequest(
-    params: AiraAgentSessionTarget,
-  ): Event<AiraAgentProviderRuntimeHeadersRequest>;
-  /**
-   * Start Plan runtime headers 的 workspace 级订阅入口（生产应答方使用）。
-   * Bug 原因（2026-08-16 web 远控卡死）：session 级入口只随桌面 pane 挂载订阅，
-   * web 远控新建会话在桌面没有 pane、web 端无应答方，请求校验请求滞留 pending，
-   * 任务永久「工作中」。桌面窗口用本入口为每个打开的 workspace tab 维持常驻应答方；
-   * 订阅时先注册 live listener 再按 workspaceKey 前缀补投 pending，与 session 级同语义。
-   */
-  onDynamicWorkspaceProviderRuntimeHeadersRequest(
-    params: AiraAgentWorkspaceTarget,
-  ): Event<AiraAgentProviderRuntimeHeadersRequest>;
-  /** 只投递本 workspace 的校验取消，不属于 conversation stream。 */
-  onDynamicWorkspaceProviderRuntimeHeadersCancelled(
-    params: AiraAgentWorkspaceTarget,
-  ): Event<AiraProviderRuntimeHeadersCancelled>;
   onDynamicSessionRuntimePreferencesRequest(): Event<AiraAgentSessionRuntimePreferencesRequest>;
   /**
    * CLI 进程级资源样本，带 services 打的 lane 标签（CLI 自己不知道 lane）。
@@ -981,12 +792,7 @@ export interface IAiraAgentService {
    * 该事件不属于 session/conversation continuous 或 replayable 状态。
    */
   onDynamicProcessResourceSample(): Event<AgentLaneResourceSample>;
-  /** 插件启动超时的工作区提示；订阅时补投当前进程的降级事实。 */
-  onDynamicPluginStartupDegraded(params: AiraAgentWorkspaceTarget): Event<void>;
   /** MCP 进程生命周期与低频内存事件，仅供可信 Host relay 上报 ARMS。 */
-  /** 仅 trusted Host relay 订阅；手机统计不依赖 renderer 生命周期。 */
-  onDynamicRemoteConversationTelemetry(): Event<RemoteConversationTelemetryEvent>;
-
   onDynamicMcpTelemetry(): Event<AiraMcpTelemetryEvent>;
   /** MCP 进程树资源事实，只供可信 Host 汇总上报。 */
   onDynamicMcpResourceSamples(): Event<AiraMcpResourceSample[]>;
@@ -1020,10 +826,6 @@ export interface IAiraAgentService {
   conversationPlansV4(
     params: AiraAgentConversationPlansParams,
   ): Promise<V4ConversationPlansResult>;
-  /** 输入预测：只读、无状态；Host 开关关闭 / 无运行时 / 失败一律回空结果，不抛错。 */
-  conversationInputPredictionV4(
-    params: AiraAgentConversationInputPredictionParams,
-  ): Promise<V4ConversationInputPredictionResult>;
   /** workflow run 事件日志分页；与 plans 同族（只读、无状态、超时重发安全）。 */
   conversationWorkflowRunEventsV4(
     params: AiraAgentConversationWorkflowRunEventsParams,
@@ -1081,16 +883,6 @@ export interface IAiraAgentService {
   conversationAttachmentStatV4(
     params: AiraAgentConversationAttachmentStatParams,
   ): Promise<V4ConversationAttachmentStatResult>;
-  getSessionLifecycle(
-    params: AiraAgentSessionTarget,
-  ): Promise<import("@aira/shared").SessionLifecycleSnapshot | null>;
-  ensureSessionReady(params: AiraAgentSessionTarget): Promise<void>;
-  stopSessionRuntime(params: AiraAgentSessionTarget): Promise<void>;
-  restartSessionRuntime(params: AiraAgentSessionTarget): Promise<void>;
-  /** 独立于可被释放的 conversation publisher 的生命周期事实。 */
-  onDynamicSessionLifecycle(
-    params: AiraAgentWorkspaceTarget,
-  ): Event<import("@aira/shared").SessionLifecycleSnapshot>;
   /** workspace 级下行帧流（v4/conversation/frame），renderer 侧按 topic 自行路由。 */
   onDynamicConversationFrame(
     params: AiraAgentWorkspaceTarget,
@@ -1102,52 +894,9 @@ export interface IAiraAgentService {
   onDynamicConversationTelemetryFact(
     params: AiraAgentWorkspaceTarget,
   ): Event<ConversationTelemetryFact>;
-  /**
-   * context 组成（apps/aira-cli/docs/design/v2/model/context-composition.md §3.6）。
-   * existing-only：工作区没有运行中的 CLI、会话不在内存、旧 CLI（method-not-found）都返回 null，不启动 CLI。
-   */
-  getContextComposition?(
-    params: AiraAgentContextCompositionParams,
-  ): Promise<ContextComposition | null>;
-  // 注意：读本插件 user 层设置（含敏感值）的 readPluginUserOptions 故意不在本接口上。本服务整个
-  // AiraAgent 频道经 RPC 暴露（桌面 Renderer；手机远控 allowlist 也含它），挂在这里就会被任意客户端调到。
-  // Window Host 经 node.ts 的 getPluginUserOptionsReader(services) 在进程内取得（见 pluginHostQueriesClient.ts）。
-  /**
-   * 输入框 `@` 面板 `tool` target 的候选项（docs/plugins/extension-host.md §16.6）。existing-only：
-   * 没有运行中的 CLI 抛 runtime-unavailable；会话不在 CLI 内存抛 -32004；其他失败的 `data.code` 是
-   * `plugin_mention_*`。工具调用走会话的 MCP App 授权链，首次可能在会话里等待用户审批。
-   * 旧 CLI（method-not-found）→ `{ supported: false }`。不设计取消，调用方只采用最新一次结果。
-   */
-  getPluginMentionItems?(
-    params: AiraAgentPluginMentionItemsParams,
-  ): Promise<AiraAgentPluginMentionItemsResult>;
-  /** context 组成变更：只带修订号，live-only；收到后按需调 getContextComposition。 */
-  onDynamicContextCompositionChanged?(
-    target: AiraAgentWorkspaceTarget,
-  ): Event<ContextCompositionChangedEvent>;
-  /**
-   * 模型请求指标（docs/monitoring/conversation-telemetry-v4.md「模型请求指标」）：每个完成的请求一条，
-   * 带 usage 与首内容时间；按 querySource 区分主轮与旁路。旧 CLI 不发。
-   */
-  onDynamicModelRequestMetrics?(target: AiraAgentWorkspaceTarget): Event<ModelRequestMetricsFact>;
-  /** Host 消费驻留 CLI 的闲时生命周期；不参与聊天快照恢复。 */
-  onDynamicOffPeakLifecycle(
-    params: AiraAgentWorkspaceTarget,
-  ): Event<import("@aira/shared").OffPeakLifecycleNotification>;
-  controlOffPeakExecutionV4(
-    params: AiraAgentWorkspaceTarget & { control: import("@aira/shared").OffPeakControlParams },
-  ): Promise<import("@aira/shared").OffPeakControlResult>;
   /** 当前窗口全部本地 live task 的 CUA 权限观察；历史、远程与 replayable 不在此事件面。 */
   onDynamicCuaPermissionObservation(): Event<AiraAgentCuaPermissionObservation>;
-  /** 本地桌面窗口创建插件页面，不依赖 conversation 订阅。 */
-  onDynamicPluginUiToolResult(): Event<
-    PluginUiToolResultNotification & { workspacePath: string; workspaceIdentity?: string }
-  >;
-  /** 只读 CLI 持久事实；不恢复会话运行实例。旧远端可以不提供此能力。 */
-  reconcileSessionsIndexV4?(
-    params: AiraAgentWorkspaceTarget & { sessionIds: string[] },
-  ): Promise<SessionsIndexReconcileResult>;
-  // ── M5 sessions-index 通道（列表活性）──
+  // ── sessions-index 通道（列表活性）──
   subscribeSessionsIndexV4(
     params: AiraAgentSessionsIndexSubscribeParams,
   ): Promise<V4SessionsIndexSubscribeResult>;
@@ -1184,13 +933,9 @@ export interface IAiraAgentService {
   onAgentRuntimeLifecycle?: (
     listener: (event: AiraAgentRuntimeLifecycleEvent) => void,
   ) => IDisposable;
-  /** 当前 runtime 进程意外退出；界面据此提示原因并提供重新连接。 */
-  onAgentRuntimeExited?: (listener: (event: AiraAgentRuntimeExitedEvent) => void) => IDisposable;
   /** 当前 desktop-local CUA turn 是否仍在执行，用于 Helper recovery 避免中途回收 Agent。 */
   hasActiveCuaOperationTurn(): boolean;
-  disposeWorkspace(
-    params: AiraAgentWorkspaceTarget & { releasePreparation?: boolean },
-  ): Promise<void>;
+  disposeWorkspace(params: AiraAgentWorkspaceTarget): Promise<void>;
   disposeAll(): void;
 }
 

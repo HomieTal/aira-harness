@@ -98,8 +98,6 @@ export interface McpAppResourceMeta {
   heightHint?: number;
   minFrameHeight?: number;
   showInline?: boolean;
-  /** 资源级显式后台保留申请；缺省不保留，实际回收由宿主裁决。 */
-  backgroundRetention?: boolean;
 }
 /** 随沙箱句柄回到 renderer 的资源级呈现信息；CSP 与放宽只在 main 生效，不回传。 */
 export type PluginSandboxResourceMeta = Omit<McpAppResourceMeta, "csp" | "cspRelaxations">;
@@ -141,11 +139,27 @@ export const MCP_APPS_HTML_MIME_TYPES = [MCP_APPS_RESOURCE_MIME_TYPE, "text/html
  */
 export const MCP_APPS_IMAGE_MIME_TYPES = ["image/png", "image/jpeg", "image/webp"] as const;
 export const MCP_APPS_IMAGE_MAX_BYTES = 4 * 1024 * 1024;
-export {
-  MCP_APPS_UI_READ_RESOURCE_MAX_BYTES,
-  MCP_APPS_UI_READ_RESOURCE_MIME_ALLOWLIST,
-  isMcpAppsUiReadResourceMimeAllowed,
-} from "./resourceMime.js";
+/**
+ * 页面发起的 `resources/read`（`mcp/uiReadResource`）单次结果总大小上限，以及 mimeType 白名单。
+ * 白名单项以 `/` 结尾表示前缀匹配（如 `text/`），否则精确匹配（忽略参数与大小写）。
+ */
+export const MCP_APPS_UI_READ_RESOURCE_MAX_BYTES = 8 * 1024 * 1024;
+export const MCP_APPS_UI_READ_RESOURCE_MIME_ALLOWLIST: readonly string[] = [
+  "text/",
+  "application/json",
+  "image/png",
+  "image/jpeg",
+  "image/webp",
+  "model/gltf-binary",
+  "application/octet-stream",
+];
+export function isMcpAppsUiReadResourceMimeAllowed(mimeType: string): boolean {
+  const essence = mimeType.split(";")[0]!.trim().toLowerCase();
+  if (!essence) return false;
+  return MCP_APPS_UI_READ_RESOURCE_MIME_ALLOWLIST.some((entry) =>
+    entry.endsWith("/") ? essence.startsWith(entry) : essence === entry,
+  );
+}
 
 /**
  * `hostCapabilities.experimental` 里 Aira 扩展的键。官方 SDK 的 zod 会剥掉标准位之外的未知能力键，
@@ -154,11 +168,6 @@ export {
 export const MCP_APPS_WIDGET_STATE_EXPERIMENTAL_KEY = "aira/widgetState";
 export const MCP_APPS_RESOURCE_SUBSCRIBE_EXPERIMENTAL_KEY = "aira/resourceSubscribe";
 export const MCP_APPS_SURFACE_EXPERIMENTAL_KEY = "aira/surface";
-/**
- * 宿主允许插件文档内部创建子 frame（srcdoc / about:blank 预览、声明的 frameDomains）而不把它当作页面重载撤销实例。
- * 旧宿主会在子 frame 导航时停止页面；需要嵌套预览的插件据此键降级，而不是创建 frame 后被释放。
- */
-export const MCP_APPS_NESTED_FRAMES_EXPERIMENTAL_KEY = "aira/nestedFrames";
 /**
  * Aira 扩展方法 `ui/set-widget-state { widgetState }`（MCP Apps 无 widgetState）：页面把界面状态交给宿主
  * renderer 内存保存（不持久化，会话内重挂载可恢复）；初值经 hostContext 的 `aira/widgetState` 键随握手下发。
@@ -192,8 +201,6 @@ export interface PluginSandboxPlatformPort {
   supportsRetainedMove?: boolean;
   /** 仅宿主操作可用；Main 校验 owner/代次后复制当前页面内容。 */
   copyImage?(input: PluginSandboxCaptureRequest): Promise<void>;
-  /** 只为指定代际的 MCP guest 保持可逆后台执行；不改变窗口或其他页面的节流。 */
-  setExecutionActive?(sandboxId: string, initId: number, active: boolean): Promise<void>;
   /** 宿主窗口 webContents id；prepareSandbox 用它作为 owner，main 在 will-attach 时校验。 */
   getOwnerWebContentsId(): Promise<number>;
   /**
@@ -223,14 +230,21 @@ export function buildPluginSandboxScopeId(scope: PluginUiScopeRef): string {
   return scope.kind === "toolCall" ? `tool:${scope.toolCallId}` : `surface:${scope.surfaceId}`;
 }
 
-interface PluginSandboxRegisterRequestBase {
+/** host → main 登记沙箱内容的消息载荷（模式同 LocalMediaPreviewPathAuthorize*）。 */
+export interface PluginSandboxRegisterRequestPayload {
   instance: import("./instance.js").McpAppInstance;
   requestId: string;
   /** 工作区隔离；旧调用允许缺省，新宿主登记须贯穿实际 workspace 范围。 */
   workspacePath?: string;
   workspaceIdentity?: string;
   ownerWebContentsId: number;
-  /** `buildPluginSandboxScopeId` 的结果：`tool:<toolCallId>` 或 `surface:<surfaceId>`；扩展视图为 `extension-view:<实例 id>`。 */
+  sessionId: string;
+  /** Gen UI has Host provenance and never impersonates an MCP plugin. */
+  contentKind?: "gen-ui";
+  pluginId?: string;
+  /** 资源所属的 MCP server 运行时名；沙箱 partition 按它派生（同一 server 的页面共享一份持久存储）。 */
+  serverName?: string;
+  /** `buildPluginSandboxScopeId` 的结果：`tool:<toolCallId>` 或 `surface:<surfaceId>`。 */
   scopeId: string;
   html: string;
   /** 有效 CSP：资源级优先，工具级兜底（host plugin-ui-bridge 已合并）。 */
@@ -245,45 +259,9 @@ interface PluginSandboxRegisterRequestBase {
   minFrameHeight?: number;
   /** 资源级强制常驻标记，随句柄 resourceMeta 回 renderer。 */
   showInline?: boolean;
-  backgroundRetention?: boolean;
 }
-
-/**
- * host → main 登记沙箱内容的消息载荷（模式同 LocalMediaPreviewPathAuthorize*）。
- * 只有扩展视图（docs/plugins/extension-host.md §8）不属于会话：它不填 sessionId，也不伪造会话 id；
- * MCP App 与 Gen UI 仍必须带会话。运行时校验见 validation.ts 的登记 schema 与 Main 注册表。
- */
-export type PluginSandboxRegisterRequestPayload = PluginSandboxRegisterRequestBase &
-  (
-    | {
-        contentKind?: undefined;
-        sessionId: string;
-        pluginId: string;
-        /** 资源所属的 MCP server 运行时名；沙箱 partition 按它派生（同一 server 的页面共享一份持久存储）。 */
-        serverName: string;
-      }
-    | {
-        /** Gen UI has Host provenance and never impersonates an MCP plugin. */
-        contentKind: "gen-ui";
-        sessionId: string;
-        pluginId?: undefined;
-        serverName?: undefined;
-      }
-    | {
-        /** 扩展视图：Window Host 签发凭证，appIdentity 按插件派生；没有会话与 MCP server 名。 */
-        contentKind: "extension";
-        sessionId?: undefined;
-        pluginId: string;
-        serverName?: undefined;
-      }
-  );
-
-type DistributiveOmit<T, K extends PropertyKey> = T extends unknown ? Omit<T, K> : never;
 /** host 内部使用的登记输入：去掉传输层 requestId。 */
-export type PluginSandboxRegisterInput = DistributiveOmit<
-  PluginSandboxRegisterRequestPayload,
-  "requestId"
->;
+export type PluginSandboxRegisterInput = Omit<PluginSandboxRegisterRequestPayload, "requestId">;
 export interface PluginSandboxHandle {
   instance: import("./instance.js").McpAppInstance;
   sandboxId: string;

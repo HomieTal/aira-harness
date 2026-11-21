@@ -1,9 +1,4 @@
 export * from "./contract.js";
-export {
-  registerPluginUiPaneSession,
-  usePluginUiPaneTarget,
-} from "./adapters/pluginUiPaneSession.js";
-export { PluginUiBackgroundHost } from "./adapters/PluginUiBackgroundHost.js";
 export { createPluginUiMessagePortTransport } from "./adapters/messagePortTransport.js";
 export { createPluginUiPagePlane } from "./adapters/pluginUiPagePlane.js";
 export { readPluginUiStyleVariables } from "./adapters/readPluginUiStyleVariables.js";
@@ -16,13 +11,12 @@ export {
   type PluginUiRowPinResolver,
 } from "./domain/pluginUiRowPolicy.js";
 export {
-  createLogicalUiInstancesSelector,
   deriveLogicalUiInstances,
   type PluginUiInstanceDerivation,
 } from "./domain/pluginUiInstancePolicy.js";
 export {
   getPluginUiManualPin,
-  getPluginUiDisclosureSnapshot,
+  getPluginUiDisclosureVersion,
   subscribePluginUiDisclosure,
 } from "./app/pluginUiDisclosureStore.js";
 export { setPluginUiInstanceDerivation } from "./app/pluginUiInstanceStore.js";
@@ -38,18 +32,12 @@ export {
   usePluginUiToolBinding,
 } from "./adapters/PluginUiProviders.js";
 export { usePluginUiModelContexts } from "./adapters/pluginUiModelContextEvents.js";
-export {
-  useContextImageAttachments,
-  usePluginUiContextImages,
-  type ContextImageAttachmentsOptions,
-  type ContextImageAttachmentsPort,
-} from "./adapters/usePluginUiContextImages.js";
+export { usePluginUiContextImages } from "./adapters/usePluginUiContextImages.js";
 export { PluginUiModelContextChip } from "./adapters/PluginUiModelContextChip.js";
 export { PluginUiFollowUpDialogHost } from "./components/PluginUiFollowUpDialogHost.js";
 export { PluginUiSidePane } from "./PluginUiSidePane.js";
 export {
   PluginUiLauncherItems,
-  SidePaneLauncherRow,
   buildPluginUiLauncherItemId,
 } from "@/plugin-ui/components/PluginUiLauncherItems.js";
 export {
@@ -60,6 +48,3 @@ export {
   openPluginUiSidePane,
   type OpenScopedPluginUiSideTabRequest,
 } from "./sidePane/pluginUiSidePaneTab.js";
-
-export { useMarketPluginUi, type MarketPluginUiTarget } from "./adapters/useMarketPluginUi.js";
-export { useUiPluginRecommendations } from "@/plugin-ui/adapters/useUiPluginRecommendations.js";

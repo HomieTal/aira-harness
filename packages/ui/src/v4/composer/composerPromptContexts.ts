@@ -3,6 +3,7 @@ import {
   parsePromptCodeComments,
   type CodeCommentComposerAttachment,
 } from "@/lib/codeCommentContext.js";
+import { stripGenUiModelContext } from "@aira/shared/gen-ui";
 import {
   buildPromptWithConversationSelections,
   parsePromptConversationSelections,
