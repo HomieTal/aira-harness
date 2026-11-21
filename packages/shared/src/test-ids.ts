@@ -1053,7 +1053,6 @@ export const TID_PROMPT_SUGGESTION_SECTION = "prompt-suggestion-section";
 export const TID_PROMPT_SUGGESTION_OPTION = "prompt-suggestion-option";
 /** 聊天输入框前缀提示状态行（动态后缀为分组 id） */
 export const TID_PROMPT_SUGGESTION_STATUS = "prompt-suggestion-status";
-
 export const TID_WORKSPACE_LIST = "workspace-list";
 /** 侧边栏工作区条目（动态后缀为 workspacePath） */
 export const TID_WORKSPACE_ITEM = "workspace-item";
@@ -1161,7 +1160,6 @@ export const TID_PROMPT_SUGGESTION_SECTION = "prompt-suggestion-section";
 export const TID_PROMPT_SUGGESTION_OPTION = "prompt-suggestion-option";
 /** 聊天输入框前缀提示状态行（动态后缀为分组 id） */
 export const TID_PROMPT_SUGGESTION_STATUS = "prompt-suggestion-status";
-
 export const TID_WORKSPACE_ITEM = "workspace-item";
 /** 侧边栏关闭工作区按钮（动态后缀为 workspacePath） */
 export const TID_WORKSPACE_CLOSE = "workspace-close";
@@ -1267,7 +1265,6 @@ export const TID_PROMPT_SUGGESTION_SECTION = "prompt-suggestion-section";
 export const TID_PROMPT_SUGGESTION_OPTION = "prompt-suggestion-option";
 /** 聊天输入框前缀提示状态行（动态后缀为分组 id） */
 export const TID_PROMPT_SUGGESTION_STATUS = "prompt-suggestion-status";
-
 export const TID_WORKSPACE_CLOSE = "workspace-close";
 /** 项目视图里的对话二级分区 */
 export const TID_CONVERSATION_SECTION = "conversation-section";
@@ -1371,7 +1368,6 @@ export const TID_PROMPT_SUGGESTION_SECTION = "prompt-suggestion-section";
 export const TID_PROMPT_SUGGESTION_OPTION = "prompt-suggestion-option";
 /** 聊天输入框前缀提示状态行（动态后缀为分组 id） */
 export const TID_PROMPT_SUGGESTION_STATUS = "prompt-suggestion-status";
-
 export const TID_CONVERSATION_NEW_TASK = "conversation-new-task";
 /** 项目分区添加菜单按钮 */
 export const TID_PROJECT_ADD = "project-add";
@@ -1469,7 +1465,6 @@ export const TID_PROMPT_SUGGESTION_SECTION = "prompt-suggestion-section";
 export const TID_PROMPT_SUGGESTION_OPTION = "prompt-suggestion-option";
 /** 聊天输入框前缀提示状态行（动态后缀为分组 id） */
 export const TID_PROMPT_SUGGESTION_STATUS = "prompt-suggestion-status";
-
 export const TID_PROJECT_ADD = "project-add";
 /** Composer workspace 选择触发器 */
 export const TID_COMPOSER_WORKSPACE_TRIGGER = "composer-workspace-trigger";
@@ -1565,11 +1560,9 @@ export const TID_PROMPT_SUGGESTION_SECTION = "prompt-suggestion-section";
 export const TID_PROMPT_SUGGESTION_OPTION = "prompt-suggestion-option";
 /** 聊天输入框前缀提示状态行（动态后缀为分组 id） */
 export const TID_PROMPT_SUGGESTION_STATUS = "prompt-suggestion-status";
-
 export const TID_SIDEBAR_USAGE_REMAINING_TRIGGER = "sidebar-usage-remaining-trigger";
 /** 侧边栏头像菜单使用统计入口 */
 export const TID_SIDEBAR_CODING_PLAN_USAGE_BUTTON = "sidebar-coding-plan-usage-button";
-
 export const TID_WORKSPACE_FILE_TREE_BUTTON = "workspace-file-tree-button";
 /** 工作区文件树面板 */
 export const TID_WORKSPACE_FILE_TREE_PANEL = "workspace-file-tree-panel";
@@ -1582,7 +1575,6 @@ export const TID_WORKSPACE_FILE_TREE_ROW = "workspace-file-tree-row";
 export const TID_SSH_ERROR = "ssh-error";
 /** SSH 连接成功提示 */
 export const TID_SSH_SUCCESS = "ssh-success";
-
 export const TID_V4_TIMELINE_EMPTY = "v4-timeline-empty";
 /** v4 投影行（动态后缀为 rowId） */
 export const TID_V4_ROW = "v4-row";
@@ -1728,7 +1720,6 @@ export const TID_V4_SUBAGENT_OPEN_SPLIT = "v4-subagent-open-split";
 export const TID_V4_SUBAGENT_OPEN_SIDE_PANE = "v4-subagent-open-side-pane";
 /** v4 userInput 行附件列表（动态后缀为 rowId） */
 export const TID_V4_ROW_ATTACHMENTS = "v4-row-attachments";
-
 export const TID_V4_WORKSPACE_HOOK_PENDING_BANNER = "v4-workspace-hook-pending-banner";
 /** v4 工作区 Hook 待审核提示条「去审核」按钮 */
 export const TID_V4_WORKSPACE_HOOK_PENDING_REVIEW = "v4-workspace-hook-pending-review";
@@ -1870,7 +1861,6 @@ export const TID_V4_SUBAGENT_OPEN_SPLIT = "v4-subagent-open-split";
 export const TID_V4_SUBAGENT_OPEN_SIDE_PANE = "v4-subagent-open-side-pane";
 /** v4 userInput 行附件列表（动态后缀为 rowId） */
 export const TID_V4_ROW_ATTACHMENTS = "v4-row-attachments";
-
 export const TID_V4_TASK_OPEN_IN_SPLIT = "v4-task-open-in-split";
 /** v4 时间线「加载更早」按钮（游标分页；窗口首行未到全序首行时出现） */
 export const TID_V4_TIMELINE_LOAD_OLDER = "v4-timeline-load-older";
