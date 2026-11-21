@@ -47,7 +47,7 @@ export function handleSecondInstanceWorkspaceRequest(deps: SecondInstanceWorkspa
       resolveApplicationWindow: deps.resolveApplicationWindow,
       onWorkspaceOpenBlocked: () => {
         deps.logger.warn(
-          "[force-update] 已忽略强制升级期间的 second-instance workspace deep link 请求",
+          "[force-update] Ignored second-instance workspace deep-link request during forced update",
         );
         deps.focusForceUpdateGateWindow();
       },

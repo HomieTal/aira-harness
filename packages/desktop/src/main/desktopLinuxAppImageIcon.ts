@@ -48,7 +48,7 @@ export function installLinuxAppImageDesktopIcon(params: {
 }): { iconFilePath: string; installed: boolean; changed: boolean } {
   const iconFilePath = resolveLinuxUserIconFilePath(params.dataDir);
   if (!existsSync(params.iconSourcePath)) {
-    params.logger.warn("[deep-link] Linux AppImage 图标源文件不存在，跳过用户级图标安装", {
+    params.logger.warn("[deep-link] Linux AppImage icon source file missing; skipping user-level icon install", {
       iconSourcePath: params.iconSourcePath,
       iconFilePath,
     });
@@ -70,17 +70,17 @@ export function installLinuxAppImageDesktopIcon(params: {
     join(params.dataDir, "icons", "hicolor"),
   ]);
   if (cacheResult.error) {
-    params.logger.warn("[deep-link] gtk-update-icon-cache 不可用，已跳过", {
+    params.logger.warn("[deep-link] gtk-update-icon-cache unavailable; skipped", {
       iconFilePath,
       message: cacheResult.error.message,
     });
   } else if (cacheResult.signal === "SIGTERM") {
-    params.logger.warn("[deep-link] Linux 用户级图标缓存刷新超时，已跳过", {
+    params.logger.warn("[deep-link] Linux user-level icon cache refresh timed out; skipped", {
       iconFilePath,
       timeoutMs: XDG_COMMAND_TIMEOUT_MS,
     });
   } else if (cacheResult.status !== 0) {
-    params.logger.warn("[deep-link] Linux 用户级图标缓存刷新失败", {
+    params.logger.warn("[deep-link] Linux user-level icon cache refresh failed", {
       iconFilePath,
       status: cacheResult.status,
       stderr: cacheResult.stderr?.trim(),
@@ -115,7 +115,7 @@ export function installLinuxAppImageDesktopIconBestEffort(params: {
       runCommand: params.runCommand,
     });
   } catch (error) {
-    params.logger.warn("[deep-link] Linux AppImage 图标安装失败，已降级", {
+    params.logger.warn("[deep-link] Linux AppImage icon install failed; degraded gracefully", {
       iconSourcePath: params.iconSourcePath,
       error,
     });

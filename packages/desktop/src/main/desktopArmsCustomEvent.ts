@@ -38,15 +38,15 @@ function cloneFinalPayload(payload: FinalArmsCustomEventPayload): FinalArmsCusto
 
 function normalizeSuppressedEventNames(value: unknown): string[] {
   if (!Array.isArray(value) || value.length > MAX_SUPPRESSED_EVENT_NAMES) {
-    throw new Error("suppressedEventNames 必须是最多 100 项的字符串数组");
+    throw new Error("suppressedEventNames must be an array of at most 100 strings");
   }
   const names = value.map((item) => {
     if (typeof item !== "string") {
-      throw new Error("suppressedEventNames 只能包含字符串");
+      throw new Error("suppressedEventNames may only contain strings");
     }
     const normalized = item.trim();
     if (!normalized || normalized.length > MAX_EVENT_NAME_LENGTH) {
-      throw new Error("suppressedEventNames 包含空值或超长 event name");
+      throw new Error("suppressedEventNames contains empty or oversized event names");
     }
     return normalized;
   });

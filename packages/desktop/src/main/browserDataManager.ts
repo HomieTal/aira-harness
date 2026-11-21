@@ -156,7 +156,7 @@ export async function importChromeBrowserData(options: {
   const issues = new Set<ChromeBrowserDataImportError>();
 
   try {
-    options.logger.info("[browser-data] 开始导入 Chrome 浏览器数据", {
+    options.logger.info("[browser-data] Starting Chrome browser data import", {
       browser: discovered?.source.browser ?? "explicit-profile",
       profile: discovered?.source.profileDirectory ?? "explicit-profile",
     });
@@ -177,7 +177,7 @@ export async function importChromeBrowserData(options: {
     for (const issue of cookieImport.issues) issues.add(issue);
 
     const localStorageImporter = options.localStorageImporter ?? importChromeLocalStorage;
-    options.logger.info("[browser-data] 开始导入 Chrome LocalStorage");
+    options.logger.info("[browser-data] Starting Chrome LocalStorage import");
     result.localStorage = await localStorageImporter({
       profilePath,
       targetSession: targetSession as Electron.Session,
@@ -204,7 +204,7 @@ export async function importChromeBrowserData(options: {
       result.error ??= result.localStorage.error ?? "chrome_browser_data_import_unavailable";
     }
     if (issues.size > 0) result.issues = [...issues];
-    options.logger.info("[browser-data] Chrome 数据导入完成", {
+    options.logger.info("[browser-data] Chrome data import completed", {
       importedCount: result.cookies.imported,
       skippedCount: result.cookies.skipped,
       failedCount: result.cookies.failed,
@@ -218,14 +218,14 @@ export async function importChromeBrowserData(options: {
     if (error instanceof ChromeCookieAccessDeniedError) {
       // macOS 用户拒绝钥匙串授权后，导入必须作为一个整体停止，不能再进入
       // LocalStorage 阶段；返回稳定错误码给 renderer 展示明确提示。
-      options.logger.warn("[browser-data] Chrome 数据导入已取消：macOS 钥匙串授权被拒绝");
+      options.logger.warn("[browser-data] Chrome data import cancelled: macOS Keychain authorization denied");
       return {
         ...result,
         error: "chrome_cookie_access_denied",
       };
     }
     // 只记录错误类型/错误码，不记录 Cookie、LocalStorage 值或绝对 Profile 路径。
-    options.logger.warn("[browser-data] Chrome 数据导入失败", toSafeBrowserDataError(error));
+    options.logger.warn("[browser-data] Chrome data import failed", toSafeBrowserDataError(error));
     return {
       ...result,
       ...(issues.size > 0 ? { issues: [...issues] } : {}),
@@ -251,10 +251,10 @@ export async function clearEmbeddedBrowserData(options: {
       // 普通缓存清理不能删除承载登录态的 LocalStorage/IndexedDB。
       await targetSession.clearStorageData({ storages: CACHE_STORAGE_TYPES });
     }
-    options.logger.info("[browser-data] 内置浏览器数据清理完成", { mode: options.mode });
+    options.logger.info("[browser-data] Built-in browser data cleanup completed", { mode: options.mode });
     return { success: true };
   } catch {
-    options.logger.warn("[browser-data] 内置浏览器数据清理失败", { mode: options.mode });
+    options.logger.warn("[browser-data] Built-in browser data cleanup failed", { mode: options.mode });
     return { success: false, error: "embedded_browser_clear_failed" };
   }
 }

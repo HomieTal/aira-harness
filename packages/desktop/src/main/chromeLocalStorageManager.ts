@@ -106,7 +106,7 @@ export async function cleanupChromeHelperTempRoot(options: {
     // Linux Chrome 的 crashpad/子进程可能在主 helper 退出后短暂继续写临时 Profile，
     // 使 rm 返回 ENOTEMPTY。清理失败不能覆盖已经通过 CDP 读取成功的 Cookie/LocalStorage 结果。
     options.logger.warn(
-      "[browser-data] Chrome helper 临时目录清理失败",
+      "[browser-data] Failed to clean up Chrome helper temp directory",
       toSafeFileSystemError(error),
     );
   }

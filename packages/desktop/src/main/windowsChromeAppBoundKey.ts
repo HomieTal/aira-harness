@@ -54,7 +54,7 @@ export class WindowsChromeAppBoundImportError extends Error {
 
 function throwAppBoundDecryptionFailure(logger: BrowserDataLogger, reason: string): never {
   // helper 原本返回了稳定子错误码，但通用映射会丢失根因；这里只记录白名单值，禁止记录可能含密钥或路径的原始响应。
-  logger.warn("[browser-data] Windows Chrome App-Bound helper 返回失败", {
+  logger.warn("[browser-data] Windows Chrome App-Bound helper returned failure", {
     reason: APP_BOUND_HELPER_FAILURE_REASONS.has(reason) ? reason : "invalid_response",
   });
   throw new WindowsChromeAppBoundImportError("chrome_cookie_app_bound_decryption_failed");
@@ -384,7 +384,7 @@ async function verifyHelper(helperPath: string, options: ReadAppBoundKeyOptions)
     return verifiedHash;
   } catch (error) {
     options.logger.warn(
-      "[browser-data] Windows Chrome App-Bound helper 校验失败",
+      "[browser-data] Windows Chrome App-Bound helper validation failed",
       toSafeProcessError(error),
     );
     throw new WindowsChromeAppBoundImportError("chrome_cookie_helper_verification_failed");
@@ -474,7 +474,7 @@ export async function readWindowsChromeAppBoundKey(
   } catch (error) {
     if (error instanceof WindowsChromeAppBoundImportError) throw error;
     options.logger.warn(
-      "[browser-data] Windows Chrome App-Bound helper 运行失败",
+      "[browser-data] Windows Chrome App-Bound helper failed to run",
       toSafeProcessError(error),
     );
     throw new WindowsChromeAppBoundImportError("chrome_cookie_app_bound_decryption_failed");

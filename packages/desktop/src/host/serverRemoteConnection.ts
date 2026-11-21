@@ -270,7 +270,7 @@ function connectNodeWebSocket(
     let settled = false;
     const abort = () => {
       socket.terminate();
-      reject(options.signal?.reason ?? new Error("远程连接已取消"));
+      reject(options.signal?.reason ?? new Error("Remote connection cancelled"));
     };
     options.signal?.addEventListener("abort", abort, { once: true });
     const releaseAbort = () => options.signal?.removeEventListener("abort", abort);

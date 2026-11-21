@@ -312,13 +312,13 @@ export function createRemoteWorkspaceSessionManager(options: {
     reason: string,
   ): Promise<void> {
     if (win.isDestroyed() || win.webContents.isDestroyed()) {
-      throw new Error("窗口已关闭，无法 attachment 远程 workspace");
+      throw new Error("Window is closed; cannot attach remote workspace");
     }
     if (
       routesBySessionId.get(route.descriptor.remoteSessionId) !== route ||
       route.attachmentState !== "attachable"
     )
-      throw new Error("远程 workspace scope 已失效，不能创建 attachment");
+      throw new Error("Remote workspace scope is stale; cannot create attachment");
     const child = getWindowHost(win);
     const descriptor = route.descriptor;
     if (!descriptor.workspacePath || !descriptor.workspaceIdentity) {
@@ -486,7 +486,7 @@ export function createRemoteWorkspaceSessionManager(options: {
     route.pendingRendererAttachment = undefined;
     const child = options.windowHostProcessMap.get(route.webContentsId);
     if (!child || child.pid == null) {
-      pending.reject(new Error(`窗口 Local Host 已退出，sessionId=${payload.sessionId}`));
+      pending.reject(new Error(`Window local host has exited，sessionId=${payload.sessionId}`));
       return;
     }
     route.rendererAttachmentId = pending.attachmentId;
@@ -615,7 +615,7 @@ export function createRemoteWorkspaceSessionManager(options: {
           requestId,
           sessionId: descriptor.remoteSessionId,
           level: "info",
-          message: `远程 ${descriptor.target.kind} workspace 已连接`,
+          message: `Remote ${descriptor.target.kind} workspace connected`,
         });
         pending.onConnected?.(descriptor);
         pending.resolve(descriptor.remoteSessionId);
@@ -705,7 +705,7 @@ export function createRemoteWorkspaceSessionManager(options: {
         emitConnectionLog(win, {
           sessionId: descriptor.remoteSessionId,
           level: "info",
-          message: `远程 ${descriptor.target.kind} workspace 已自动重连`,
+          message: `Remote ${descriptor.target.kind} workspace reconnected automatically`,
         });
         void options.webRemoteControlManagerRef.current
           ?.replaceRemoteSession?.({
@@ -859,7 +859,7 @@ export function createRemoteWorkspaceSessionManager(options: {
         "window-host:connection-offline",
         {
           reason: "workspace-closed",
-          message: "远程工作区连接已结束，请在桌面端重新连接。",
+          message: "The remote workspace connection has ended. Reconnect from the desktop app.",
         },
       );
     }
@@ -882,7 +882,7 @@ export function createRemoteWorkspaceSessionManager(options: {
       emitConnectionLog(win, {
         sessionId: event.remoteSessionId,
         level: "warn",
-        message: event.error || "远程 workspace 连接已断开",
+        message: event.error || "Remote workspace connection lost",
       });
     }
   }
@@ -954,7 +954,7 @@ export function createRemoteWorkspaceSessionManager(options: {
             routesBySessionId.get(descriptor.remoteSessionId) !== route ||
             route.attachmentState !== "attachable"
           )
-            pending.reject(new Error("项目导航 scope 已失效"));
+            pending.reject(new Error("Project navigation scope is stale"));
           else pending.resolve(result.value);
         },
         (error: unknown) => {
@@ -1069,7 +1069,7 @@ export function createRemoteWorkspaceSessionManager(options: {
           // 是否把失败抛给连接发布屏障由协调器按 trigger 决定（只有 environment-online 会抛出）。
           pending.reject(
             new ProviderProvisioningExecutionError(
-              `Provider Provisioning ${pending.trigger === "environment-online" ? "首次" : ""}同步失败 (${parsed.data.status}; ${errorCode})`,
+              `Provider Provisioning ${pending.trigger === "environment-online" ? "initial " : ""}sync failed (${parsed.data.status}; ${errorCode})`,
               errorCode,
             ),
           );
@@ -1143,7 +1143,7 @@ export function createRemoteWorkspaceSessionManager(options: {
       }
     });
     child.once("exit", () => {
-      const error = new Error("窗口 Local Host 已退出");
+      const error = new Error("Window local host has exited");
       for (const [key, pending] of pendingProjectNavigations) {
         if (pending.child !== child) continue;
         pendingProjectNavigations.delete(key);
@@ -1192,7 +1192,7 @@ export function createRemoteWorkspaceSessionManager(options: {
     },
   ): Promise<string> {
     if (appShutdownStarted) {
-      throw new Error("应用正在退出，无法创建远程工作区连接");
+      throw new Error("The app is shutting down; cannot create remote workspace connection");
     }
     const child = getWindowHost(win);
     const resolvedTarget =
@@ -1202,20 +1202,20 @@ export function createRemoteWorkspaceSessionManager(options: {
     if (appShutdownStarted) {
       // WSL identity 解析跨 await，期间退出屏障可能已清空 Main 请求关联并开始回收 Host。
       // 恢复后必须重新验证生命周期，禁止在 shutdown barrier 之后注册迟到请求。
-      throw new Error("应用正在退出，无法创建远程工作区连接");
+      throw new Error("The app is shutting down; cannot create remote workspace connection");
     }
     if (win.isDestroyed() || win.webContents.isDestroyed()) {
-      throw new Error("窗口已关闭，无法创建远程工作区连接");
+      throw new Error("Window is closed; cannot create remote workspace connection");
     }
     const resolvedRequestId = requestId ?? randomUUID();
     const key = requestKey(win.webContents.id, resolvedRequestId);
     if (pendingByRequestKey.has(key)) {
-      throw new Error(`远程连接 requestId 重复，requestId=${resolvedRequestId}`);
+      throw new Error(`Duplicate remote connection requestId=${resolvedRequestId}`);
     }
     emitConnectionLog(win, {
       requestId: resolvedRequestId,
       level: "info",
-      message: `正在通过窗口 Host 连接 ${resolvedTarget.kind} workspace`,
+      message: `Connecting to ${resolvedTarget.kind} workspace through the window host`,
     });
     return new Promise<string>((resolve, reject) => {
       pendingByRequestKey.set(key, {
@@ -1249,7 +1249,7 @@ export function createRemoteWorkspaceSessionManager(options: {
       throw new Error(`未找到远程 workspace session，sessionId=${sessionId}`);
     }
     if (expectedWebContentsId != null && route.webContentsId !== expectedWebContentsId) {
-      throw new Error(`远程 workspace session 不属于当前窗口，sessionId=${sessionId}`);
+      throw new Error(`Remote workspace session does not belong to this window，sessionId=${sessionId}`);
     }
     const requestedWorkspaceIdentity =
       context.workspaceIdentity?.trim() ||
@@ -1466,7 +1466,7 @@ export function createRemoteWorkspaceSessionManager(options: {
     for (const [key, pending] of pendingProjectNavigations) {
       if (pending.win.webContents.id !== webContentsId) continue;
       pendingProjectNavigations.delete(key);
-      pending.reject(new Error("窗口已关闭，项目导航已取消"));
+      pending.reject(new Error("Window is closed; project navigation cancelled"));
     }
 
     for (const [sessionId, route] of Array.from(routesBySessionId)) {
@@ -1477,19 +1477,19 @@ export function createRemoteWorkspaceSessionManager(options: {
       route.providerProvisioningDispose?.();
       if (route.pendingRendererAttachment) {
         clearTimeout(route.pendingRendererAttachment.timeout);
-        route.pendingRendererAttachment.reject(new Error("窗口已关闭，attachment 已取消"));
+        route.pendingRendererAttachment.reject(new Error("Window is closed; attachment cancelled"));
       }
     }
     for (const [key, pending] of Array.from(pendingByRequestKey)) {
       if (pending.webContentsId !== webContentsId) continue;
       pendingByRequestKey.delete(key);
-      pending.reject(new Error("窗口已关闭，远程连接已取消"));
+      pending.reject(new Error("Window is closed; remote connection cancelled"));
     }
     for (const [key, pending] of Array.from(pendingWorkspaceBindsByRequestKey)) {
       if (!key.startsWith(`${webContentsId}\0`)) continue;
       pendingWorkspaceBindsByRequestKey.delete(key);
       clearTimeout(pending.timeout);
-      pending.reject(new Error("窗口已关闭，workspace bind 已取消"));
+      pending.reject(new Error("Window is closed; workspace bind cancelled"));
     }
   }
 
@@ -1511,7 +1511,7 @@ export function createRemoteWorkspaceSessionManager(options: {
         type: HostMessageTypes.CancelRemoteWorkspaceConnect,
         requestId: pending.requestId,
       });
-      pending.reject(new Error("项目导航已取消"));
+      pending.reject(new Error("Project navigation cancelled"));
     }
     for (const pending of pendingByRequestKey.values()) {
       if (
@@ -1568,13 +1568,13 @@ export function createRemoteWorkspaceSessionManager(options: {
       );
     }
     if (route.attachmentState !== "attachable") {
-      throw Object.assign(new Error("远程 workspace source 当前离线"), {
+      throw Object.assign(new Error("Remote workspace source is offline"), {
         code: "REMOTE_SESSION_OFFLINE" as const,
       });
     }
     const win = BrowserWindow.fromId(params.windowId);
     if (!win || win.webContents.id !== route.webContentsId) {
-      throw Object.assign(new Error("远程 workspace session 不属于当前窗口"), {
+      throw Object.assign(new Error("Remote workspace session does not belong to this window"), {
         code: "REMOTE_SESSION_WINDOW_MISMATCH" as const,
       });
     }
@@ -1584,7 +1584,7 @@ export function createRemoteWorkspaceSessionManager(options: {
       descriptor.workspaceIdentity !== params.workspaceIdentity ||
       params.workspaceKey !== params.workspaceIdentity
     ) {
-      throw Object.assign(new Error("远程 workspaceKey 与 logical session 不匹配。"), {
+      throw Object.assign(new Error("Remote workspaceKey does not match the logical session."), {
         code: "REMOTE_WORKSPACE_IDENTITY_MISMATCH" as const,
       });
     }
@@ -1615,11 +1615,11 @@ export function createRemoteWorkspaceSessionManager(options: {
     requestId: string = randomUUID(),
   ): Promise<HostPreparedProjectWorkspace> {
     if (appShutdownStarted || win.isDestroyed() || win.webContents.isDestroyed())
-      return Promise.reject(new Error("窗口已关闭，项目导航已取消"));
+      return Promise.reject(new Error("Window is closed; project navigation cancelled"));
     const child = getWindowHost(win);
     const key = requestKey(win.webContents.id, requestId);
     if (pendingProjectNavigations.has(key))
-      return Promise.reject(new Error("项目导航 requestId 重复"));
+      return Promise.reject(new Error("Duplicate project navigation requestId"));
     return new Promise((resolve, reject) => {
       pendingProjectNavigations.set(key, { child, win, requestId, resolve, reject });
       try {
@@ -1657,7 +1657,7 @@ export function createRemoteWorkspaceSessionManager(options: {
       providerProvisioningCoordinator.retry(sourceServerId),
     disposeAllAndWaitForAppShutdown: async (_reason: string) => {
       appShutdownStarted = true;
-      const error = new Error("应用正在退出，远程连接已取消");
+      const error = new Error("The app is shutting down; remote connection cancelled");
       for (const pending of pendingProjectNavigations.values()) pending.reject(error);
       pendingProjectNavigations.clear();
       for (const pending of pendingByRequestKey.values()) pending.reject(error);

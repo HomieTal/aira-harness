@@ -599,7 +599,7 @@ async function resolveOffPeakFilesChanged(params: {
     // 汇总为空（无文件改动）按 0 计——"改了 0 个文件"对完成通知是真实信息。
     return buildTaskChangeSummary(fileChanges)?.fileCount ?? 0;
   } catch (error) {
-    logger.warn("off-peak files_changed 汇总失败（不阻塞终态落库）:", error);
+    logger.warn("off-peak files_changed aggregation failed (does not block final persistence):", error);
     return undefined;
   }
 }
@@ -677,7 +677,7 @@ function trackOffPeakRunOutcome(params: {
     if (event.executionId !== params.traceId || event.sessionId !== params.taskId) return;
     void params.service.residentExecutions
       .handle(event)
-      .catch((error) => logger.warn("off-peak 生命周期处理失败:", error));
+      .catch((error) => logger.warn("off-peak lifecycle processing failed:", error));
   });
   offPeakRunSubscriptions.set(key, {
     dispose() {
@@ -928,7 +928,7 @@ function resolveAutomationTargetServices(request: {
   const remoteSession = windowRemoteConnectionRegistry.findSessionForWorkspace(request);
   if (remoteSession) {
     if (!remoteSession.workspaceIdentity) {
-      throw new Error("Automation 目标 Remote Host 缺少 workspaceIdentity");
+      throw new Error("Automation target remote host is missing workspaceIdentity");
     }
     return windowRemoteConnectionRegistry.resolveScopedServices({
       kind: "remote",
@@ -940,7 +940,7 @@ function resolveAutomationTargetServices(request: {
   // 远程 Automation 找不到目标 logical session 时，旧派发会静默落到 Local Host，
   // 从而使用本地模型首选与 Registry。远程身份只能失败，不能跨 Environment fallback。
   if (request.workspaceIdentity && isRemoteWorkspaceIdentity(request.workspaceIdentity)) {
-    throw new Error("Automation 目标 Remote Host 当前不可用");
+    throw new Error("Automation target remote host is currently unavailable");
   }
   if (!activeServices) {
     throw new Error("Local Host services are not initialized.");
@@ -1086,7 +1086,7 @@ async function dispatchCronRun(request: CronRunDispatchRequest): Promise<{
   }
   const modelSelectionService = targetServices.getOptional(IModelSelectionService);
   if (!modelSelectionService) {
-    throw new Error("目标 Host Model Selection service is not initialized.");
+    throw new Error("Target host Model Selection service is not initialized.");
   }
   // 长期配置是原意图；首次派发在目标 Host 解析后固定。已有 run 必须直接复用，
   // 不能因账号变化或本次 Registry 读取失败重新解释历史执行选择。
@@ -1916,14 +1916,14 @@ function requireActiveHostApiNetworkTransport(): HostApiNetworkTransport {
 
 async function ensureSourceServerConnectionManager(): Promise<SourceServerConnectionManager> {
   if (sourceServerConnectionManager) return sourceServerConnectionManager;
-  if (!sourceServerDirectory) throw new Error("Source Server directory 尚未初始化");
-  if (!activeServices) throw new Error("Host services 尚未初始化");
+  if (!sourceServerDirectory) throw new Error("Source server directory is not initialized");
+  if (!activeServices) throw new Error("Host services are not initialized");
   const directory = sourceServerDirectory;
   const remoteProjects = activeServices.get(IRemoteProjectService);
   sourceServerRuntimeInitializeFlight ??= (async () => {
     await directory.initialize();
     if (hasDisposedHostResources || sourceServerDirectory !== directory) {
-      throw new Error("Source Server directory 初始化期间 Host 已释放");
+      throw new Error("Host was disposed while initializing the source server directory");
     }
     const manager = new SourceServerConnectionManager({
       directory,
@@ -1974,7 +1974,7 @@ async function createWindowRemoteConnectionHandle(params: {
   if (!activeServices) throw new Error("Local Host services are not initialized.");
   const clientConfigService = activeServices.get(IClientConfigService);
   if (params.signal.aborted) {
-    throw new Error("远程连接已取消");
+    throw new Error("Remote connection cancelled");
   }
   const closeListeners = new Set<(event: WindowRemoteConnectionCloseEvent) => void>();
   const reconnectListeners = new Set<() => void>();
@@ -2024,7 +2024,7 @@ async function createWindowRemoteConnectionHandle(params: {
   };
   if (params.target.kind === "server") {
     if (params.existingSourceServerId) throw new Error("project.host-offline");
-    if (!activeServices) throw new Error("Host services 尚未初始化");
+    if (!activeServices) throw new Error("Host services are not initialized");
     const admission = await prepareRemoteServerConnection({
       service: activeServices.get(IRemoteProjectService),
       credentials: activeServices.get(ICredentialService),
@@ -2055,7 +2055,7 @@ async function createWindowRemoteConnectionHandle(params: {
     }
   } else {
     if (!sourceServerDirectory) {
-      throw new Error("Source Server manager 尚未初始化");
+      throw new Error("Source server manager is not initialized");
     }
     const manager = await ensureSourceServerConnectionManager();
     const existingProfile = params.existingSourceServerId
@@ -2170,7 +2170,7 @@ async function createWindowRemoteConnectionHandle(params: {
   if (params.signal.aborted) {
     topicResourceRelay?.dispose();
     await disposeHostRemoteConnection(connection);
-    throw new Error("远程连接已取消");
+    throw new Error("Remote connection cancelled");
   }
 
   services = createServerRemoteWorkspaceServiceCollection({
@@ -2397,7 +2397,7 @@ const windowRemoteConnectionRegistry = createWindowRemoteConnectionRegistry<
       !current.workspacePath ||
       !current.workspaceIdentity
     ) {
-      throw new Error("Source 重连换代缺少 workspace scope");
+      throw new Error("Source reconnection generation is missing workspace scope");
     }
     const previousScope = {
       kind: "remote" as const,
@@ -2432,7 +2432,7 @@ const windowRemoteConnectionRegistry = createWindowRemoteConnectionRegistry<
       },
     );
     if (!commit()) {
-      throw new Error("Source 重连换代在 Controller 提交后失去 Registry owner");
+      throw new Error("Source reconnection generation lost the registry owner after the controller committed");
     }
     try {
       parentPort?.postMessage({
@@ -2656,7 +2656,7 @@ function createControllerRoutedTaskService(
             kind: "pin",
             pinned: params.pinned,
           });
-          if (!meta) throw new Error("pin mutation 后 task 投影缺失");
+          if (!meta) throw new Error("Task projection missing after pin mutation");
           return meta;
         };
       }
@@ -2670,7 +2670,7 @@ function createControllerRoutedTaskService(
             kind: "archive",
             archived: property === "archiveTask",
           });
-          if (!meta) throw new Error("archive mutation 后 task 投影缺失");
+          if (!meta) throw new Error("Task projection missing after archive mutation");
           return meta;
         };
       }
@@ -2719,7 +2719,7 @@ function createControllerRoutedTaskService(
                     : {}),
                 },
           );
-          if (!meta) throw new Error("unread mutation 后 task 投影缺失");
+          if (!meta) throw new Error("Task projection missing after unread mutation");
           return meta;
         };
       }
@@ -2931,7 +2931,7 @@ const windowHostAttachmentRegistry = createWindowHostAttachmentRegistry<
   resolveScope: (scope: WindowHostAttachmentScope) => {
     if (scope.kind === "local") {
       if (!activeServices) {
-        throw new Error("local services 尚未初始化");
+        throw new Error("Local services are not initialized");
       }
       return { services: activeServices, generation: 1 };
     }
@@ -3250,7 +3250,7 @@ parentPort.on("message", async (e: Electron.MessageEvent) => {
       parentPort.postMessage({
         type: HostResponseTypes.ProjectWorkspacePrepared,
         requestId: msg.requestId,
-        result: { ok: false, error: "项目导航 requestId 重复" },
+        result: { ok: false, error: "Duplicate project navigation requestId" },
       });
       return;
     }
@@ -3364,7 +3364,7 @@ parentPort.on("message", async (e: Electron.MessageEvent) => {
       pending.resolve({ path: msg.path, size: msg.size });
       return;
     }
-    pending.reject(new Error(msg.error ?? "反馈日志归档创建失败"));
+    pending.reject(new Error(msg.error ?? "Failed to create feedback log archive"));
     return;
   }
 
@@ -3394,7 +3394,7 @@ parentPort.on("message", async (e: Electron.MessageEvent) => {
       logger.info("local media preview path authorization OK");
       pending.resolve(msg.path);
     } else {
-      pending.reject(new Error(msg.error ?? "本地视频预览路径授权失败"));
+      pending.reject(new Error(msg.error ?? "Local video preview path authorization failed"));
     }
     return;
   }
@@ -3560,7 +3560,7 @@ parentPort.on("message", async (e: Electron.MessageEvent) => {
         requestId: msg.requestId,
         environmentKey: msg.environmentKey,
         status: "failed",
-        error: "Remote Environment registration 已失效",
+        error: "Remote environment registration is stale",
         errorCode: "session-unavailable",
       });
       return;
@@ -3578,7 +3578,7 @@ parentPort.on("message", async (e: Electron.MessageEvent) => {
             windowRemoteConnectionRegistry.resolveScopedServices(scope),
           );
           if (!provisioningService) {
-            throw new Error("Remote Environment 不支持 Provider Provisioning");
+            throw new Error("Remote environment does not support provider provisioning");
           }
           return provisioningService.syncLocalToRemote();
         })(),

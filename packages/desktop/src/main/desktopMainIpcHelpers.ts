@@ -18,7 +18,7 @@ export async function openFileUrlInDefaultApp(
     const filePath = fileURLToPath(url);
     await openPathInDefaultApp(filePath, logger);
   } catch (error) {
-    logger.warn("[open-external] file URL 打开失败", {
+    logger.warn("[open-external] Failed to open file URL", {
       url,
       error: error instanceof Error ? error.message : String(error),
     });
@@ -32,7 +32,7 @@ export async function openPathInDefaultApp(
   const trimmed = typeof rawPath === "string" ? rawPath.trim() : "";
   if (!trimmed) {
     const error = "empty path";
-    logger.warn("[open-external] 本地文件打开失败", { path: rawPath, error });
+    logger.warn("[open-external] Failed to open local file", { path: rawPath, error });
     return { success: false, error };
   }
 
@@ -47,14 +47,14 @@ export async function openPathInDefaultApp(
   try {
     const error = await shell.openPath(target);
     if (error) {
-      logger.warn("[open-external] 本地文件打开失败", { path: target, error });
+      logger.warn("[open-external] Failed to open local file", { path: target, error });
       return { success: false, error };
     }
-    logger.info?.("[open-external] 本地文件打开成功", { path: target });
+    logger.info?.("[open-external] Local file opened successfully", { path: target });
     return { success: true };
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
-    logger.warn("[open-external] 本地文件打开失败", { path: target, error: message });
+    logger.warn("[open-external] Failed to open local file", { path: target, error: message });
     return { success: false, error: message };
   }
 }
@@ -81,7 +81,7 @@ export async function openPathInFileManager(
 
   const error = await shell.openPath(target);
   if (error) {
-    logger.warn("[open-in-file-manager] shell.openPath 失败", {
+    logger.warn("[open-in-file-manager] shell.openPath failed", {
       path: target,
       error,
     });
@@ -125,7 +125,7 @@ async function openDarwinPathInFileManager(target: string, logger: DesktopIpcLog
       if (!shellMessage) {
         return { success: true };
       }
-      logger.warn("[open-in-file-manager] macOS 打开目录均失败", {
+      logger.warn("[open-in-file-manager] All macOS directory-open attempts failed", {
         path: target,
         shellMessage,
         firstError: firstError instanceof Error ? firstError.message : String(firstError),

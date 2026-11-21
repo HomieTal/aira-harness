@@ -120,14 +120,14 @@ export function createWebRemoteControlSharedHostAttachments(dependencies: {
     if (!context.remoteSessionId) {
       throw createSharedHostError(
         "REMOTE_SESSION_MISSING",
-        "远程 workspace bridge 缺少 remoteSessionId。",
+        "Remote workspace bridge is missing remoteSessionId.",
       );
     }
     const workspaceIdentity = context.workspaceIdentity?.trim();
     if (!workspaceIdentity) {
       throw createSharedHostError(
         "REMOTE_WORKSPACE_IDENTITY_MISSING",
-        "远程 workspace bridge 缺少 workspaceIdentity，不能建立身份隔离。",
+        "Remote workspace bridge is missing workspaceIdentity; identity isolation cannot be established.",
       );
     }
     const workspaceKey = workspaceIdentity || context.workspacePath;

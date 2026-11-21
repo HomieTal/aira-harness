@@ -93,9 +93,9 @@ async function clearAllDataAndRelaunch(options: {
     defaultId: 0,
     cancelId: 0,
     title: "Clear All Data",
-    message: "确定要清除所有数据吗？",
+    message: "Clear all data?",
     detail:
-      "将删除 ~/.aira/v2（配置、凭据、日志）和浏览器缓存（localStorage）。操作不可恢复，清除后应用将自动重启。",
+      "This deletes ~/.aira/v2 (config, credentials, logs) and browser cache (localStorage). This cannot be undone; the app restarts automatically afterwards.",
   });
   if (response !== 1) {
     return;
@@ -599,7 +599,7 @@ export async function executeDesktopCommand(options: {
       if (AIRA_PRODUCT_FLAVOR === "production") {
         checkForUpdateMenuClick(targetWindow);
       } else {
-        options.logger.info("[auto-update] Preview 已禁用手动更新检查");
+        options.logger.info("[auto-update] Preview has disabled manual update checks");
       }
       return;
     case DesktopCommandIds.RelaunchApp:
@@ -667,7 +667,7 @@ export async function executeDesktopCommand(options: {
         await showMessageBoxWithOptionalParent(targetWindow, {
           type: "error",
           title: "Aira Endpoint",
-          message: "Endpoint 无效",
+          message: "Invalid endpoint",
           detail: error instanceof Error ? error.message : String(error),
         });
       }

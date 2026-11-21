@@ -74,7 +74,7 @@ export interface WindowRemoteLogicalSessionSnapshot {
 export class WindowRemoteConnectCancelledError extends Error {
   public readonly code = "remote-connection-canceled";
   constructor() {
-    super("远程连接已取消");
+    super("Remote connection cancelled");
     this.name = "WindowRemoteConnectCancelledError";
   }
 }
@@ -121,7 +121,7 @@ interface ConnectionEntry<TServices, TCapabilities> {
 
 class WindowRemoteConnectionTransitionStaleError extends Error {
   public constructor() {
-    super("远程连接状态已在异步操作期间换代");
+    super("Remote connection state changed generation during the async operation");
     this.name = "WindowRemoteConnectionTransitionStaleError";
   }
 }
@@ -1209,7 +1209,7 @@ export function createWindowRemoteConnectionRegistry<TServices, TCapabilities = 
     },
   ): Promise<WindowHostRemoteWorkspaceDescriptor> {
     if (disposed) {
-      throw new Error("窗口 Host 的远程连接 registry 已释放");
+      throw new Error("The window host's remote connection registry has been released");
     }
     if (pendingSessionsByRequestId.has(params.requestId)) {
       throw new Error(`远程连接 requestId 重复，requestId=${params.requestId}`);
@@ -1539,7 +1539,7 @@ export function createWindowRemoteConnectionRegistry<TServices, TCapabilities = 
     scope: WindowHostAttachmentScope,
   ): WindowRemoteConnectionHandle<TServices, TCapabilities> {
     if (scope.kind !== "remote") {
-      throw new Error("远程连接 registry 不能解析 local attachment scope");
+      throw new Error("The remote connection registry cannot resolve the local attachment scope");
     }
     const session = sessionsById.get(scope.remoteSessionId);
     if (!session) {
@@ -1745,7 +1745,7 @@ export function createWindowRemoteConnectionRegistry<TServices, TCapabilities = 
     },
     async waitForScopedServices(scope: WindowHostAttachmentScope): Promise<TServices> {
       if (scope.kind !== "remote") {
-        throw new Error("远程连接 registry 不能解析 local attachment scope");
+        throw new Error("The remote connection registry cannot resolve the local attachment scope");
       }
       const session = sessionsById.get(scope.remoteSessionId);
       if (!session) {

@@ -1111,7 +1111,7 @@ function logSkippedLogArchiveDirectory(
   archivePath: string,
   error: unknown,
 ): void {
-  logger.warn("[export-logs] 日志目录不可读，已在导出时自动跳过", {
+  logger.warn("[export-logs] Unreadable log directory; skipped automatically during export", {
     absolutePath,
     archivePath,
     error: formatErrorMessage(error),
@@ -1387,7 +1387,7 @@ function logSkippedLogArchiveFiles(skippedFiles: LogArchiveSkippedFileEntry[]): 
     return;
   }
 
-  logger.warn("[export-logs] 检测到不可读日志文件，已在导出时自动跳过", {
+  logger.warn("[export-logs] Unreadable log files detected; skipped automatically during export", {
     skippedCount: skippedFiles.length,
     skippedFiles: skippedFiles.slice(0, 10),
   });
@@ -1501,7 +1501,7 @@ export async function exportLogs(
     const zipPath = join(outputDir, `${exportBaseName}.zip`);
     const directoryPath = join(outputDir, exportBaseName);
 
-    logger.info("[export-logs] 开始打包日志", {
+    logger.info("[export-logs] Packing logs", {
       source: sourceDir,
       zipDest: zipPath,
       directoryDest: directoryPath,
@@ -1512,7 +1512,7 @@ export async function exportLogs(
       await writeZip(zipPath, artifacts, { stageRootDir: getStageRootDir() });
       await showItemInFolder(zipPath);
 
-      logger.info("[export-logs] 日志导出完成", {
+      logger.info("[export-logs] Log export completed", {
         path: zipPath,
         format: "zip",
       });
@@ -1522,7 +1522,7 @@ export async function exportLogs(
 
       // Windows 的压缩能力不再依赖 PowerShell/.NET，但归档写入仍可能被杀软、磁盘策略等外部因素打断。
       // 这里回退为目录导出，保证用户至少能稳定拿到原始日志，而不是直接报错。
-      logger.warn("[export-logs] zip 导出失败，回退到目录导出", {
+      logger.warn("[export-logs] Zip export failed; falling back to directory export", {
         error: zipErrorMessage,
         zipPath,
         fallbackPath: directoryPath,
@@ -1538,7 +1538,7 @@ export async function exportLogs(
       }
 
       await showItemInFolder(directoryPath);
-      logger.info("[export-logs] 日志导出完成", {
+      logger.info("[export-logs] Log export completed", {
         path: directoryPath,
         format: "directory",
       });
@@ -1546,7 +1546,7 @@ export async function exportLogs(
     }
   } catch (err) {
     const message = formatErrorMessage(err);
-    logger.error("[export-logs] 日志导出失败", { error: message });
+    logger.error("[export-logs] Log export failed", { error: message });
     return { success: false, error: message };
   }
 }

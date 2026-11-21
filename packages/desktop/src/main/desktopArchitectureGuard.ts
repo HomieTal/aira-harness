@@ -53,8 +53,10 @@ export function resolveArchitectureDownloadUrl(
   endpointOrigin = DEFAULT_AIRA_ENDPOINT_ORIGIN,
 ): string {
   // 与 changelog 等外链保持一致，按应用语言分流到官网下载页。
+  // English-only build: always use the English download page.
+  void locale;
   const origin = buildAiraEndpointUrls(endpointOrigin).origin;
-  return locale === "zh-CN" ? `${origin}/cn` : `${origin}/en`;
+  return `${origin}/en`;
 }
 
 interface ArchitectureMismatchDialogText {
@@ -69,7 +71,9 @@ export function formatArchitectureMismatchDialogText(
   mismatch: ArchitectureMismatch,
   locale: Locale,
 ): ArchitectureMismatchDialogText {
-  const isZh = locale === "zh-CN";
+  void locale;
+  // English-only build: the zh-CN dialog branch is retained for reference but never selected.
+  const isZh = false;
   if (isZh) {
     return {
       title: "架构不匹配",

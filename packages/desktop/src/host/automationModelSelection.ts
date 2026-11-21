@@ -15,14 +15,14 @@ export async function resolveAutomationSubmissionModelSelection(params: {
   if (selection) {
     const view = await params.modelSelectionService.getView({ selection });
     if (view.selectionIssue || !view.effectiveSelection?.options?.reasoningLevel) {
-      throw new Error("Automation 模型选择不可用，请重新选择模型与思考档位");
+      throw new Error("Automation model selection is unavailable; re-select the model and reasoning level");
     }
     return view.effectiveSelection;
   }
 
   const preferredSelection = (await params.modelSelectionService.getView()).preferredSelection;
   if (!preferredSelection?.options?.reasoningLevel) {
-    throw new Error("Automation 无法从目标 Host 解析首选模型");
+    throw new Error("Automation could not resolve the preferred model from the target host");
   }
   return preferredSelection;
 }

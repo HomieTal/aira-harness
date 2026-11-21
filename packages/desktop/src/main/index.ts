@@ -306,10 +306,10 @@ import { enablePrivateFileKeyFallback } from "@aira/shared/credential-security";
 // Host/内置 CLI 经凭据桥跟随 Main；独立 CLI、Server 不开启；macOS/Windows 不受影响。
 if (process.platform === "linux") {
   const fallbackEnabled = enablePrivateFileKeyFallback({
-    onFallback: () => logger.warn("[credential] Linux 系统凭据库不可用，已改用私有文件密钥"),
+    onFallback: () => logger.warn("[credential] Linux system credential store unavailable; falling back to private file key"),
   });
   if (!fallbackEnabled) {
-    logger.warn("[credential] 凭据已在回退开启前被访问，本次进程保持系统凭据库规则");
+    logger.warn("[credential] Credentials were accessed before the fallback was enabled; keeping system credential store rules for this process");
   }
 }
 
@@ -363,7 +363,14 @@ const linuxDesktopIntegrationIconPath =
 // 以前要等 whenReady 异步读完设置才赋值，这之前发出的请求（远控 notification/status、遥测等）
 // 都带 X-Client-Language=zh-CN。首次启动没有设置文件时，在 app ready 后按系统语言确定。
 const bootstrapApplicationLocale = readBootstrapApplicationLocale();
-let currentApplicationLocale: Locale = bootstrapApplicationLocale ?? DEFAULT_LOCALE;
+// English-only build: the zh-CN UI is retained for reference but never selected — every locale
+// source (persisted settings, system language, renderer push) is coerced to the English UI.
+function toEnglishOnlyLocale(locale: Locale): Locale {
+  return locale === "zh-CN" ? DEFAULT_LOCALE : locale;
+}
+let currentApplicationLocale: Locale = toEnglishOnlyLocale(
+  bootstrapApplicationLocale ?? DEFAULT_LOCALE,
+);
 // 界面语言是否已确定（持久化设置 / 系统语言 / renderer 推送三者之一）。未确定前，
 // 可选带语言头的请求一律不带 X-Client-Language，不能拿 DEFAULT_LOCALE 冒充用户语言。
 let applicationLocaleResolved = bootstrapApplicationLocale !== undefined;
@@ -1093,7 +1100,7 @@ const webRemoteControlManager = createWebRemoteControlManager({
   runRendererAction: runWebRemoteControlActionInRenderer,
   prepareProjectWorkspace: async (windowId, project, requestId) => {
     const win = BrowserWindow.fromId(windowId);
-    if (!win || win.isDestroyed()) throw new Error("项目导航窗口已关闭");
+    if (!win || win.isDestroyed()) throw new Error("Project navigation window is closed");
     return remoteSessionManager.prepareProjectWorkspace(win, project, requestId);
   },
   cancelProjectPreparation: (windowId, requestId) => {
@@ -1206,7 +1213,7 @@ const primaryWindowCoordinator = createPrimaryWindowCoordinator({
     }
 
     // 强制升级命中后，Dock/托盘/activate/deep link 不能绕过 app-ready gate 创建旧版主界面。
-    logger.warn(`[force-update] 已阻止主窗口创建入口：${reason}`);
+    logger.warn(`[force-update] Blocked main window creation entry point: ${reason}`);
     focusForceUpdateGateWindow();
     return false;
   },
@@ -1680,7 +1687,7 @@ function confirmAppQuit(originWindow?: BrowserWindow | null) {
     defaultId: 1,
     cancelId: 1,
     title: isZh ? "退出确认" : "Confirm Quit",
-    message: isZh ? "确认退出 Z Code?" : "Quit Z Code?",
+    message: isZh ? "确认退出 Aira?" : "Quit Aira?",
     detail: detailLines.join("\n"),
     icon: nativeImage.createFromPath(iconPath),
   };
@@ -2184,7 +2191,7 @@ app.on("open-url", (event, url) => {
   event.preventDefault();
   const workspacePath = extractOpenWorkspacePathFromDeepLinkUrl(url);
   if (workspacePath && forceUpdateMainWindowCreationBlocked) {
-    logger.warn("[force-update] 已忽略强制升级期间的 open-url workspace 请求");
+    logger.warn("[force-update] Ignored open-url workspace request during forced update");
     focusForceUpdateGateWindow();
     return;
   }
@@ -2281,7 +2288,7 @@ app.whenReady().then(async () => {
     }
     if (bootstrapSettings.locale) {
       loadedBootstrapLocale = true;
-      currentApplicationLocale = bootstrapSettings.locale;
+      currentApplicationLocale = toEnglishOnlyLocale(bootstrapSettings.locale);
       applicationLocaleResolved = true;
     }
     // Linux 默认值归位迁移（spec：docs/desktop/linux-close-to-tray.md）：shared 迁移无平台
@@ -2352,7 +2359,7 @@ app.whenReady().then(async () => {
 
   applyAppIcon(iconPath);
   if (!loadedBootstrapLocale) {
-    currentApplicationLocale = resolveSystemApplicationLocale();
+    currentApplicationLocale = toEnglishOnlyLocale(resolveSystemApplicationLocale());
   }
   applicationLocaleResolved = true;
   // Electron 的 net.request 只能在 app ready 后使用；灰度请求仍是旁路预热，不阻塞首个 Host。
@@ -2520,11 +2527,12 @@ app.whenReady().then(async () => {
       restoreBrowserTabs: (payload) => browserGuestManager.restoreTabs(payload),
     },
     applyApplicationLocale: async (locale) => {
-      currentApplicationLocale = locale;
+      const coercedLocale = toEnglishOnlyLocale(locale);
+      currentApplicationLocale = coercedLocale;
       applicationLocaleResolved = true;
       // Host 的 Aira endpoint 请求以此为实时语言；setting.json 写入可能滞后或失败，不能作为来源。
       for (const child of windowHostProcessMap.values()) {
-        child.postMessage({ type: HostMessageTypes.ApplicationLocaleChanged, locale });
+        child.postMessage({ type: HostMessageTypes.ApplicationLocaleChanged, locale: coercedLocale });
       }
       windowsCuaOperationIndicator.refreshContent();
       rebuildMenu();
@@ -2736,15 +2744,15 @@ app.whenReady().then(async () => {
         })
       : { blocked: false };
   if (AIRA_PRODUCT_FLAVOR !== "production") {
-    logger.info("[force-update] Preview 跳过远端强制升级检查");
+    logger.info("[force-update] Preview skipped the remote forced-update check");
   } else if (skipForceUpdateForLocalDevRuntime) {
-    logger.info("[force-update] 本地 dev 构建（未打包）跳过远端强制升级检查");
+    logger.info("[force-update] Local dev build (unpackaged) skipped the remote forced-update check");
   }
   if (forceUpdateGuardResult.blocked) {
     return;
   }
 
-  logger.info("[startup] 创建主窗口");
+  logger.info("[startup] Creating main window");
   await primaryWindowCoordinator.ensurePrimaryWindow("app-ready");
 
   const primaryWindow = getApplicationWindowsExcludingCuaIndicator()[0];
@@ -2760,7 +2768,7 @@ app.whenReady().then(async () => {
     parentWindow: getApplicationWindowsExcludingCuaIndicator()[0] ?? null,
     icon: nativeImage.createFromPath(iconPath),
   }).catch((error) => {
-    logger.warn("[architecture] 架构检测弹框失败:", error);
+    logger.warn("[architecture] Architecture check dialog failed:", error);
   });
 
   const protocolUrl = extractDeepLinkUrlFromArgs(process.argv);

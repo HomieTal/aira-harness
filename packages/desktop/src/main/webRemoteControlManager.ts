@@ -319,7 +319,7 @@ function toExternalBridge(
 
   if (runtime.kind === "remote") {
     if (!runtime.workspaceIdentity || !runtime.remoteSessionId) {
-      throw new Error("远程 workspace bridge 缺少 workspaceIdentity 或 remoteSessionId。");
+      throw new Error("Remote workspace bridge is missing workspaceIdentity or remoteSessionId.");
     }
     return {
       ...base,
@@ -1239,10 +1239,10 @@ export function createWebRemoteControlManager(dependencies: WebRemoteControlMana
     if (runtimes.get(runtime.windowId) !== runtime || runtime.bridgeOpen !== pending)
       throw new Error("Workspace bridge request was superseded.");
     if (!target) {
-      throw new Error("目标工作区不在当前桌面窗口中，无法创建 Web 远程控制 bridge。");
+      throw new Error("The target workspace is not in this desktop window; cannot create the web remote control bridge.");
     }
     if (!isBridgeableRemoteTarget(target)) {
-      throw new Error("目标远程工作区尚未连接，无法创建 bridge，请先重连。");
+      throw new Error("The target remote workspace is not connected; reconnect before creating a bridge.");
     }
     const targetWorkspaceKey = resolveWebRemoteControlWorkspaceKey(target);
 

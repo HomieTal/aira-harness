@@ -64,7 +64,7 @@ export function resolveExplicitStartupWorkspaceBootstrap(
     if (isNetworkWorkspacePath(request.path)) {
       // 冷启动 deep link 不能绕过运行中 deep link 的 UNC 早拒绝；
       // 网络路径必须在任何 statSync 等 filesystem probe 前停止。
-      deps.logger.warn("[deep-link] 网络工作区路径已拒绝", { path: request.path });
+      deps.logger.warn("[deep-link] Network workspace path rejected", { path: request.path });
       return null;
     }
 

@@ -198,15 +198,20 @@ export function resolveForceUpdateDownloadUrl(
   locale: Locale,
   endpointOrigin = DEFAULT_AIRA_ENDPOINT_ORIGIN,
 ): string {
+  // English-only build: always use the English download page.
+  void locale;
   const origin = buildAiraEndpointUrls(endpointOrigin).origin;
-  return locale === "zh-CN" ? `${origin}/cn` : `${origin}/en`;
+  return `${origin}/en`;
 }
 
 export function formatForceUpdateDialogText(
   requirement: ForceUpdateRequirement,
   locale: Locale,
 ): ForceUpdateDialogText {
-  if (locale === "zh-CN") {
+  // English-only build: the zh-CN dialog branch is retained for reference but never selected.
+  const isZh = false;
+  void locale;
+  if (isZh) {
     return {
       title: "需要升级 Aira",
       message: "当前版本无法继续使用",

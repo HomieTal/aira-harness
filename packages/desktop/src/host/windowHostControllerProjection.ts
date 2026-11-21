@@ -340,14 +340,14 @@ export function createWindowHostControllerProjection(options: { createId: () => 
       mutate: ControllerSource["mutate"];
     }): void {
       if (params.scope.kind === "remote" && !params.scope.workspaceIdentity.trim()) {
-        throw new Error("远程 Controller source 必须携带 workspaceIdentity");
+        throw new Error("Remote controller source must carry workspaceIdentity");
       }
       if (
         params.scope.kind === "remote" &&
         !params.scope.sourceServerId &&
         !params.scope.remoteSessionId
       )
-        throw new Error("远程 Controller source 必须携带 Source 身份或 attachment");
+        throw new Error("Remote controller source must carry a source identity or attachment");
       const key = sourceKey(params.scope);
       const existing = sources.get(key);
       if (existing) {
@@ -535,13 +535,13 @@ export function createWindowHostControllerProjection(options: { createId: () => 
           mutation.kind !== "delete-archived-batch" &&
           !source.rows.has(taskKey(address)))
       ) {
-        throw new Error("没有与任务地址匹配的 source");
+        throw new Error("No source matches the task address");
       }
       if (source.sourceAvailability !== "online") {
         if (source.scope.kind === "remote") {
-          throw new Error("远程 source 当前离线，禁止列表写操作");
+          throw new Error("Remote source is offline; list writes are not allowed");
         }
-        throw new Error("本地 source 当前不可用");
+        throw new Error("Local source is currently unavailable");
       }
       return source.mutate(address, mutation);
     },

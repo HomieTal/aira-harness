@@ -38,7 +38,7 @@ export function createRemoteProviderProvisioningExecutor(options: {
   const syncLocalToRemote = async (): Promise<ProviderProvisioningResult> => {
     const syncId = randomUUID();
     if (!options.source || !options.target) {
-      return unsupportedResult(syncId, "Local/Remote Provider Provisioning capability 不可用");
+      return unsupportedResult(syncId, "Local/Remote provider provisioning capability is unavailable");
     }
     let errorCode: ProviderProvisioningErrorCode = "source-read-failed";
     try {

@@ -133,7 +133,7 @@ export async function resolveDarwinApplicationPath(
       .find((entry) => entry.endsWith(".app"));
     if (spotlightPath) return spotlightPath;
   } catch (error) {
-    logger.warn("[application-icons] 查询应用路径失败", {
+    logger.warn("[application-icons] Failed to resolve application path", {
       bundleId,
       error: error instanceof Error ? error.message : String(error),
     });
@@ -248,7 +248,7 @@ export function createApplicationIconLoader(dependencies: ApplicationIconLoaderD
           if (icon) return icon;
         }
       } catch (error) {
-        logger.warn("[application-icons] 读取应用图标失败", {
+        logger.warn("[application-icons] Failed to read application icon", {
           locatorKind: locator.kind,
           error: error instanceof Error ? error.message : String(error),
         });

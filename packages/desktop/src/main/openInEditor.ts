@@ -79,7 +79,7 @@ async function resolveWslDistroName(
     const distros = await listWSLDistros();
     return distros.find((distro) => distro.isDefault)?.name ?? distros[0]?.name ?? null;
   } catch (error) {
-    logger.warn("[editors] 解析默认 WSL distro 失败", {
+    logger.warn("[editors] Failed to resolve default WSL distro", {
       error: stringifyError(error),
     });
     return null;
@@ -163,7 +163,7 @@ async function openVSCodeRemoteSshFolder(
         await execFileAsync("open", ["-a", appPath, "--args", ...args]);
         return { success: true };
       } catch (fallbackError) {
-        logger.warn("[editors] 打开 VS Code 远程工作区失败", {
+        logger.warn("[editors] Failed to open VS Code remote workspace", {
           editorId,
           path,
           args,
@@ -183,7 +183,7 @@ async function openVSCodeRemoteSshFolder(
     }
     return { success: true };
   } catch (error) {
-    logger.warn("[editors] 打开 VS Code 远程工作区失败", {
+    logger.warn("[editors] Failed to open VS Code remote workspace", {
       editorId,
       path,
       args,
@@ -221,7 +221,7 @@ async function openVSCodeRemoteWslFolder(
         await execFileAsync("open", ["-a", appPath, "--args", ...args]);
         return { success: true };
       } catch (fallbackError) {
-        logger.warn("[editors] 打开 VS Code WSL 工作区失败", {
+        logger.warn("[editors] Failed to open VS Code WSL workspace", {
           editorId,
           path,
           args,
@@ -241,7 +241,7 @@ async function openVSCodeRemoteWslFolder(
     }
     return { success: true };
   } catch (error) {
-    logger.warn("[editors] 打开 VS Code WSL 工作区失败", {
+    logger.warn("[editors] Failed to open VS Code WSL workspace", {
       editorId,
       path,
       args,
@@ -280,7 +280,7 @@ async function openWslPathInExplorer(
     }
   }
 
-  logger.warn("[editors] 打开 WSL 工作区资源管理器失败", {
+  logger.warn("[editors] Failed to open WSL workspace in File Explorer", {
     path,
     candidates,
     error: lastError,
@@ -298,7 +298,7 @@ async function openWindowsEditor(
     await execFileAsync(appPath, args);
     return { success: true };
   } catch (error) {
-    logger.warn("[editors] 打开 Windows 编辑器失败", {
+    logger.warn("[editors] Failed to open Windows editor", {
       editorId,
       args,
       appPath,
@@ -361,7 +361,7 @@ export async function openInEditor(
       }
       return { success: true };
     } catch (error) {
-      logger.warn("[editors] 打开文件应用失败", { editorId, path, error: stringifyError(error) });
+      logger.warn("[editors] Failed to open file app", { editorId, path, error: stringifyError(error) });
       return { success: false, error: stringifyError(error) };
     }
   }
@@ -433,7 +433,7 @@ export async function openInEditor(
         await execFileAsync("open", ["-a", appPath, path]);
         return { success: true };
       } catch (fallbackError) {
-        logger.warn("[editors] 打开编辑器失败", {
+        logger.warn("[editors] Failed to open editor", {
           editorId,
           path,
           error: stringifyError(error),
@@ -452,7 +452,7 @@ export async function openInEditor(
     }
     return { success: true };
   } catch (error) {
-    logger.warn("[editors] 打开编辑器失败", {
+    logger.warn("[editors] Failed to open editor", {
       editorId,
       path,
       error: stringifyError(error),

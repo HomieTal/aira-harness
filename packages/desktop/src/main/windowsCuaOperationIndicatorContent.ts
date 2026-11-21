@@ -12,9 +12,9 @@ export const INDICATOR_CARD_TOP_OFFSET = 12;
 export const INDICATOR_SHADOW_INSET = { top: 6, right: 8, bottom: 12, left: 8 } as const;
 
 export function indicatorCopy(locale: Locale): { text: string; width: number } {
-  return locale === "zh-CN"
-    ? { text: "Aira 正在操作电脑", width: 234 }
-    : { text: "Aira is controlling your computer", width: 308 };
+  // English-only build: always the English copy.
+  void locale;
+  return { text: "Aira is controlling your computer", width: 308 };
 }
 
 export function indicatorWindowSize(locale: Locale): { width: number; height: number } {

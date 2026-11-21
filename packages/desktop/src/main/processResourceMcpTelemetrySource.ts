@@ -53,7 +53,7 @@ export function ingestMcpResourceSamples(
     // 同一个 CLI 的同一份样本可能经多个远端连接转发；乱序/重复都不能二次计数。
     if (previous && previous.sample.sampledAt >= sample.sampledAt) continue;
     if (!previous && latest.size >= MAX_MCP_INSTANCE_SAMPLES) {
-      logger.debug("[resource] MCP 实例样本已达上限，丢弃新样本");
+      logger.debug("[resource] MCP instance sample limit reached; dropping new samples");
       continue;
     }
     latest.set(key, { sample, runtimeSurface, environmentKey, receivedAt, delivered: false });
@@ -134,7 +134,7 @@ export const mcpProcessResourceSampleSource: ProcessResourceSampleSource = {
     for (const group of groupSamples().values()) {
       if (!group.fresh) continue;
       if (reported >= MAX_MCP_GROUPS_PER_WINDOW) {
-        logger.debug("[resource] MCP 每窗口最多 32 个分组，丢弃超额样本");
+        logger.debug("[resource] MCP allows at most 32 groups per window; dropping extra samples");
         continue;
       }
       context.addRoleSample(group.role);

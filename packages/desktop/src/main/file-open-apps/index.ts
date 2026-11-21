@@ -128,7 +128,7 @@ export function createFileApplicationService(options: Options = {}): FileOpenApp
           }),
         );
       } catch (error) {
-        options.logger?.warn("[file-apps] 查询系统关联失败", { error: String(error) });
+        options.logger?.warn("[file-apps] Failed to query system associations", { error: String(error) });
         return [];
       }
     },
@@ -142,7 +142,7 @@ export function createFileApplicationService(options: Options = {}): FileOpenApp
         await adapter.open(application, target.path);
         return { success: true };
       } catch (error) {
-        options.logger?.warn("[file-apps] 系统应用打开失败", { error: String(error) });
+        options.logger?.warn("[file-apps] Failed to open with system app", { error: String(error) });
         return { success: false, error: "application_open_failed" };
       }
     },

@@ -139,9 +139,12 @@ export function isNetworkWorkspacePath(path: string): boolean {
 export function resolveExternalWorkspaceOpenDialogCopy(
   locale: Locale,
 ): ExternalWorkspaceOpenDialogCopy {
+  void locale;
   // TODO(i18n): 新增 Locale 时把这里收敛成完整 Record<Locale, ...>，
   // 避免未覆盖语言静默回退英文。
-  if (locale === "zh-CN") {
+  // English-only build: the zh-CN dialog branch is retained for reference but never selected.
+  const isZh = false;
+  if (isZh) {
     return {
       buttons: ["打开文件夹", "取消"],
       title: "打开外部 Aira 链接？",

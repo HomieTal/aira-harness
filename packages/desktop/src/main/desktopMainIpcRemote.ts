@@ -379,7 +379,7 @@ export function registerRemoteIpcHandlers(options: {
       return;
     }
     void Promise.resolve(shell.openExternal(url)).catch((error: unknown) => {
-      options.logger.warn("[open-external] 外部 URL 打开失败", {
+      options.logger.warn("[open-external] Failed to open external URL", {
         url,
         error: error instanceof Error ? error.message : String(error),
       });
@@ -527,7 +527,7 @@ export function registerRemoteIpcHandlers(options: {
     try {
       const win = BrowserWindow.fromWebContents(event.sender);
       if (!win) {
-        throw new Error("未找到当前窗口，无法创建远程 session");
+        throw new Error("No current window found; cannot create remote session");
       }
 
       let reusedConnectionTarget: RemoteTarget | undefined;
@@ -672,7 +672,7 @@ export function registerRemoteIpcHandlers(options: {
     async (event, rawPayload: unknown): Promise<BindRemoteWorkspaceSessionContextIpcResult> => {
       try {
         if (!rawPayload || typeof rawPayload !== "object") {
-          throw new Error("远程 workspace context payload 无效");
+          throw new Error("Invalid remote workspace context payload");
         }
         const payload = rawPayload as {
           remoteSessionId?: unknown;
@@ -691,7 +691,7 @@ export function registerRemoteIpcHandlers(options: {
             ? payload.workspacePurpose
             : undefined;
         if (!remoteSessionId || !workspacePath.trim()) {
-          throw new Error("远程 workspace context 缺少 sessionId 或 workspacePath");
+          throw new Error("Remote workspace context is missing sessionId or workspacePath");
         }
         const result = await options.bindRemoteWorkspaceSessionContext(
           remoteSessionId,

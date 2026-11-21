@@ -170,7 +170,7 @@ async function withDatabaseSnapshot<T>(
       sourceDatabase?.close();
       sourceDatabase = null;
       logger.warn(
-        "[browser-data] Chrome Cookie 在线备份不可用，回退 WAL 文件快照",
+        "[browser-data] Chrome Cookie online backup unavailable; falling back to WAL snapshot",
         toSafeBrowserDataError(onlineBackupError),
       );
 
@@ -205,7 +205,7 @@ async function withDatabaseSnapshot<T>(
       }
       if (fallbackError) {
         logger.warn(
-          "[browser-data] Chrome Cookie WAL 文件快照失败",
+          "[browser-data] Chrome Cookie WAL snapshot failed",
           toSafeBrowserDataError(fallbackError),
         );
         throw fallbackError;
@@ -334,7 +334,7 @@ async function collectCookieDetails(options: {
             : "chrome_cookie_app_bound_decryption_failed";
         options.issues.add(issue);
         options.logger.warn(
-          "[browser-data] Chrome App-Bound Cookie 原生解密失败",
+          "[browser-data] Chrome App-Bound Cookie native decryption failed",
           toSafeBrowserDataError(error),
         );
       }

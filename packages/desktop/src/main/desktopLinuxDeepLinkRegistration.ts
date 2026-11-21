@@ -188,18 +188,18 @@ function removeOwnedUserDesktopEntry(
     return;
   }
   if (!isOwnedDesktopEntry(desktopFilePath)) {
-    logger.warn("[deep-link] Linux 用户级 aira.desktop 非本应用写入，保留不清理", {
+    logger.warn("[deep-link] User-level aira.desktop was not written by this app; keeping it", {
       desktopFilePath,
     });
     return;
   }
   try {
     rmSync(desktopFilePath);
-    logger.info("[deep-link] 已清理遗留的用户级 aira.desktop，恢复系统级条目", {
+    logger.info("[deep-link] Cleaned up legacy user-level aira.desktop; restored system-level entry", {
       desktopFilePath,
     });
   } catch (error) {
-    logger.warn("[deep-link] 清理遗留用户级 aira.desktop 失败", { desktopFilePath, error });
+    logger.warn("[deep-link] Failed to clean up legacy user-level aira.desktop", { desktopFilePath, error });
   }
 }
 
@@ -248,7 +248,7 @@ export function registerLinuxDeepLinkProtocol(options: RegisterLinuxDeepLinkProt
   try {
     let changed = false;
     if (systemDesktopEntryPath) {
-      options.logger.info("[deep-link] Linux 系统级 desktop entry 已存在", {
+      options.logger.info("[deep-link] Linux system-level desktop entry already exists", {
         systemDesktopEntryPath,
         desktopFilePath,
       });
@@ -268,7 +268,7 @@ export function registerLinuxDeepLinkProtocol(options: RegisterLinuxDeepLinkProt
 
     if (defaultResult.status === 0) {
       protocolRegistered = true;
-      options.logger.info("[deep-link] Linux 用户级协议注册成功", {
+      options.logger.info("[deep-link] Linux user-level protocol registration succeeded", {
         desktopFilePath,
         executablePath: command.executablePath,
         args: command.args,
@@ -276,7 +276,7 @@ export function registerLinuxDeepLinkProtocol(options: RegisterLinuxDeepLinkProt
         systemDesktopEntryPath,
       });
     } else {
-      options.logger.warn("[deep-link] Linux 用户级协议注册失败", {
+      options.logger.warn("[deep-link] Linux user-level protocol registration failed", {
         desktopFilePath,
         executablePath: command.executablePath,
         args: command.args,
@@ -289,17 +289,17 @@ export function registerLinuxDeepLinkProtocol(options: RegisterLinuxDeepLinkProt
     }
 
     if (updateResult.error) {
-      options.logger.warn("[deep-link] update-desktop-database 不可用，已跳过", {
+      options.logger.warn("[deep-link] update-desktop-database unavailable; skipped", {
         desktopFilePath,
         message: updateResult.error.message,
       });
     } else if (updateResult.signal === "SIGTERM") {
-      options.logger.warn("[deep-link] update-desktop-database 超时，已跳过", {
+      options.logger.warn("[deep-link] update-desktop-database timed out; skipped", {
         desktopFilePath,
         timeoutMs: XDG_COMMAND_TIMEOUT_MS,
       });
     } else if (updateResult.status !== 0) {
-      options.logger.warn("[deep-link] update-desktop-database 失败，已跳过", {
+      options.logger.warn("[deep-link] update-desktop-database failed; skipped", {
         desktopFilePath,
         status: updateResult.status,
         signal: updateResult.signal,
@@ -307,7 +307,7 @@ export function registerLinuxDeepLinkProtocol(options: RegisterLinuxDeepLinkProt
       });
     }
   } catch (error) {
-    options.logger.warn("[deep-link] Linux 用户级协议注册异常", {
+    options.logger.warn("[deep-link] Linux user-level protocol registration error", {
       desktopFilePath,
       executablePath: command.executablePath,
       args: command.args,
@@ -325,7 +325,7 @@ export function registerLinuxDeepLinkProtocol(options: RegisterLinuxDeepLinkProt
         runCommand,
       });
   if (iconInstallResult) {
-    options.logger.info("[deep-link] Linux AppImage 用户级图标安装完成", {
+    options.logger.info("[deep-link] Linux AppImage user-level icon install completed", {
       protocolRegistered,
       iconFilePath: iconInstallResult.iconFilePath,
       iconInstalled: iconInstallResult.installed,

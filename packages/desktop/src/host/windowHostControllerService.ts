@@ -278,7 +278,7 @@ export function createWindowHostControllerRuntime(options: {
     const current = resolveCurrentSource(scope);
     if (!current?.taskService || current.sourceAvailability !== "online") {
       throw new Error(
-        scope.kind === "remote" ? "远程 source 当前离线，禁止列表写操作" : "本地 source 当前不可用",
+        scope.kind === "remote" ? "Remote source is offline; list writes are not allowed" : "Local source is currently unavailable",
       );
     }
     const service = current.taskService;
@@ -302,7 +302,7 @@ export function createWindowHostControllerRuntime(options: {
       case "delete-archived-batch": {
         // 确认期间远端 session 可能已替换；不能将旧地址的批次写入同 identity 的新 source。
         if (sourceKey(current.scope) !== sourceKey(scope)) {
-          throw new Error("归档删除批次的 source 已替换");
+          throw new Error("The archive-delete batch's source has been replaced");
         }
         return await service.deleteArchivedTasks({
           workspacePath: base.workspacePath,
@@ -450,7 +450,7 @@ export function createWindowHostControllerRuntime(options: {
 
   async function readSourceTaskIndex(resolved: ResolvedWindowHostControllerSource) {
     if (!resolved.taskService || resolved.sourceAvailability !== "online") {
-      throw new Error("Controller source 当前不可读取");
+      throw new Error("Controller source is currently unreadable");
     }
     const request = {
       workspacePath: resolved.scope.workspacePath,
@@ -548,7 +548,7 @@ export function createWindowHostControllerRuntime(options: {
       // 手机/其他窗口可能错过实时删除事件；快照恢复前按原 source 补清最小删除凭据。
       await replayPermanentRemovals(resolved, (signal) => tasksRemovedSignals.fire(signal));
       if (sourceRefreshGenerations.get(key) !== generation) {
-        throw new Error("Controller source refresh generation 已失效");
+        throw new Error("Controller source refresh generation is stale");
       }
       beforeCommit?.();
       const previousScope = pendingReplacementByNextSourceKey.get(key);
@@ -585,7 +585,7 @@ export function createWindowHostControllerRuntime(options: {
     },
   ): Promise<void> {
     if (!resolved.taskService || resolved.sourceAvailability !== "online") {
-      throw new Error("重连 source 尚未 online，不能替换离线投影");
+      throw new Error("Reconnected source is not online yet; cannot replace the offline projection");
     }
     registerResolvedSource(resolved);
     const previousKey = sourceKey(previousScope);
@@ -602,7 +602,7 @@ export function createWindowHostControllerRuntime(options: {
     try {
       await refreshSource(resolved, true, () => {
         if (transaction?.canCommit?.() === false) {
-          throw new Error("Controller source replacement generation 已失效");
+          throw new Error("Controller source replacement generation is stale");
         }
       });
     } catch (error) {
@@ -894,7 +894,7 @@ export function createWindowHostControllerRuntime(options: {
               resolved.scope.kind === "remote" &&
               current.scope.remoteSessionId !== resolved.scope.remoteSessionId)
           )
-            throw new Error("任务读取期间 source 已失效");
+            throw new Error("Source became stale while reading tasks");
           const mismatched =
             current.scope.kind === "remote"
               ? (address.sourceServerId
@@ -903,14 +903,14 @@ export function createWindowHostControllerRuntime(options: {
                 (address.remoteSessionId != null &&
                   address.remoteSessionId !== current.scope.remoteSessionId)
               : address.remoteSessionId != null || address.sourceServerId != null;
-          if (mismatched) throw new Error("任务地址与 source 不匹配");
+          if (mismatched) throw new Error("Task address does not match the source");
         };
         assertCurrentSource(resolved);
         // Bug 根因：列表读取失败可保留旧投影；把它当已读 marker 会漏清或误清。
         // 直接读唯一持久 owner，IO 前后复查同一服务与 attachment，不吞错、不物化整表。
         const result = await taskService!.getTaskMeta(mutationParams(address));
         assertCurrentSource(resolveCurrentSource(resolved!.scope));
-        if (result && result.taskId !== address.taskId) throw new Error("任务读取返回地址不匹配");
+        if (result && result.taskId !== address.taskId) throw new Error("Task read returned a mismatched address");
         return result ? normalizeTaskMeta(result, resolved!.scope) : null;
       },
       async deleteArchivedTasks({ address, taskIds }) {
@@ -919,7 +919,7 @@ export function createWindowHostControllerRuntime(options: {
         }
         const result = await projection.mutate(address, { kind: "delete-archived-batch", taskIds });
         if (!result || typeof result === "boolean" || !("deletedTaskIds" in result)) {
-          throw new Error("归档删除批次未返回逐项目标结果");
+          throw new Error("Archive-delete batch did not return per-target results");
         }
         const resolved = options.resolveSource({
           workspacePath: address.workspacePath,
@@ -956,8 +956,8 @@ export function createWindowHostControllerRuntime(options: {
         if (!resolved || resolved.sourceAvailability !== "online")
           throw new Error(
             resolved?.scope.kind === "remote"
-              ? "远程 source 当前离线，禁止列表写操作"
-              : "任务 source 当前不可用",
+              ? "Remote source is offline; list writes are not allowed"
+              : "Task source is currently unavailable",
           );
         const taskService = resolved.taskService;
         const assertCurrentUnreadSource = () => {
@@ -967,7 +967,7 @@ export function createWindowHostControllerRuntime(options: {
             current?.sourceAvailability !== "online" ||
             sourceAvailability.get(sourceKey(resolved.scope)) !== "online"
           ) {
-            throw new Error("未读写入期间 source 已失效");
+            throw new Error("Source became stale during the read-modify-write");
           }
         };
         await refreshSource(resolved);
@@ -1036,7 +1036,7 @@ export function createWindowHostControllerRuntime(options: {
           if (source)
             await replayPermanentRemovals(source, (signal) => tasksRemovedEmitter.fire(signal));
         }
-        if (attachmentDisposed) throw new Error("Controller attachment 已释放");
+        if (attachmentDisposed) throw new Error("Controller attachment has been released");
         return { ack: projection.resync(params.subscriptionId) };
       },
       async unsubscribeControllerV4(params) {
@@ -1108,7 +1108,7 @@ export function createWindowHostControllerRuntime(options: {
           remoteAttachmentScope.workspacePath !== params.workspacePath ||
           remoteAttachmentScope.workspaceIdentity !== params.workspaceIdentity
         ) {
-          throw new Error("列表 mutation 与 remote attachment scope 不匹配");
+          throw new Error("List mutation does not match the remote attachment scope");
         }
       }
       const resolved = options.resolveSource({
@@ -1124,7 +1124,7 @@ export function createWindowHostControllerRuntime(options: {
             source.scope.workspacePath !== remoteAttachmentScope.workspacePath ||
             source.scope.workspaceIdentity !== remoteAttachmentScope.workspaceIdentity)
         ) {
-          throw new Error("列表 mutation 与 remote attachment source 不匹配");
+          throw new Error("List mutation does not match the remote attachment source");
         }
       };
       assertAttachmentSource(resolved);
